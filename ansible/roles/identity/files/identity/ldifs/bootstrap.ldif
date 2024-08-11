@@ -1,0 +1,19 @@
+# peltops.com
+dn: dc=peltops,dc=com
+changetype: add
+objectClass: dcObject
+objectClass: organization
+dc: peltops
+o: Peltops
+
+# users
+dn: ou=users,dc=peltops,dc=com
+changetype: add
+objectClass: organizationalUnit
+ou: users
+
+# groups
+dn: ou=groups,dc=peltops,dc=com
+changetype: add
+objectClass: organizationalUnit
+ou: groups
