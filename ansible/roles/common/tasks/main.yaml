@@ -1,0 +1,15 @@
+---
+- name: Install utilities
+  apt:
+    pkg: 
+    - net-tools
+    - inetutils-traceroute
+    - ncdu
+
+- name: Install docker 
+  include_role:
+    name: geerlingguy.docker
+
+- name: Install packages
+  include_tasks: pkg.yaml
+
