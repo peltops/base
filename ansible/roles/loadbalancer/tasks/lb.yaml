@@ -1,0 +1,15 @@
+---
+- name: copy loadbalancer configuration
+  copy:
+    src: ../files/loadbalancer
+    dest: /opt
+
+- name: deploy/restart loadbalancer 
+  community.docker.docker_compose_v2:
+    project_src: /opt/loadbalancer
+    state: present
+  register: output
+
+- name: Show results
+  ansible.builtin.debug:
+    var: output

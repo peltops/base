@@ -1,0 +1,7 @@
+---
+- hosts: all
+  roles:
+  - 'roles/common'
+  - role: roles/reverse-proxy
+    tags: reverse-proxy
+

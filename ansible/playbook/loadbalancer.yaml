@@ -1,0 +1,6 @@
+---
+- hosts: all
+  roles:
+  - role: roles/loadbalancer
+    tags: loadbalancer
+
