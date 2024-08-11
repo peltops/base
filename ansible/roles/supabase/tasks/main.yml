@@ -6,3 +6,6 @@
 
 - name: deploy apps
   include_tasks: apps.yaml
+
+- name: Setup UFW
+  include_tasks: ufw.yaml
