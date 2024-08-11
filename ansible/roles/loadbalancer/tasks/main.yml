@@ -1,0 +1,11 @@
+---
+- name: "Create directory"
+  file:
+    path: "{{item}}"
+    state: directory
+  loop:
+    - /opt/loadbalancer
+    - /opt/letsencrypt
+
+- name: deploy loadbalancer 
+  include_tasks: lb.yaml
