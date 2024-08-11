@@ -1,0 +1,3 @@
+---
+- name: deploy postgres, keycloak, openldap 
+  include_tasks: apps.yaml

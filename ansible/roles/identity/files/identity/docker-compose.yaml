@@ -1,0 +1,62 @@
+version: '3.9'
+
+services:
+
+  identity-db:
+    image: postgres:15.4
+    container_name: identity-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}  
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}  
+      POSTGRES_DATABASE: ${POSTGRES_DATABASE}  
+      PGDATA: /var/lib/postgresql/data
+    volumes:
+      - db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DATABASE}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5      
+
+  identity-openldap:
+    image: docker.io/bitnami/openldap:2.6
+    container_name: identity-openldap
+    environment:
+      LDAP_ALLOW_ANON_BINDING: "no"
+      LDAP_ADMIN_USERNAME:     ${LDAP_ADMIN_USERNAME}
+      LDAP_ADMIN_PASSWORD:     ${LDAP_ADMIN_PASSWORD}
+      LDAP_CUSTOM_LDIF_DIR:    /ldifs
+      LDAP_ROOT:               ${LDAP_ROOT}
+    restart: unless-stopped
+    volumes:
+      - ./ldifs:/ldifs:ro
+      - ldap:/bitnami/openldap
+
+  identity-keycloak:
+    image: peltops/pkeycloak:v0.1
+    command: start --optimized
+    container_name: identity-keycloak
+    environment:
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}  
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}  
+      KC_DB_URL: jdbc:postgresql://identity-db/${POSTGRES_DATABASE}
+      KC_DB_URL_HOST: identity-db
+      KC_DB_URL_PORT: 5432
+      KC_DB_URL_DATABASE: ${POSTGRES_DATABASE}
+      KC_HOSTNAME: ${KC_HOSTNAME}
+      KC_HOSTNAME_STRICT_HTTPS: "false"
+      KC_PROXY: edge
+      KC_HTTP_ENABLED: "true"
+      KC_DB_USERNAME: ${POSTGRES_USER}  
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+    restart: unless-stopped
+    depends_on:
+      identity-db:
+        condition: service_healthy
+      identity-openldap:
+        condition: service_started
+
+volumes:
+  db:
+  ldap:

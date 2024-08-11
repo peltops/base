@@ -7,6 +7,7 @@ services:
     networks:
       - backend
       - supabase_default
+      - identity_default
     volumes:
       - ./config:/etc/nginx/config
       - ./conf.d:/etc/nginx/conf.d
@@ -27,4 +28,7 @@ networks:
   supabase_default:
     name: supabase_default
     external: true 
+  identity_default:
+    name: identity_default
+    external: true     
    
