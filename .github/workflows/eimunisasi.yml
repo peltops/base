@@ -1,17 +1,23 @@
 name: Run eimunisasi playbook
 on:
   workflow_dispatch:
-    inputs:
-      branch_name:
-        description: 'Branch Name'
-        default: 'main'
 jobs:
-  hello:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: Show branch name
-      run: |
-          echo "Branch Name: $BRANCH_NAME"
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Run eimunisasi playbook
+      uses: dawidd6/action-ansible-playbook@v2
+      with:
+        playbook: playbook/eimunisasi.yaml
+        directory: ./ansible
+        key: ${{secrets.SSH_PRIVATE_KEY}}
+        requirements: ./requirements.yml
+        options: |
+          -i inventory/base.ini
+          --verbose        
+          --tags=eimunisasi
       env:
-        BRANCH_NAME: ${{ inputs.branch_name }}
+        ANSIBLE_HOST_KEY_CHECKING: false
   
