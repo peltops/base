@@ -20,7 +20,7 @@ jobs:
     - name: Run playbook
       uses: dawidd6/action-ansible-playbook@v2
       with:
-        playbook: playbook/eimunisasi.yml
+        playbook: playbook/eimunisasi.yaml
         directory: ./ansible
         key: ${{secrets.SSH_PRIVATE_KEY}}
         requirements: ./requirements.yml
