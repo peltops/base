@@ -6,7 +6,7 @@ on:
         description: 'Branch Name'
         default: 'main'
 jobs:
-  hello:
+  deploy:
     runs-on: ubuntu-latest
     steps:
     - name: Show branch name
@@ -14,4 +14,16 @@ jobs:
           echo "Branch Name: $BRANCH_NAME"
       env:
         BRANCH_NAME: ${{ inputs.branch_name }}
+    - name: Run playbook
+      uses: dawidd6/action-ansible-playbook@v2
+      with:
+        playbook: playbook/eimunisasi.yml
+        directory: ./ansible
+        key: ${{secrets.SSH_PRIVATE_KEY}}
+        requirements: ./requirements.yml
+        options: |
+          -i inventory/base.ini
+          --verbose        
+      env:
+        ANSIBLE_HOST_KEY_CHECKING: false
   
