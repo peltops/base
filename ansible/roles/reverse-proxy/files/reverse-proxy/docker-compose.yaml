@@ -4,6 +4,9 @@ services:
     hostname: reverse-proxy
     image: nginx:stable
     restart: always
+    ports:
+      - 10080
+      - 10443
     networks:
       - backend
       - supabase_default
