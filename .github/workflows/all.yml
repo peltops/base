@@ -1,0 +1,94 @@
+name: Run all playbooks
+on:
+  workflow_dispatch:
+jobs:
+  eimunisasi:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Run playbook
+      uses: dawidd6/action-ansible-playbook@v2
+      with:
+        playbook: playbook/eimunisasi.yaml
+        directory: ./ansible
+        key: ${{secrets.SSH_PRIVATE_KEY}}
+        requirements: ./requirements.yml
+        options: |
+          -i inventory/base.ini
+          --verbose        
+          --tags=eimunisasi
+      env:
+        ANSIBLE_HOST_KEY_CHECKING: false
+  loadbalancer:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Run playbook
+      uses: dawidd6/action-ansible-playbook@v2
+      with:
+        playbook: playbook/loadbalancer.yaml
+        directory: ./ansible
+        key: ${{secrets.SSH_PRIVATE_KEY}}
+        requirements: ./requirements.yml
+        options: |
+          -i inventory/base.ini
+          --verbose        
+          --tags=loadbalancer
+      env:
+        ANSIBLE_HOST_KEY_CHECKING: false        
+  reverse-proxy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Run playbook
+      uses: dawidd6/action-ansible-playbook@v2
+      with:
+        playbook: playbook/reverse-proxy.yaml
+        directory: ./ansible
+        key: ${{secrets.SSH_PRIVATE_KEY}}
+        requirements: ./requirements.yml
+        options: |
+          -i inventory/base.ini
+          --verbose        
+          --tags=reverse-proxy
+      env:
+        ANSIBLE_HOST_KEY_CHECKING: false        
+  identity:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Run playbook
+      uses: dawidd6/action-ansible-playbook@v2
+      with:
+        playbook: playbook/identity.yaml
+        directory: ./ansible
+        key: ${{secrets.SSH_PRIVATE_KEY}}
+        requirements: ./requirements.yml
+        options: |
+          -i inventory/base.ini
+          --verbose        
+          --tags=identity
+      env:
+        ANSIBLE_HOST_KEY_CHECKING: false
+  static:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Run playbook
+      uses: dawidd6/action-ansible-playbook@v2
+      with:
+        playbook: playbook/static.yaml
+        directory: ./ansible
+        key: ${{secrets.SSH_PRIVATE_KEY}}
+        requirements: ./requirements.yml
+        options: |
+          -i inventory/base.ini
+          --verbose        
+          --tags=static
+      env:
+        ANSIBLE_HOST_KEY_CHECKING: false        
