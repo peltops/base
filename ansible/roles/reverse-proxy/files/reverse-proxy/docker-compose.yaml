@@ -8,6 +8,7 @@ services:
       - backend
       - supabase_default
       - identity_default
+      - eimunisasi_default
     volumes:
       - ./config:/etc/nginx/config
       - ./conf.d:/etc/nginx/conf.d
@@ -31,4 +32,7 @@ networks:
   identity_default:
     name: identity_default
     external: true     
+  eimunisasi_default:
+    name: eimunisasi_default
+    external: true    
    
