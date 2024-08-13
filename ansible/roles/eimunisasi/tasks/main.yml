@@ -1,0 +1,8 @@
+---
+- name: "Create directory"
+  file:
+    path: /opt/eimunisasi
+    state: directory
+
+- name: deploy apps
+  include_tasks: apps.yaml
