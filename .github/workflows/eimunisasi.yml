@@ -1,0 +1,17 @@
+name: Run eimunisasi playbook
+on:
+  workflow_dispatch:
+    inputs:
+      branch_name:
+        description: 'Branch Name'
+        default: 'main'
+jobs:
+  hello:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Show branch name
+      run: |
+          echo "Branch Name: $BRANCH_NAME"
+      env:
+        BRANCH_NAME: ${{ inputs.branch_name }}
+  
