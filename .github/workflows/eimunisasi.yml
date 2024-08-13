@@ -9,8 +9,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: Show branch name
+    - name: Get info
       run: |
+          ls -al
           echo "Branch Name: $BRANCH_NAME"
       env:
         BRANCH_NAME: ${{ inputs.branch_name }}
