@@ -1,0 +1,14 @@
+[
+    {
+        "relation": [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "com.example.test_supabase",
+            "sha256_cert_fingerprints": [
+                "DC:BF:B8:23:6F:18:BF:3A:15:16:FF:47:43:66:A3:72:6C:D4:2F:FD:81:51:CE:8D:68:5E:19:37:CA:B8:FB:84"
+            ]
+        }
+    }
+]

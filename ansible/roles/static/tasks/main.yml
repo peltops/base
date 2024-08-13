@@ -1,0 +1,3 @@
+---
+- name: deploy static
+  include_tasks: app.yaml
