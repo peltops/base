@@ -1,9 +1,4 @@
 ---
-- name: Delete static folder
-  ansible.builtin.file:
-    path: /opt/static
-    state: absent
-
 - name: copy static folder
   copy:
     src: ../files/static
@@ -12,7 +7,6 @@
 - name: deploy/restart static webserver
   community.docker.docker_compose_v2:
     project_src: /opt/static
-    state: present
   register: output
 
 - name: Show results
