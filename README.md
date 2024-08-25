@@ -2,7 +2,7 @@
 Backend services for mobile apps
 
 # Diagram
-
+![Seribase](./diagram/seribase.excalidraw.png)
 # Description
 Seribase supports the following services
 - User registration and authentication
