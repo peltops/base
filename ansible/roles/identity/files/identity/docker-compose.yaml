@@ -1,11 +1,19 @@
 version: '3.9'
 
+x-logging:
+  &default-logging
+  driver: loki:latest
+  options:
+    loki-url: "https://${GRAFANA_USER}:${GRAFANA_TOKEN}@${GRAFANA_HOST}/loki/api/v1/push"
+    loki-batch-size: 400
+
 services:
 
   identity-db:
     image: postgres:15.4
     container_name: identity-db
     restart: unless-stopped
+    logging: *default-logging
     environment:
       POSTGRES_USER: ${POSTGRES_USER}  
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}  
@@ -22,6 +30,7 @@ services:
   identity-openldap:
     image: docker.io/bitnami/openldap:2.6
     container_name: identity-openldap
+    logging: *default-logging
     environment:
       LDAP_ALLOW_ANON_BINDING: "no"
       LDAP_ADMIN_USERNAME:     ${LDAP_ADMIN_USERNAME}
@@ -34,9 +43,10 @@ services:
       - ldap:/bitnami/openldap
 
   identity-keycloak:
-    image: peltops/pkeycloak:v0.1
+    image: peltops/pkeycloak:v0.2
     command: start --optimized
     container_name: identity-keycloak
+    logging: *default-logging
     environment:
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}  
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}  

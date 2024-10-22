@@ -1,0 +1,7 @@
+---
+- hosts: all
+  roles:
+  - role: roles/monitoring
+    tags: monitoring
+  vars_files:
+    - '../roles/monitoring/defaults/main.yaml'

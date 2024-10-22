@@ -1,6 +1,13 @@
 name: eimunisasi
 version: "3.8"
 
+x-logging:
+  &default-logging
+  driver: loki:latest
+  options:
+    loki-url: "https://${GRAFANA_USER}:${GRAFANA_TOKEN}@${GRAFANA_HOST}/loki/api/v1/push"
+    loki-batch-size: 400
+
 services:
 
   minio:
@@ -8,6 +15,7 @@ services:
     ports:
       - '9000'
       - '9001'
+    logging: *default-logging
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
@@ -27,7 +35,8 @@ services:
         condition: service_healthy
     entrypoint: >
       /bin/sh -c "
-      /usr/bin/mc alias set supa-minio http://minio:9000 supa-storage secret1234;
+      /usr/bin/mc alias set supa-minio http://minio:9000 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD};
+      /usr/bin/mc admin user add supa-minio supa-storage secret1234
       /usr/bin/mc mb supa-minio/stub;
       exit 0;
       "
@@ -59,6 +68,7 @@ services:
       interval: 5s
       retries: 3
     restart: unless-stopped
+    logging: *default-logging
     environment:
       ANON_KEY: ${ANON_KEY}
       SERVICE_KEY: ${SERVICE_ROLE_KEY}
@@ -91,6 +101,7 @@ services:
       timeout: 5s
       interval: 5s
       retries: 3
+    logging: *default-logging
     environment:
       IMGPROXY_BIND: ":5001"
       IMGPROXY_USE_ETAG: "true"
