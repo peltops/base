@@ -1,9 +1,4 @@
 ---
-- name: Recursively reverse-proxy configuration
-  ansible.builtin.file:
-    path: /opt/reverse-proxy
-    state: absent
-
 - name: copy reverse-proxy configuration
   copy:
     src: ../files/reverse-proxy
@@ -12,7 +7,6 @@
 - name: deploy/restart reverse-proxy 
   community.docker.docker_compose_v2:
     project_src: /opt/reverse-proxy
-    state: present
   register: output
 
 - name: Show results

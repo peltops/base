@@ -1,3 +1,10 @@
+x-logging:
+  &default-logging
+  driver: loki:latest
+  options:
+    loki-url: "https://${GRAFANA_USER}:${GRAFANA_TOKEN}@${GRAFANA_HOST}/loki/api/v1/push"
+    loki-batch-size: 400
+
 services:
   reverse-proxy:
     container_name: reverse-proxy
@@ -19,11 +26,7 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf
       - /opt/letsencrypt:/etc/letsencrypt:ro  
       - ./static:/www/static  
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "100m"
-        max-file: "10"    
+    logging: *default-logging
 
 networks:
   backend:
