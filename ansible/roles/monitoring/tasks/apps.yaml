@@ -1,0 +1,19 @@
+---
+- name: copy monitoring files
+  copy:
+    src: ../files/monitoring
+    dest: /opt
+
+- name: write prometheus config 
+  ansible.builtin.template:
+     src: templates/prometheus.j2
+     dest: /opt/monitoring/prometheus.yml
+
+- name: deploy/restart monitoring apps 
+  community.docker.docker_compose_v2:
+    project_src: /opt/monitoring
+  register: output
+
+- name: Show results
+  ansible.builtin.debug:
+    var: output

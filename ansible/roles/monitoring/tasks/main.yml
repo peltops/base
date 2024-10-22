@@ -1,0 +1,4 @@
+---
+- name: deploy prometheus, node-exporter
+  include_tasks: apps.yaml
+
