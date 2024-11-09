@@ -1,6 +1,6 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2'
 
-Deno.serve(async (_req) => {
+Deno.serve(async (req) => {
   try {
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
