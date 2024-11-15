@@ -8,7 +8,7 @@ Deno.serve(async (req) => {
   const search = url.searchParams.get("search") ?? "";
 
   try {
-    const client = enakesSupabaseAdmin(req);
+    const client = enakesSupabaseAdmin;
     const start = (page - 1) * pageSize;
     const end = start + pageSize - 1;
 
