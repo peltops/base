@@ -3,7 +3,9 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - main  
+      - main
+    paths:
+      - ansible/roles/reverse-proxy/**           
 jobs:
   deploy:
     runs-on: ubuntu-latest
