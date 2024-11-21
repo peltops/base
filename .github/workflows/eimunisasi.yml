@@ -1,6 +1,11 @@
 name: Run eimunisasi playbook
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main  
+    paths:
+      - ansible/roles/eimunisasi/**      
 jobs:
   deploy:
     runs-on: ubuntu-latest

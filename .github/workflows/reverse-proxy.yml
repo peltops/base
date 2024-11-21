@@ -1,6 +1,11 @@
 name: Run reverse-proxy playbook
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - ansible/roles/reverse-proxy/**           
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -13,6 +18,7 @@ jobs:
         playbook: playbook/reverse-proxy.yaml
         directory: ./ansible
         key: ${{secrets.SSH_PRIVATE_KEY}}
+        vault_password: ${{secrets.VAULT_PASSWORD}}
         requirements: ./requirements.yml
         options: |
           -i inventory/base.ini

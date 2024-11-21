@@ -1,6 +1,11 @@
 name: Run enakes playbook
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main 
+    paths:
+      - ansible/roles/enakes/**          
 jobs:
   deploy:
     runs-on: ubuntu-latest
