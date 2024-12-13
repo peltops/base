@@ -1,6 +1,11 @@
 name: Run static playbook
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - ansible/roles/static/**  
 jobs:
   deploy:
     runs-on: ubuntu-latest
