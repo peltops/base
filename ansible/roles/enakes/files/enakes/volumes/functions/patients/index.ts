@@ -4,7 +4,7 @@ import { eImunisasiSupabaseAdmin } from "../_shared/eimunisasiSupabase.ts";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey",
-  "Access-Control-Allow-Methods": "GET",
+  "Access-Control-Allow-Methods": "POST, GET, OPTIONS, PUT, DELETE",
 };
 
 interface GetPatientsQuery {
@@ -25,16 +25,20 @@ async function getAllPatients(
   const start = (page - 1) * page_size;
   const end = start + page_size - 1;
 
-  const { count, error: countError } = await supabaseClient
+  let countBuilder = supabaseClient
     .from("children")
-    .select("*", { count: "exact", head: true })
-    .ilike("nik", `%${nik}%`)
+    .select("*", { count: "exact", head: true });
+
+  if (nik) {
+    countBuilder = countBuilder.ilike("nik", `%${nik}%`);
+  }
+  const { count, error: countError } = await countBuilder;
 
   if (countError) {
     throw countError;
   }
-
-  const { data, error } = await supabaseClient
+  
+  let queryBuilder = supabaseClient
     .from("children")
     .select(
       `
@@ -45,11 +49,16 @@ async function getAllPatients(
         gender,
         avatar_url,
         date_of_birth,
-        place_of_birth,
+        place_of_birth
       `
     )
-    .ilike("nik", `%${nik}%`)
     .range(start, end);
+
+  if (nik) {
+    queryBuilder = queryBuilder.ilike("nik", `%${nik}%`);
+  }
+
+  const { data, error } = await queryBuilder;
 
   if (error) {
     throw error;
@@ -82,7 +91,7 @@ async function getPatient(supabaseClient: SupabaseClient, id: string) {
         gender,
         avatar_url,
         date_of_birth,
-        place_of_birth,
+        place_of_birth
       `
     )
     .eq("id", id)
