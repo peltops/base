@@ -14,7 +14,7 @@ async function getParent(supabaseClient: SupabaseClient, id: string) {
       `
         id:user_id,
         name:mother_name,
-        phone_number:mother_phone_number,
+        phone_number:mother_phone_number
       `
     )
     .eq("user_id", id)
