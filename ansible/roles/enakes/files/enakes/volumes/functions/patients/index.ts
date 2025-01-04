@@ -43,6 +43,7 @@ async function getAllPatients(
     .select(
       `
         id,
+        parent_id,
         nik,
         name,
         blood_type,
@@ -85,6 +86,7 @@ async function getPatient(supabaseClient: SupabaseClient, id: string) {
     .select(
       `
         id,
+        parent_id,
         nik,
         name,
         blood_type,
