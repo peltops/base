@@ -1,0 +1,29 @@
+name: Run payment playbook
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main 
+    paths:
+      - ansible/roles/payment/**          
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Run payment playbook
+      uses: dawidd6/action-ansible-playbook@v2
+      with:
+        playbook: playbook/payment.yaml
+        directory: ./ansible
+        key: ${{secrets.SSH_PRIVATE_KEY}}
+        vault_password: ${{secrets.VAULT_PASSWORD}}
+        requirements: ./requirements.yml
+        options: |
+          -i inventory/base.ini
+          --verbose        
+          --tags=payment
+      env:
+        ANSIBLE_HOST_KEY_CHECKING: false
+  

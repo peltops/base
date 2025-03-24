@@ -1,0 +1,6 @@
+---
+- hosts: all
+  roles:
+  - 'roles/common'
+  - role: roles/payment
+    tags: payment
