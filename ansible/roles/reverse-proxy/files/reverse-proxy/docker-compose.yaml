@@ -20,6 +20,7 @@ services:
       - identity_default
       - eimunisasi_default
       - enakes_default
+      - payment_default
     volumes:
       - ./config:/etc/nginx/config
       - ./conf.d:/etc/nginx/conf.d
