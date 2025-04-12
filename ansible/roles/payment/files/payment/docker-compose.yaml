@@ -426,8 +426,8 @@ services:
       - ./volumes/db/logs.sql:/docker-entrypoint-initdb.d/migrations/99-logs.sql:Z
       # Use named volume to persist pgsodium decryption key between restarts
       - db-config:/etc/postgresql-custom
-      # Run scheme.sql for migration
-      - ./volumes/db/scheme.sql:/docker-entrypoint-initdb.d/migrations/99-scheme.sql:Z
+      # Run migration
+      - ./volumes/db/migrations:/docker-entrypoint-initdb.d/migrations:Z
 
   vector:
     container_name: payment-vector
