@@ -432,6 +432,8 @@ services:
       - db-config:/etc/postgresql-custom
       # Run migration
       - ./volumes/db/migrations:/docker-entrypoint-initdb.d/migrations:Z
+      # Seed the database
+      - ./volumes/db/seeds:/docker-entrypoint-initdb.d/seeds:Z
 
 
   vector:
