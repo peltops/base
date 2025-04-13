@@ -391,8 +391,12 @@ services:
     depends_on:
       vector:
         condition: service_healthy
-    entrypoint: ["/bin/bash", "/docker-entrypoint-initdb.d/custom-entrypoint.sh"]
-    command: []
+    command:
+      - postgres
+      - -c
+      - config_file=/etc/postgresql/postgresql.conf
+      - -c
+      - log_min_messages=fatal # prevents Realtime polling queries from appearing in logs
     restart: unless-stopped
     ports:
       # Pass down internal port because it's set dynamically by other services
