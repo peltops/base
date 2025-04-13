@@ -442,7 +442,7 @@ services:
       db:
         condition: service_healthy
     environment:
-      DATABASE_URL: "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:${POSTGRES_PORT}/${POSTGRES_DB}?sslmode=disable"
+      DATABASE_URL: "postgres://postgres:${POSTGRES_PASSWORD}@db:${POSTGRES_PORT}/${POSTGRES_DB}?sslmode=disable"
     volumes:
       - ./volumes/db/migrations:/db/migrations
     entrypoint: |
