@@ -391,12 +391,8 @@ services:
     depends_on:
       vector:
         condition: service_healthy
-    command:
-      - postgres
-      - -c
-      - config_file=/etc/postgresql/postgresql.conf
-      - -c
-      - log_min_messages=fatal # prevents Realtime polling queries from appearing in logs
+    entrypoint: ["/bin/bash", "/docker-entrypoint-initdb.d/custom-entrypoint.sh"]
+    command: []
     restart: unless-stopped
     ports:
       # Pass down internal port because it's set dynamically by other services
@@ -431,9 +427,9 @@ services:
       # Use named volume to persist pgsodium decryption key between restarts
       - db-config:/etc/postgresql-custom
       # Run migration
-      - ./volumes/db/migrations:/docker-entrypoint-initdb.d/migrations:Z
+      - ./volumes/db/migrations:/db/migrations:Z
       # Seed the database
-      - ./volumes/db/seeds:/docker-entrypoint-initdb.d/seeds:Z
+      - ./volumes/db/seeds:/db/seeds:Z
 
 
   vector:
