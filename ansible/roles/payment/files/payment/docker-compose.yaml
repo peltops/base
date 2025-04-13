@@ -434,7 +434,8 @@ services:
       - ./volumes/db/migrations:/db/migrations:Z
       # Seed the database
       - ./volumes/db/seeds:/db/seeds:Z
-
+      # migration script
+      - ./run_migrations_seeds.sh:/run_migrations_seeds.sh
 
   vector:
     container_name: payment-vector
