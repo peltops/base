@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS "public"."order_items" (
     "price" NUMERIC,
     "created_at" TIMESTAMPTZ,
     "updated_at" TIMESTAMPTZ,
-    PRIMARY KEY("order_item_id")
+    PRIMARY KEY("order_item_id", "order_id")
 );
 
 CREATE TABLE IF NOT EXISTS "public"."products" (
