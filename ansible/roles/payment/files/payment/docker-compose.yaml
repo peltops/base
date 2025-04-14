@@ -438,6 +438,7 @@ services:
   dbmate:
     image: amacneil/dbmate:latest
     container_name: payment-dbmate
+    restart: always
     depends_on:
       db:
         condition: service_healthy
@@ -447,7 +448,8 @@ services:
       - ./volumes/db/migrations:/db/migrations
     entrypoint: |
       sh -c "dbmate wait &&
-             dbmate -d /db/migrations up"
+         dbmate -d /db/migrations up &&
+         tail -f /dev/null"
 
   vector:
     container_name: payment-vector
