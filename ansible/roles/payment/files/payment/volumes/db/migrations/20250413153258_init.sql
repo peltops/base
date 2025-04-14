@@ -13,12 +13,12 @@ CREATE TABLE IF NOT EXISTS "public"."orders" (
 CREATE TABLE IF NOT EXISTS "public"."order_items" (
     "order_item_id" UUID NOT NULL UNIQUE,
 	"order_id" UUID NOT NULL UNIQUE,
-    "product_id" UUID,
+    "product_id" UUID NOT NULL UNIQUE,
     "quantity" INTEGER,
     "price" NUMERIC,
     "created_at" TIMESTAMPTZ,
     "updated_at" TIMESTAMPTZ,
-    PRIMARY KEY("order_item_id", "order_id")
+    PRIMARY KEY("order_item_id")
 );
 
 CREATE TABLE IF NOT EXISTS "public"."products" (
@@ -34,8 +34,8 @@ CREATE TABLE IF NOT EXISTS "public"."products" (
 CREATE TABLE IF NOT EXISTS "public"."payments" (
     "payment_id" UUID NOT NULL UNIQUE,
     "gateway_payment_id" VARCHAR(255),
-    "order_id" UUID,
-    "gateway_id" UUID,
+    "order_id" UUID NOT NULL UNIQUE,
+    "gateway_id" UUID NOT NULL UNIQUE,
     "amount" NUMERIC,
     "currency" VARCHAR(255),
     "status" VARCHAR(255),
@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS "public"."payment_gateway" (
 
 CREATE TABLE IF NOT EXISTS "public"."transactions" (
     "transaction_id" UUID NOT NULL UNIQUE,
-    "payment_id" UUID,
+    "payment_id" UUID NOT NULL UNIQUE,
     "gateway_transaction_id" VARCHAR(255),
     "gateway_response" TEXT,
     "status" VARCHAR(255),
