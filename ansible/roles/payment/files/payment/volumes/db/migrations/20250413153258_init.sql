@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS "public"."orders" (
 
 CREATE TABLE IF NOT EXISTS "public"."order_items" (
     "order_item_id" UUID NOT NULL UNIQUE,
-    "order_id" UUID,
+	"order_id" UUID NOT NULL UNIQUE,
     "product_id" UUID,
     "quantity" INTEGER,
     "price" NUMERIC,
