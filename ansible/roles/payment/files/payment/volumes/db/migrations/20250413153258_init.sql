@@ -1,5 +1,5 @@
 -- migrate:up
-CREATE TABLE CREATE TABLE "public"."orders" (
+CREATE TABLE IF NOT EXISTS "orders" (
 	"order_id" UUID NOT NULL UNIQUE,
 	"user_id" VARCHAR(255),
 	"total_amount" NUMERIC,
@@ -10,7 +10,7 @@ CREATE TABLE CREATE TABLE "public"."orders" (
 	PRIMARY KEY("order_id")
 );
 
-CREATE TABLE CREATE TABLE "public"."order_items" (
+CREATE TABLE IF NOT EXISTS "order_items" (
 	"order_item_id" UUID NOT NULL UNIQUE,
 	"order_id" UUID,
 	"product_id" UUID,
@@ -21,7 +21,7 @@ CREATE TABLE CREATE TABLE "public"."order_items" (
 	PRIMARY KEY("order_item_id")
 );
 
-CREATE TABLE CREATE TABLE "public"."products" (
+CREATE TABLE IF NOT EXISTS "products" (
 	"product_id" UUID NOT NULL UNIQUE,
 	"name" VARCHAR(255),
 	"description" VARCHAR(255),
@@ -31,7 +31,7 @@ CREATE TABLE CREATE TABLE "public"."products" (
 	PRIMARY KEY("product_id")
 );
 
-CREATE TABLE CREATE TABLE "public"."payments" (
+CREATE TABLE IF NOT EXISTS "payments" (
 	"payment_id" UUID NOT NULL UNIQUE,
 	"gateway_payment_id" VARCHAR(255),
 	"order_id" UUID,
@@ -45,7 +45,7 @@ CREATE TABLE CREATE TABLE "public"."payments" (
 	PRIMARY KEY("payment_id")
 );
 
-CREATE TABLE CREATE TABLE "public"."payment_gateway" (
+CREATE TABLE IF NOT EXISTS "payment_gateway" (
 	"gateway_id" UUID NOT NULL UNIQUE,
 	"name" VARCHAR(255),
 	"created_at" TIMESTAMPTZ,
@@ -53,7 +53,7 @@ CREATE TABLE CREATE TABLE "public"."payment_gateway" (
 	PRIMARY KEY("gateway_id")
 );
 
-CREATE TABLE CREATE TABLE "public"."transactions" (
+CREATE TABLE IF NOT EXISTS "transactions" (
 	"transaction_id" UUID NOT NULL UNIQUE,
 	"payment_id" UUID,
 	"gateway_transaction_id" VARCHAR(255),
