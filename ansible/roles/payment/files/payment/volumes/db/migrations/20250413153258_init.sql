@@ -80,8 +80,8 @@ ALTER TABLE "public"."payments"
 ADD FOREIGN KEY("gateway_id") REFERENCES "payment_gateway"("gateway_id")
 ON UPDATE NO ACTION ON DELETE NO ACTION;
 
-ALTER TABLE "public"."payments"
-ADD FOREIGN KEY("payment_id") REFERENCES "transactions"("payment_id")
+ALTER TABLE "public"."transactions"
+ADD FOREIGN KEY("payment_id") REFERENCES "payments"("payment_id")
 ON UPDATE NO ACTION ON DELETE NO ACTION;
 
 alter table "public"."orders" enable row level security;
