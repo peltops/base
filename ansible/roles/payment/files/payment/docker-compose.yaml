@@ -391,8 +391,12 @@ services:
     depends_on:
       vector:
         condition: service_healthy
-    entrypoint: ["/bin/bash", "/docker-entrypoint-initdb.d/custom-entrypoint.sh"]
-    command: []
+    command:
+      - postgres
+      - -c
+      - config_file=/etc/postgresql/postgresql.conf
+      - -c
+      - log_min_messages=fatal # prevents Realtime polling queries from appearing in logs
     restart: unless-stopped
     ports:
       # Pass down internal port because it's set dynamically by other services
@@ -426,12 +430,23 @@ services:
       - ./volumes/db/pooler.sql:/docker-entrypoint-initdb.d/migrations/99-pooler.sql:Z
       # Use named volume to persist pgsodium decryption key between restarts
       - db-config:/etc/postgresql-custom
-      - ./custom-entrypoint.sh:/docker-entrypoint-initdb.d/custom-entrypoint.sh:Z
-      # Run migration
-      - ./volumes/db/migrations:/db/migrations:Z
       # Seed the database
       - ./volumes/db/seeds:/db/seeds:Z
+      # Seed script
+      - ./run_seeds.sh:/run_seeds.sh
 
+  dbmate:
+    image: amacneil/dbmate:latest
+    container_name: payment-dbmate
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "postgres://postgres:${POSTGRES_PASSWORD}@db:${POSTGRES_PORT}/${POSTGRES_DB}?sslmode=disable"
+    volumes:
+      - ./volumes/db/migrations:/db/migrations
+    entrypoint: [ "sh", "-c", "dbmate wait && dbmate -d /db/migrations up && tail -f /dev/null" ]
 
   vector:
     container_name: payment-vector
