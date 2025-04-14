@@ -1,6 +1,6 @@
 -- migrate:up
 CREATE TABLE IF NOT EXISTS "orders" (
-	"order_id" UUID NOT NULL UNIQUE,
+	"order_id" UUID NOT NULL UNIQUE default gen_random_uuid(),
 	"user_id" VARCHAR(255),
 	"total_amount" NUMERIC,
 	"currency" VARCHAR(255),
@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS "orders" (
 );
 
 CREATE TABLE IF NOT EXISTS "order_items" (
-	"order_item_id" UUID NOT NULL UNIQUE,
+	"order_item_id" UUID NOT NULL UNIQUE default gen_random_uuid(),
 	"order_id" UUID,
 	"product_id" UUID,
 	"quantity" INTEGER,
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS "order_items" (
 );
 
 CREATE TABLE IF NOT EXISTS "products" (
-	"product_id" UUID NOT NULL UNIQUE,
+	"product_id" UUID NOT NULL UNIQUE default gen_random_uuid(),
 	"name" VARCHAR(255),
 	"description" VARCHAR(255),
 	"price" NUMERIC,
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS "products" (
 );
 
 CREATE TABLE IF NOT EXISTS "payments" (
-	"payment_id" UUID NOT NULL UNIQUE,
+	"payment_id" UUID NOT NULL UNIQUE default gen_random_uuid(),
 	"gateway_payment_id" VARCHAR(255),
 	"order_id" UUID,
 	"gateway_id" UUID,
@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS "payments" (
 );
 
 CREATE TABLE IF NOT EXISTS "payment_gateway" (
-	"gateway_id" UUID NOT NULL UNIQUE,
+	"gateway_id" UUID NOT NULL UNIQUE default gen_random_uuid(),
 	"name" VARCHAR(255),
 	"created_at" TIMESTAMPTZ,
 	"updated_at" TIMESTAMPTZ,
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS "payment_gateway" (
 );
 
 CREATE TABLE IF NOT EXISTS "transactions" (
-	"transaction_id" UUID NOT NULL UNIQUE,
+	"transaction_id" UUID NOT NULL UNIQUE default gen_random_uuid(),
 	"payment_id" UUID,
 	"gateway_transaction_id" VARCHAR(255),
 	"gateway_response" TEXT,
