@@ -7,14 +7,14 @@ BEGIN
         WHERE typname = 'transactions_status_enum'
     ) THEN
         CREATE TYPE transactions_status_enum AS ENUM (
-            'initiated',         -- Transaksi baru dibuat
-            'pending',           -- Menunggu customer bayar
-            'processing',        -- Sudah bayar tapi belum settle
-            'success',           -- Berhasil (settlement/succeeded)
-            'failed',            -- Gagal bayar (deny/failed)
-            'expired',           -- Waktu habis
-            'cancelled',         -- Dibatalkan
-            'refunded'           -- Sudah direfund
+            'initiated',         -- Transaction newly created
+            'pending',           -- Waiting for customer payment
+            'processing',        -- Paid but not settled
+            'success',           -- Success (settlement/succeeded)
+            'failed',            -- Payment failed (deny/failed)
+            'expired',           -- Time expired
+            'cancelled',         -- Cancelled
+            'refunded'           -- Refunded       
         );
     END IF;
 END $$;
