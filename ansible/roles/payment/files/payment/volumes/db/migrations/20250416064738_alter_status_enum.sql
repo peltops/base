@@ -1,35 +1,62 @@
 -- migrate:up
-CREATE TYPE IF NOT EXISTS transactions_status_enum AS ENUM (
-  'initiated',         -- Transaksi baru dibuat
-  'pending',           -- Menunggu customer bayar
-  'processing',        -- Sudah bayar tapi belum settle
-  'success',           -- Berhasil (settlement/succeeded)
-  'failed',            -- Gagal bayar (deny/failed)
-  'expired',           -- Waktu habis
-  'cancelled',         -- Dibatalkan
-  'refunded'           -- Sudah direfund
-);
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM pg_type
+        WHERE typname = 'transactions_status_enum'
+    ) THEN
+        CREATE TYPE transactions_status_enum AS ENUM (
+            'initiated',         -- Transaksi baru dibuat
+            'pending',           -- Menunggu customer bayar
+            'processing',        -- Sudah bayar tapi belum settle
+            'success',           -- Berhasil (settlement/succeeded)
+            'failed',            -- Gagal bayar (deny/failed)
+            'expired',           -- Waktu habis
+            'cancelled',         -- Dibatalkan
+            'refunded'           -- Sudah direfund
+        );
+    END IF;
+END $$;
 
-CREATE TYPE IF NOT EXISTS payments_status_enum AS ENUM (
-  'initiated',
-  'waiting_payment',
-  'processing',
-  'paid',
-  'failed',
-  'expired',
-  'cancelled',
-  'refunded'
-);
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM pg_type
+        WHERE typname = 'payments_status_enum'
+    ) THEN
+        CREATE TYPE payments_status_enum AS ENUM (
+            'initiated',
+            'waiting_payment',
+            'processing',
+            'paid',
+            'failed',
+            'expired',
+            'cancelled',
+            'refunded'
+        );
+    END IF;
+END $$;
 
-CREATE TYPE IF NOT EXISTS orders_status_enum AS ENUM (
-  'draft',
-  'waiting_payment',
-  'processing',
-  'paid',
-  'failed',
-  'cancelled',
-  'refunded'
-);
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM pg_type
+        WHERE typname = 'orders_status_enum'
+    ) THEN
+        CREATE TYPE orders_status_enum AS ENUM (
+            'draft',
+            'waiting_payment',
+            'processing',
+            'paid',
+            'failed',
+            'cancelled',
+            'refunded'
+        );
+    END IF;
+END $$;
 
 ALTER TABLE transactions
 ALTER COLUMN status TYPE transactions_status_enum
