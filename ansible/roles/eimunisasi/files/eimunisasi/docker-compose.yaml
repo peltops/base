@@ -426,6 +426,8 @@ services:
       - ./volumes/db/logs.sql:/docker-entrypoint-initdb.d/migrations/99-logs.sql:Z
       # Use named volume to persist pgsodium decryption key between restarts
       - db-config:/etc/postgresql-custom
+      # Run migrations on startup
+      - ./volumes/db/migrations:/docker-entrypoint-initdb.d/migrations:Z
 
   vector:
     container_name: eimunisasi-vector
