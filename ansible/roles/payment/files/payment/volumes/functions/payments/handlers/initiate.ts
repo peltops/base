@@ -204,7 +204,7 @@ export const handleInitiate = async (c: Context) => {
       .insert(orderItems);
 
     if (orderItemsError) {
-      rollbackOrder(orderData.order_id);
+      await rollbackOrder(orderData.order_id);
 
       throw orderItemsError;
     }

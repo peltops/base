@@ -99,12 +99,11 @@ async function handleStripeWebhook(event: any) {
   // payment_intent.succeeded
   // data.object is a payment intent
   // Occurs when a PaymentIntent has successfully completed payment
-  try {
-    const data = event.data.object;
-    const orderId = data.metadata?.order_id;
+  const data = event.data.object;
+  const orderId = data.metadata?.order_id;
 
-    const txStatus = mapStripeToEnum(event.type);
-    const { paymentStatus, orderStatus } = mapTransactionToStatus(txStatus);
+  const txStatus = mapStripeToEnum(event.type);
+  const { paymentStatus, orderStatus } = mapTransactionToStatus(txStatus);
 
     const { data: gateway } = await paymentSupabaseAdmin
       .from("payment_gateway")
