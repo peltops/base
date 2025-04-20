@@ -96,7 +96,7 @@ async function handleStripeWebhook(event: any) {
   const orderId = data.metadata?.order_id;
 
   const txStatus = mapStripeToEnum(event.type);
-  const { paymentStatus, orderStatus } = mapTransactionToStatus();
+  const { paymentStatus, orderStatus } = mapTransactionToStatus(txStatus);
 
   const { data: gateway } = await paymentSupabaseAdmin
     .from("payment_gateway")
