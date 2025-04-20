@@ -240,7 +240,7 @@ export const handleInitiate = async (c: Context) => {
     return c.json({
       is_successful: true,
       message: "Payment initiated successfully",
-      ...response,
+      data: response,
     });
   } catch (error) {
     console.error(error);

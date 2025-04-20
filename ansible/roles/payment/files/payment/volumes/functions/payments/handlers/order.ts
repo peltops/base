@@ -69,5 +69,8 @@ export const handleOrderStatus = async (c: Context) => {
       status
     );
   }
-  return c.json(data);
+  return c.json({
+    is_successful: true,
+    data: data,
+  });
 };
