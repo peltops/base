@@ -93,7 +93,7 @@ async function handleStripeWebhook(event: any) {
   // data.object is a payment intent
   // Occurs when a PaymentIntent has successfully completed payment
   const data = event.data.object;
-  const orderId = paymentIntent.metadata?.order_id;
+  const orderId = data.metadata?.order_id;
 
   const txStatus = mapStripeToEnum(event.type);
   const { paymentStatus, orderStatus } = mapTransactionToStatus();
