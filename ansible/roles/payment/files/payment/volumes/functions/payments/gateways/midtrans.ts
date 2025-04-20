@@ -75,8 +75,7 @@ async function createSnapMidtrans({
   }
 }
 
-function verifyMidtransSignature(signature: string, rawBody: string) {
-  const body = JSON.parse(rawBody);
+function verifyMidtransSignature(signature: string, body: any) {
   const sha512 = mod.createHash("sha512");
   sha512.update(
     body.order_id + body.status_code + body.gross_amount + MIDTRANS_SERVER_KEY
@@ -86,86 +85,92 @@ function verifyMidtransSignature(signature: string, rawBody: string) {
 }
 
 async function handleMidtransWebhook(data: any) {
-  const { order_id, transaction_status, transaction_id } = data;
+  try {
+    const { order_id, transaction_status, transaction_id } = data;
 
-  // EVENT:
-  // capture
-  // Transaction is successful and card balance is captured successfully.
-  // settlement
-  // The transaction is successfully settled. Funds have been credited to your account.
-  // pending
-  // The transaction is created and is waiting to be paid by the customer at the payment providers like Bank Transfer, E-Wallet, and so on. For card payment method: waiting for customer to complete (and card issuer to validate) 3DS/OTP process.
-  // deny
-  // The credentials used for payment are rejected by the payment provider or Midtrans Fraud Detection System (FDS).
-  // cancel
-  // The transaction is canceled. It can be triggered by merchant.
-  // expire
-  // Transaction is not available for processing, because the payment was delayed.
-  // failure
-  // Unexpected error occurred during transaction processing.
-  // refund
-  // Transaction is marked to be refunded. Refund status can be triggered by merchant.
-  // partial_refund
-  // Transaction is marked to be refunded partially (if you choose to refund in amount less than the paid amount). Refund status can be triggered by merchant.
-  // authorize
-  // Only available specifically only if you are using pre-authorize feature for card transactions (an advanced feature that you will not have by default, so in most cases are safe to ignore). Transaction is successful and card balance is reserved (authorized) successfully. You can later perform API “capture” to change it into capture, or if no action is taken will be auto released. Depending on your business use case, you may assume authorize status as a successful transaction.
+    // EVENT:
+    // capture
+    // Transaction is successful and card balance is captured successfully.
+    // settlement
+    // The transaction is successfully settled. Funds have been credited to your account.
+    // pending
+    // The transaction is created and is waiting to be paid by the customer at the payment providers like Bank Transfer, E-Wallet, and so on. For card payment method: waiting for customer to complete (and card issuer to validate) 3DS/OTP process.
+    // deny
+    // The credentials used for payment are rejected by the payment provider or Midtrans Fraud Detection System (FDS).
+    // cancel
+    // The transaction is canceled. It can be triggered by merchant.
+    // expire
+    // Transaction is not available for processing, because the payment was delayed.
+    // failure
+    // Unexpected error occurred during transaction processing.
+    // refund
+    // Transaction is marked to be refunded. Refund status can be triggered by merchant.
+    // partial_refund
+    // Transaction is marked to be refunded partially (if you choose to refund in amount less than the paid amount). Refund status can be triggered by merchant.
+    // authorize
+    // Only available specifically only if you are using pre-authorize feature for card transactions (an advanced feature that you will not have by default, so in most cases are safe to ignore). Transaction is successful and card balance is reserved (authorized) successfully. You can later perform API “capture” to change it into capture, or if no action is taken will be auto released. Depending on your business use case, you may assume authorize status as a successful transaction.
 
-  const txStatus = mapMidtransToEnum(transaction_status);
-  const { paymentStatus, orderStatus } = mapTransactionToStatus(txStatus);
+    const txStatus = mapMidtransToEnum(transaction_status);
+    const { paymentStatus, orderStatus } = mapTransactionToStatus(txStatus);
 
-  const { data: gateway } = await paymentSupabaseAdmin
-    .from("payment_gateway")
-    .select("gateway_id")
-    .single();
-
-  if (!gateway) {
-    throw new Error("Payment gateway not found");
-  }
-
-  if (transaction_status === "pending") {
-    const { data: order } = await paymentSupabaseAdmin
-      .from("orders")
-      .select("amount")
-      .eq("order_id", order_id)
+    const { data: gateway } = await paymentSupabaseAdmin
+      .from("payment_gateway")
+      .select("gateway_id")
+      .eq("name", "midtrans")
       .single();
 
-    if (!order) {
-      throw new Error("Order not found");
+    if (!gateway) {
+      throw new Error("Payment gateway not found");
     }
 
-    const { data: payment } = await paymentSupabaseAdmin
-      .from("payments")
-      .insert({
-        gateway_payment_id: transaction_id,
-        order_id,
-        gateway_id: gateway.gateway_id,
-        amount: order.amount,
-        currency: "idr",
-        status: paymentStatus,
+    if (transaction_status === "pending") {
+      const { data: order } = await paymentSupabaseAdmin
+        .from("orders")
+        .select("amount")
+        .eq("order_id", order_id)
+        .single();
+
+      if (!order) {
+        throw new Error("Order not found");
+      }
+
+      const { data: payment } = await paymentSupabaseAdmin
+        .from("payments")
+        .insert({
+          gateway_payment_id: transaction_id,
+          order_id,
+          gateway_id: gateway.gateway_id,
+          amount: order.amount,
+          currency: "idr",
+          status: paymentStatus,
+        })
+        .select()
+        .single();
+
+      if (!payment) {
+        throw new Error("Failed to create payment");
+      }
+
+      await paymentSupabaseAdmin.from("transactions").insert({
+        payment_id: payment.payment_id,
+        gateway_transaction_id: transaction_id,
+        gateway_response: data,
+        status: txStatus,
+      });
+    }
+
+    await paymentSupabaseAdmin
+      .from("transactions")
+      .update({
+        status: txStatus,
+        gateway_response: data,
+        updated_at: new Date(),
       })
-      .select()
-      .single();
-
-    if (!payment) {
-      throw new Error("Failed to create payment");
-    }
-
-    await paymentSupabaseAdmin.from("transactions").insert({
-      payment_id: payment.payment_id,
-      gateway_transaction_id: transaction_id,
-      gateway_response: data,
-      status: txStatus,
-    });
+      .eq("gateway_transaction_id", transaction_id);
+  } catch (error) {
+    console.error("Error handling Midtrans webhook:", error);
+    throw error;
   }
-
-  await paymentSupabaseAdmin
-    .from("transactions")
-    .update({
-      status: txStatus,
-      gateway_response: data,
-      updated_at: new Date(),
-    })
-    .eq("gateway_transaction_id", transaction_id);
 }
 
 export { createSnapMidtrans, verifyMidtransSignature, handleMidtransWebhook };

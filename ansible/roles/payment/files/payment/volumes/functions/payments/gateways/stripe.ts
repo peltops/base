@@ -1,5 +1,9 @@
 import Stripe from "npm:stripe@18.0.0";
 import { paymentSupabaseAdmin } from "../../_shared/paymentSupabase.ts";
+import {
+  mapStripeToEnum,
+  mapTransactionToStatus,
+} from "../helpers/paymentHelper.ts";
 
 const STRIPE_ENVIRONMENT = Deno.env.get("STRIPE_ENVIRONMENT");
 const STRIPE_SANDBOX_SECRET_KEY = Deno.env.get("STRIPE_SANDBOX_SECRET_KEY");
@@ -10,6 +14,8 @@ const STRIPE_SECRET_KEY =
   STRIPE_ENVIRONMENT === "production"
     ? STRIPE_PRODUCTION_SECRET_KEY
     : STRIPE_SANDBOX_SECRET_KEY;
+
+const STRIPE_WEBHOOK_SECRET_KEY = Deno.env.get("STRIPE_WEBHOOK_SECRET_KEY");
 
 const stripe = new Stripe(STRIPE_SECRET_KEY);
 
@@ -47,15 +53,16 @@ async function createStripeIntent({
   }
 }
 
-async function verifyStripeSignature(sig: string, rawBody: string) {
+async function verifyStripeSignature(sig: string, body: any) {
   try {
-    const event = stripe.webhooks.constructEvent(
-      rawBody,
+    const event = await stripe.webhooks.constructEventAsync(
+      body,
       sig,
-      STRIPE_SECRET_KEY
+      STRIPE_WEBHOOK_SECRET_KEY
     );
     return { valid: true, event };
   } catch (err) {
+    console.log(err);
     return { valid: false };
   }
 }
@@ -92,47 +99,61 @@ async function handleStripeWebhook(event: any) {
   // payment_intent.succeeded
   // data.object is a payment intent
   // Occurs when a PaymentIntent has successfully completed payment
-  const data = event.data.object;
-  const orderId = paymentIntent.metadata?.order_id;
+  try {
+    const data = event.data.object;
+    const orderId = data.metadata?.order_id;
 
-  const txStatus = mapStripeToEnum(event.type);
-  const { paymentStatus, orderStatus } = mapTransactionToStatus();
+    const txStatus = mapStripeToEnum(event.type);
+    const { paymentStatus, orderStatus } = mapTransactionToStatus(txStatus);
 
-  const { data: gateway } = await paymentSupabaseAdmin
-    .from("payment_gateway")
-    .select("gateway_id")
-    .single();
-
-  if (event.type === "payment_intent.created") {
-    const { data: payment } = await paymentSupabaseAdmin
-      .from("payments")
-      .insert({
-        gateway_payment_id: data.id,
-        order_id: data.metadata.order_id,
-        gateway_id: gateway.gateway_id,
-        amount: data.amount,
-        currency: data.currency,
-        status: paymentStatus,
-      })
-      .select("payment_id")
+    const { data: gateway } = await paymentSupabaseAdmin
+      .from("payment_gateway")
+      .select("gateway_id")
+      .eq("name", "stripe")
       .single();
 
-    await paymentSupabaseAdmin.from("transactions").insert({
-      payment_id: payment.payment_id,
-      gateway_transaction_id: data.id,
-      gateway_response: data,
-      status: txStatus,
-    });
-  }
+    if (!gateway) {
+      throw new Error("Payment gateway not found");
+    }
 
-  await paymentSupabaseAdmin
-    .from("transactions")
-    .update({
-      status: txStatus,
-      gateway_response: data,
-      updated_at: new Date(),
-    })
-    .eq("gateway_transaction_id", data.id);
+    if (event.type === "payment_intent.created") {
+      const { data: payment } = await paymentSupabaseAdmin
+        .from("payments")
+        .insert({
+          gateway_payment_id: data.id,
+          order_id: data.metadata.order_id,
+          gateway_id: gateway.gateway_id,
+          amount: data.amount,
+          currency: data.currency,
+          status: paymentStatus,
+        })
+        .select("payment_id")
+        .single();
+
+      if (!payment) {
+        throw new Error("Failed to create payment");
+      }
+
+      await paymentSupabaseAdmin.from("transactions").insert({
+        payment_id: payment.payment_id,
+        gateway_transaction_id: data.id,
+        gateway_response: data,
+        status: txStatus,
+      });
+    }
+
+    await paymentSupabaseAdmin
+      .from("transactions")
+      .update({
+        status: txStatus,
+        gateway_response: data,
+        updated_at: new Date(),
+      })
+      .eq("gateway_transaction_id", data.id);
+  } catch (error) {
+    console.error("Error handling Stripe webhook:", error);
+    throw error;
+  }
 }
 
 export { createStripeIntent, verifyStripeSignature, handleStripeWebhook };
