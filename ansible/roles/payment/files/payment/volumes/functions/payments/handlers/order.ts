@@ -1,11 +1,12 @@
 import { paymentSupabaseAdmin } from "../../_shared/paymentSupabase.ts";
 import { getAuthToken } from "../../_shared/jwtHelper.ts";
 import { eImunisasiSupabaseAdmin } from "../../_shared/eimunisasiSupabase.ts";
+import { Context } from "jsr:@hono/hono";
 
 export const handleOrderStatus = async (c: Context) => {
   const orderId = c.req.param("order_id");
+  
   // get the customer details from jwt token
-
   const authorization = c.req.header("Authorization");
   if (!authorization) {
     return c.json(
@@ -56,7 +57,7 @@ export const handleOrderStatus = async (c: Context) => {
     console.error(error);
     let message =
       "Sorry, we are unable to process your payment at this time. Please try again later.";
-    let status = 500;
+    let status: 404 | 500 = 500;
     if (error.code === "PGRST116") {
       message = "Order not found";
       status = 404;
@@ -69,8 +70,5 @@ export const handleOrderStatus = async (c: Context) => {
       status
     );
   }
-  return c.json({
-    is_successful: true,
-    data: data,
-  });
+  return c.json(data);
 };

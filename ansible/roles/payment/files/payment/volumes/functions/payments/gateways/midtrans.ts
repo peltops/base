@@ -42,7 +42,7 @@ async function createSnapMidtrans({
   orderId: string;
   totalAmount: number;
   customerName: string;
-  customerEmail: string;
+  customerEmail?: string;
 }): Promise<CreatePaymentResponse> {
   const parameter = {
     transaction_details: {
@@ -75,15 +75,30 @@ async function createSnapMidtrans({
   }
 }
 
-function verifyMidtransSignature(signature: string, body: any) {
+function verifyMidtransSignature({
+  signature,
+  body,
+}: {
+  signature: string;
+  body: {
+    order_id: string;
+    status_code: string;
+    gross_amount: string;
+    server_key?: string;
+  };
+}) {
   const sha512 = mod.createHash("sha512");
   sha512.update(
-    body.order_id + body.status_code + body.gross_amount + MIDTRANS_SERVER_KEY
+    body.order_id +
+      body.status_code +
+      body.gross_amount +
+      (body.server_key || MIDTRANS_SERVER_KEY)
   );
   const expected = sha512.digest("hex");
   return signature === expected;
 }
 
+// deno-lint-ignore no-explicit-any
 async function handleMidtransWebhook(data: any) {
   try {
     const { order_id, transaction_status, transaction_id } = data;
@@ -111,7 +126,7 @@ async function handleMidtransWebhook(data: any) {
     // Only available specifically only if you are using pre-authorize feature for card transactions (an advanced feature that you will not have by default, so in most cases are safe to ignore). Transaction is successful and card balance is reserved (authorized) successfully. You can later perform API “capture” to change it into capture, or if no action is taken will be auto released. Depending on your business use case, you may assume authorize status as a successful transaction.
 
     const txStatus = mapMidtransToEnum(transaction_status);
-    const { paymentStatus, orderStatus } = mapTransactionToStatus(txStatus);
+    const { paymentStatus } = mapTransactionToStatus(txStatus);
 
     const { data: gateway } = await paymentSupabaseAdmin
       .from("payment_gateway")

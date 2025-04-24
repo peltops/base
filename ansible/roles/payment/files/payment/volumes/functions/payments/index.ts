@@ -3,7 +3,7 @@ import { handleInitiate } from "./handlers/initiate.ts";
 import { handleTransaction } from "./handlers/transaction.ts";
 import { handleOrderStatus } from "./handlers/order.ts";
 import { handleWebhook } from "./handlers/webhook.ts";
-import { logger } from 'jsr:@hono/logger';
+import { logger } from "jsr:@hono/hono/logger";
 
 const functionName = "payments";
 const app = new Hono().basePath(`/${functionName}`);
