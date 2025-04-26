@@ -4,6 +4,7 @@ import {
   mapStripeToEnum,
   mapTransactionToStatus,
 } from "../helpers/paymentHelper.ts";
+import { CreatePaymentResponse } from "../../_shared/types/createPaymentResponse.ts";
 
 const STRIPE_ENVIRONMENT = Deno.env.get("STRIPE_ENVIRONMENT");
 const STRIPE_SANDBOX_SECRET_KEY = Deno.env.get("STRIPE_SANDBOX_SECRET_KEY");
@@ -15,6 +16,10 @@ const STRIPE_SECRET_KEY =
     ? STRIPE_PRODUCTION_SECRET_KEY
     : STRIPE_SANDBOX_SECRET_KEY;
 
+if (!STRIPE_SECRET_KEY) {
+  throw new Error("STRIPE_SECRET_KEY is not defined");
+}
+
 const STRIPE_WEBHOOK_SECRET_KEY = Deno.env.get("STRIPE_WEBHOOK_SECRET_KEY");
 
 const stripe = new Stripe(STRIPE_SECRET_KEY);
@@ -23,6 +28,7 @@ async function createStripeIntent({
   orderId,
   amount,
   currency,
+  // deno-lint-ignore no-unused-vars
   customerId,
 }: {
   orderId: string;
@@ -42,8 +48,8 @@ async function createStripeIntent({
     const response: CreatePaymentResponse = {
       order_id: orderId,
       gateway: "stripe",
-      redirect_url: null,
-      token: paymentIntent.client_secret,
+      redirect_url: undefined,
+      token: paymentIntent.client_secret || undefined,
     };
 
     return response;
@@ -53,12 +59,13 @@ async function createStripeIntent({
   }
 }
 
+// deno-lint-ignore no-explicit-any
 async function verifyStripeSignature(sig: string, body: any) {
   try {
     const event = await stripe.webhooks.constructEventAsync(
       body,
       sig,
-      STRIPE_WEBHOOK_SECRET_KEY
+      STRIPE_WEBHOOK_SECRET_KEY || "",
     );
     return { valid: true, event };
   } catch (err) {
@@ -67,6 +74,7 @@ async function verifyStripeSignature(sig: string, body: any) {
   }
 }
 
+// deno-lint-ignore no-explicit-any
 async function handleStripeWebhook(event: any) {
   // payment_intent.amount_capturable_updated
   // data.object is a payment intent
@@ -99,11 +107,12 @@ async function handleStripeWebhook(event: any) {
   // payment_intent.succeeded
   // data.object is a payment intent
   // Occurs when a PaymentIntent has successfully completed payment
-  const data = event.data.object;
-  const orderId = data.metadata?.order_id;
+  try {
+    const data = event.data.object;
+    const orderId = data.metadata?.order_id;
 
-  const txStatus = mapStripeToEnum(event.type);
-  const { paymentStatus, orderStatus } = mapTransactionToStatus(txStatus);
+    const txStatus = mapStripeToEnum(event.type);
+    const { paymentStatus } = mapTransactionToStatus(txStatus);
 
     const { data: gateway } = await paymentSupabaseAdmin
       .from("payment_gateway")
@@ -120,7 +129,7 @@ async function handleStripeWebhook(event: any) {
         .from("payments")
         .insert({
           gateway_payment_id: data.id,
-          order_id: data.metadata.order_id,
+          order_id: orderId,
           gateway_id: gateway.gateway_id,
           amount: data.amount,
           currency: data.currency,

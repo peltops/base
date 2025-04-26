@@ -1,11 +1,7 @@
 import { Context } from "jsr:@hono/hono";
-import { SupabaseClient } from "jsr:@supabase/supabase-js@2";
 import { eImunisasiSupabaseAdmin } from "../../_shared/eimunisasiSupabase.ts";
 import { paymentSupabaseAdmin } from "../../_shared/paymentSupabase.ts";
 import { getAuthToken } from "../../_shared/jwtHelper.ts";
-import { Hono } from "jsr:@hono/hono";
-import { v4 } from "https://deno.land/std@0.200.0/uuid/mod.ts";
-import { CreatePaymentResponse } from "../../_shared/types/createPaymentResponse.ts";
 import { createStripeIntent } from "../gateways/stripe.ts";
 import { createSnapMidtrans } from "../gateways/midtrans.ts";
 
@@ -37,6 +33,7 @@ async function rollbackOrder(orderId: string, maxRetries = 3) {
   }
 }
 
+// deno-lint-ignore no-explicit-any
 async function validateProducts(products: any[]): Promise<boolean> {
   const productIds = products.map((e) => e.id);
   const { data, error } = await paymentSupabaseAdmin
@@ -52,6 +49,7 @@ async function validateProducts(products: any[]): Promise<boolean> {
   return data.length > 0;
 }
 
+// deno-lint-ignore no-explicit-any
 function validateBody(body: any): string | null {
   if (!body) {
     return "Invalid request body";
@@ -149,7 +147,7 @@ export const handleInitiate = async (c: Context) => {
     const { name } = user_metadata;
 
     // get the amount from the items
-    const productIds = items.map((e) => e.id);
+    const productIds = items.map((e: { id: string }) => e.id);
     const { data: itemsData, error: itemsError } = await paymentSupabaseAdmin
       .from("products")
       .select("price, product_id")
@@ -159,13 +157,16 @@ export const handleInitiate = async (c: Context) => {
       throw itemsError;
     }
 
-    const totalAmount = itemsData.reduce((acc: number, item: any) => {
-      const matchingItem = items.find(
-        (orderItem) => orderItem.id === item.product_id
-      );
-      const quantity = matchingItem?.quantity || 1;
-      return acc + item.price * quantity;
-    }, 0);
+    const totalAmount = itemsData.reduce(
+      (acc: number, item: { price: number; product_id: string }) => {
+        const matchingItem = items.find(
+          (orderItem: { id: string }) => orderItem.id === item.product_id
+        );
+        const quantity = matchingItem?.quantity || 1;
+        return acc + item.price * quantity;
+      },
+      0
+    );
 
     // insert order to database
     const { data: orderData, error: orderError } = await paymentSupabaseAdmin
@@ -185,19 +186,21 @@ export const handleInitiate = async (c: Context) => {
     }
 
     // insert order items to database
-    const orderItems = itemsData.map((item: any) => {
-      const matchingItem = items.find(
-        (orderItem) => orderItem.id === item.product_id
-      );
+    const orderItems = itemsData.map(
+      (item: { product_id: string; price: number }) => {
+        const matchingItem = items.find(
+          (orderItem: { id: string }) => orderItem.id === item.product_id
+        );
 
-      return {
-        order_id: orderData.order_id,
-        product_id: item.product_id,
-        quantity: matchingItem?.quantity || 1,
-        price: item.price,
-        created_at: new Date(),
-      };
-    });
+        return {
+          order_id: orderData.order_id,
+          product_id: item.product_id,
+          quantity: matchingItem?.quantity || 1,
+          price: item.price,
+          created_at: new Date(),
+        };
+      }
+    );
 
     const { error: orderItemsError } = await paymentSupabaseAdmin
       .from("order_items")
@@ -240,7 +243,7 @@ export const handleInitiate = async (c: Context) => {
     return c.json({
       is_successful: true,
       message: "Payment initiated successfully",
-      data: response,
+      ...response,
     });
   } catch (error) {
     console.error(error);

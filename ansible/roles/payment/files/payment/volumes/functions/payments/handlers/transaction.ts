@@ -1,6 +1,7 @@
 import { paymentSupabaseAdmin } from "../../_shared/paymentSupabase.ts";
 import { getAuthToken } from "../../_shared/jwtHelper.ts";
 import { eImunisasiSupabaseAdmin } from "../../_shared/eimunisasiSupabase.ts";
+import { Context } from "jsr:@hono/hono";
 
 export const handleTransaction = async (c: Context) => {
   const txId = c.req.param("transaction_id");
@@ -46,7 +47,7 @@ export const handleTransaction = async (c: Context) => {
     .eq("transaction_id", txId)
     .single();
 
-  const { count, errorCount } = await paymentSupabaseAdmin
+  const { count, error: errorCount } = await paymentSupabaseAdmin
     .from("orders")
     .select("*", { count: "exact", head: true })
     .eq("order_id", data?.payment?.order_id)
@@ -58,17 +59,17 @@ export const handleTransaction = async (c: Context) => {
   }
 
   if (count === 0) {
-    throw new {
+    throw {
       code: "PGRST116",
       message: "Transaction not found",
-    }();
+    };
   }
 
   if (error) {
     console.log(error);
     let message =
       "Sorry, we are unable to process this request at this time. Please try again later.";
-    let status = 500;
+    let status: 404 | 500 = 500;
     if (error.code === "PGRST116") {
       message = "Transaction not found";
       status = 404;
@@ -83,6 +84,6 @@ export const handleTransaction = async (c: Context) => {
   }
   return c.json({
     is_successful: true,
-    data: data,
+    data,
   });
 };

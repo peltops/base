@@ -7,7 +7,6 @@ import {
   verifyStripeSignature,
   handleStripeWebhook,
 } from "../gateways/stripe.ts";
-import { Buffer } from "node:buffer";
 
 export const handleWebhook = async (c: Context) => {
   try {
@@ -17,7 +16,12 @@ export const handleWebhook = async (c: Context) => {
     // Detect webhook source
     const midtransSignatureKey = jsonBody?.signature_key;
     if (midtransSignatureKey) {
-      if (!verifyMidtransSignature(midtransSignatureKey, jsonBody)) {
+      if (
+        !verifyMidtransSignature({
+          signature: midtransSignatureKey,
+          body: jsonBody,
+        })
+      ) {
         console.error("Invalid Midtrans signature");
         return c.json({ error: "Invalid Midtrans signature" }, 403);
       }
