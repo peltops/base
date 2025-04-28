@@ -65,7 +65,7 @@ async function verifyStripeSignature(sig: string, body: any) {
     const event = await stripe.webhooks.constructEventAsync(
       body,
       sig,
-      STRIPE_WEBHOOK_SECRET_KEY || "",
+      STRIPE_WEBHOOK_SECRET_KEY || ""
     );
     return { valid: true, event };
   } catch (err) {
@@ -125,14 +125,25 @@ async function handleStripeWebhook(event: any) {
     }
 
     if (event.type === "payment_intent.created") {
+      const { data: order, error: errorOrder } = await paymentSupabaseAdmin
+        .from("orders")
+        .select("total_amount")
+        .eq("order_id", orderId)
+        .single();
+
+      if (errorOrder) {
+        console.error(errorOrder);
+        throw new Error("Order not found");
+      }
+
       const { data: payment } = await paymentSupabaseAdmin
         .from("payments")
         .insert({
           gateway_payment_id: data.id,
           order_id: orderId,
           gateway_id: gateway.gateway_id,
-          amount: data.amount,
-          currency: data.currency,
+          amount: order.total_amount,
+          currency: data.currency.toLowerCase(),
           status: paymentStatus,
         })
         .select("payment_id")

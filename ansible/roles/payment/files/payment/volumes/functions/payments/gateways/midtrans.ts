@@ -101,8 +101,7 @@ function verifyMidtransSignature({
 // deno-lint-ignore no-explicit-any
 async function handleMidtransWebhook(data: any) {
   try {
-    const { order_id, transaction_status, transaction_id } = data;
-
+    const { order_id, transaction_status, transaction_id, currency } = data;
     // EVENT:
     // capture
     // Transaction is successful and card balance is captured successfully.
@@ -139,30 +138,32 @@ async function handleMidtransWebhook(data: any) {
     }
 
     if (transaction_status === "pending") {
-      const { data: order } = await paymentSupabaseAdmin
+      const { data: order, error: errorOrder } = await paymentSupabaseAdmin
         .from("orders")
-        .select("amount")
+        .select("total_amount")
         .eq("order_id", order_id)
         .single();
 
-      if (!order) {
+      if (errorOrder) {
+        console.error(errorOrder);
         throw new Error("Order not found");
       }
 
-      const { data: payment } = await paymentSupabaseAdmin
+      const { data: payment, error: errorPayment } = await paymentSupabaseAdmin
         .from("payments")
         .insert({
           gateway_payment_id: transaction_id,
           order_id,
           gateway_id: gateway.gateway_id,
-          amount: order.amount,
-          currency: "idr",
+          amount: order.total_amount,
+          currency: currency.toLowerCase(),
           status: paymentStatus,
         })
         .select()
         .single();
 
-      if (!payment) {
+      if (errorPayment) {
+        console.error(errorPayment);
         throw new Error("Failed to create payment");
       }
 

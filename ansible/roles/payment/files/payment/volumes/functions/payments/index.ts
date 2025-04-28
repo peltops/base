@@ -13,7 +13,7 @@ app.use(logger());
 app.post("/initiate", handleInitiate);
 app.get("/order/:order_id", handleOrderStatus);
 app.get("/transaction/:transaction_id", handleTransaction);
-app.post("/webhook", handleWebhook);
+app.post("/webhook/:payment_gateway", handleWebhook);
 
 // HANDLE 404
 app.notFound((c) => {
