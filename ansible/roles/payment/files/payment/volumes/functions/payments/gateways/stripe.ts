@@ -37,8 +37,9 @@ async function createStripeIntent({
   customerId: string;
 }): Promise<CreatePaymentResponse> {
   try {
+    const amountInCents = amount * 100; // Stripe requires amount in cents
     const paymentIntent = await stripe.paymentIntents.create({
-      amount,
+      amount: amountInCents,
       currency,
       metadata: {
         order_id: orderId,
