@@ -84,6 +84,7 @@ export const handleTransaction = async (c: Context) => {
   }
   return c.json({
     is_successful: true,
-    data,
+    message: "Transaction found",
+    data: data,
   });
 };

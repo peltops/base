@@ -5,7 +5,7 @@ import { Context } from "jsr:@hono/hono";
 
 export const handleOrderStatus = async (c: Context) => {
   const orderId = c.req.param("order_id");
-  
+
   // get the customer details from jwt token
   const authorization = c.req.header("Authorization");
   if (!authorization) {
@@ -70,5 +70,12 @@ export const handleOrderStatus = async (c: Context) => {
       status
     );
   }
-  return c.json(data);
+  return c.json(
+    {
+      is_successful: true,
+      message: "Order found",
+      data,
+    },
+    200
+  );
 };
