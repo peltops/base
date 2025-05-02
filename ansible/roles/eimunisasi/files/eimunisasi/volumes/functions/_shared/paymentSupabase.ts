@@ -16,4 +16,25 @@ const paymentSupabaseClient = (header: any) =>
     global: { headers: header },
   });
 
-export { paymentSupabaseAdmin, paymentSupabaseClient };
+const getBookingProduct = async () => {
+  const { data: bookingProduct, error: bookingProductError } =
+    await paymentSupabaseAdmin
+      .from("products")
+      .select(
+        `
+            product_id,
+            name,
+            price
+          `
+      )
+      .eq("product_id", "4cf70de1-35d6-4794-a249-9b79c328f086")
+      .limit(1)
+      .single();
+
+  if (bookingProductError) {
+    throw bookingProductError;
+  }
+  return bookingProduct;
+};
+
+export { paymentSupabaseAdmin, paymentSupabaseClient, getBookingProduct };
