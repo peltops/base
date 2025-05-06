@@ -1,5 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { enakesSupabaseAdmin } from "../_shared/enakesSupabase.ts";
+import { getBookingProduct, paymentSupabaseAdmin } from "../_shared/paymentSupabase.ts";
 
 Deno.serve(async (req) => {
   const url = new URL(req.url);
@@ -20,6 +21,8 @@ Deno.serve(async (req) => {
     if (countError) {
       throw countError;
     }
+
+    const bookingProduct = await getBookingProduct();
 
     const { data, error } = await client
       .from("profiles")
@@ -44,9 +47,14 @@ Deno.serve(async (req) => {
     if (error) {
       throw error;
     }
-
+    const result = data.map((item) => {
+      return {
+        ...item,
+        booking_fee: bookingProduct.price,
+      };
+    });
     const response = JSON.stringify({
-      data,
+      data: result,
       metadata: {
         page: Number(page),
         pageSize: Number(pageSize),
