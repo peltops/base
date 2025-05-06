@@ -240,6 +240,27 @@ export const handleInitiate = async (c: Context) => {
         throw error;
       }
     }
+    // update order "gateway_response" with the response from the payment gateway
+    const { error: updateOrderError } = await paymentSupabaseAdmin
+      .from("orders")
+      .update({
+        gateway_response: response,
+        updated_at: new Date(),
+      })
+      .eq("order_id", orderId);
+
+    if (updateOrderError) {
+      await rollbackOrder(orderData.order_id);
+      console.error("Error updating order:", updateOrderError);
+      return c.json(
+        {
+          is_successful: false,
+          message: "Failed to update order",
+        },
+        500
+      );
+    }
+    
     return c.json({
       is_successful: true,
       message: "Payment initiated successfully",

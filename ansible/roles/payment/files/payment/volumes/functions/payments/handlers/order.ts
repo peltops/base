@@ -41,6 +41,7 @@ export const handleOrderStatus = async (c: Context) => {
       total_amount,
       created_at,
       updated_at,
+      gateway_response,
       order_items (
         order_item_id,
         product:products (product_id,name),
