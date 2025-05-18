@@ -57,6 +57,11 @@ async function createSnapMidtrans({
     credit_card: {
       secure: true,
     },
+    callbacks: {
+      finish: "https://eimunisasi-app.peltops.com/payment/midtrans/finish",
+      unfinish: "https://eimunisasi-app.peltops.com/payment/midtrans/unfinish",
+      error: "https://eimunisasi-app.peltops.com/payment/midtrans/error",
+    },
   };
 
   try {
