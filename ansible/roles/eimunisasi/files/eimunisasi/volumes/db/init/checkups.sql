@@ -1,9 +1,9 @@
 create table
 public.checkups (
 id uuid not null default gen_random_uuid (),
-child_id uuid null default gen_random_uuid (),
+child_id uuid null,
 parent_id uuid null default uid (),
-inspector_id uuid null default gen_random_uuid (),
+inspector_id uuid null,
 weight numeric not null,
 head_circumference numeric not null,
 height numeric not null,
