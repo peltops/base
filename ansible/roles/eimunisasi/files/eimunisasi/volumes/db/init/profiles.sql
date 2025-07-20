@@ -36,8 +36,6 @@ on "public"."profiles"
 to authenticated, service_role
 using (
   (( SELECT uid() AS uid) = user_id)
-  or
-  (( SELECT uid() AS uid) = id)
 );
 
 CREATE policy "Enable select for authenticated and service role users only"

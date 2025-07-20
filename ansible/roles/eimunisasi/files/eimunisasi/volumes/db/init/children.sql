@@ -36,8 +36,6 @@ on "public"."children"
 to authenticated, service_role
 using (
   (( SELECT uid() AS uid) = parent_id)
-  or
-  (( SELECT uid() AS uid) = id)
 );
 
 CREATE policy "Enable select for children based on parent_id"
