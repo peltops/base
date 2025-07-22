@@ -1,3 +1,4 @@
+-- migrate:up
 --
 -- PostgreSQL database dump
 --
@@ -656,3 +657,29 @@ ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON T
 -- PostgreSQL database dump complete
 --
 
+-- migrate:down
+DROP TABLE IF EXISTS public.blog_tags CASCADE;
+DROP TABLE IF EXISTS public.blogs CASCADE;
+DROP TABLE IF EXISTS public.calendars CASCADE;
+DROP TABLE IF EXISTS public.clinic_schedules CASCADE;
+DROP TABLE IF EXISTS public.clinics CASCADE;
+DROP TABLE IF EXISTS public.days CASCADE;
+DROP SEQUENCE IF EXISTS public.days_id_seq CASCADE;
+DROP TABLE IF EXISTS public.hospitals CASCADE;
+DROP TABLE IF EXISTS public.notifications CASCADE;
+DROP TABLE IF EXISTS public.practice_schedules CASCADE;
+DROP TABLE IF EXISTS public.profiles CASCADE;
+DROP FUNCTION IF EXISTS public.handle_new_user() CASCADE;
+DROP POLICY IF EXISTS "Enable delete for users based on user_id" ON public.calendars CASCADE;
+DROP POLICY IF EXISTS "Enable insert for users based on user_id" ON public.calendars CASCADE;
+DROP POLICY IF EXISTS "Enable read access for authenticated same user_id" ON public.calendars CASCADE;
+DROP POLICY IF EXISTS "Enable update for users based on user_id" ON public.calendars CASCADE;
+DROP POLICY IF EXISTS select_days_policy ON public.days CASCADE;
+ALTER TABLE public.blog_tags DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.blogs DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.calendars DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.days DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.hospitals DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.notifications DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.practice_schedules DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.profiles DISABLE ROW LEVEL SECURITY; 
