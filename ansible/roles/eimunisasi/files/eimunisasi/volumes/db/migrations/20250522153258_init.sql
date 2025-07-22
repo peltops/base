@@ -1,4 +1,61 @@
 -- migrate:up
+--
+-- Name: blood_type; Type: TYPE; Schema: public; Owner: supabase_admin
+--
+
+CREATE TYPE public.blood_type AS ENUM (
+    'A',
+    'B',
+    'AB',
+    'O'
+);
+
+
+ALTER TYPE public.blood_type OWNER TO supabase_admin;
+
+--
+-- Name: gender_type; Type: TYPE; Schema: public; Owner: supabase_admin
+--
+
+CREATE TYPE public.gender_type AS ENUM (
+    'MALE',
+    'FEMALE'
+);
+
+
+ALTER TYPE public.gender_type OWNER TO supabase_admin;
+
+--
+-- Name: handle_new_user(); Type: FUNCTION; Schema: public; Owner: supabase_admin
+--
+
+CREATE FUNCTION public.handle_new_user() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$begin
+  insert into public.profiles (user_id, avatar_url)
+  values (new.id, new.raw_user_meta_data->>'avatar_url');
+  return new;
+end;$$;
+
+
+ALTER FUNCTION public.handle_new_user() OWNER TO supabase_admin;
+
+--
+-- Name: handle_new_user_2(); Type: FUNCTION; Schema: public; Owner: supabase_admin
+--
+
+CREATE FUNCTION public.handle_new_user_2() RETURNS trigger
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $$BEGIN
+  IF NOT EXISTS (SELECT 1 FROM public.profiles WHERE user_id = new.id) THEN
+    INSERT INTO public.profiles (user_id, avatar_url, father_name)
+    VALUES (new.id, new.raw_user_meta_data->>'avatar_url', new.raw_user_meta_data->>'full_name');
+  END IF;
+  RETURN new;
+END;$$;
+
+ALTER FUNCTION public.handle_new_user_2() OWNER TO supabase_admin;
+
 create table
   public.appointments (
     id uuid not null default gen_random_uuid (),
