@@ -6,3 +6,6 @@
 
 - name: deploy apps
   include_tasks: apps.yaml
+
+- name: Run seeds script
+  ansible.builtin.shell: docker exec payment-db /bin/sh -c 'sh /run_seeds.sh'
