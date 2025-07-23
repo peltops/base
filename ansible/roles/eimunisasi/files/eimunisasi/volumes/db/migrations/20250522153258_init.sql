@@ -288,6 +288,29 @@ using (
 );
 
 -- migrate:down
+DROP POLICY IF EXISTS all_rls_appointments ON public.appointments CASCADE;
+DROP POLICY IF EXISTS all_rls_blog_tags ON public.blog_tags CASCADE;
+DROP POLICY IF EXISTS all_rls_blogs ON public.blogs CASCADE;
+DROP POLICY IF EXISTS all_rls_calendars ON public.calendars CASCADE;
+DROP POLICY IF EXISTS all_rls_checkups ON public.checkups CASCADE;
+DROP POLICY IF EXISTS all_rls_notifications ON public.notifications CASCADE;
+DROP POLICY IF EXISTS "Enable delete for children based on parent_id" ON public.children CASCADE;
+DROP POLICY IF EXISTS "Enable insert for children based on parent_id" ON public.children CASCADE;
+DROP POLICY IF EXISTS "Enable update for children based on parent_id" ON public.children CASCADE;
+DROP POLICY IF EXISTS "Enable select for children based on parent_id" ON public.children CASCADE;
+DROP POLICY IF EXISTS "Enable insert for authenticated users only" ON public.profiles CASCADE;
+DROP POLICY IF EXISTS "Enable update for authenticated users only" ON public.profiles CASCADE;
+DROP POLICY IF EXISTS "Enable select for authenticated and service role users only" ON public.profiles CASCADE;
+
+ALTER TABLE public.appointments DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.blog_tags DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.blogs DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.calendars DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.checkups DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.children DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.notifications DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.profiles DISABLE ROW LEVEL SECURITY;
+
 DROP TABLE IF EXISTS public.appointments CASCADE;
 DROP TABLE IF EXISTS public.blog_tags CASCADE;
 DROP TABLE IF EXISTS public.blogs CASCADE;
@@ -296,3 +319,9 @@ DROP TABLE IF EXISTS public.checkups CASCADE;
 DROP TABLE IF EXISTS public.children CASCADE;
 DROP TABLE IF EXISTS public.notifications CASCADE;
 DROP TABLE IF EXISTS public.profiles CASCADE;
+
+DROP FUNCTION IF EXISTS public.handle_new_user() CASCADE;
+DROP FUNCTION IF EXISTS public.handle_new_user_2() CASCADE;
+
+DROP TYPE IF EXISTS public.blood_type CASCADE;
+DROP TYPE IF EXISTS public.gender_type CASCADE;
