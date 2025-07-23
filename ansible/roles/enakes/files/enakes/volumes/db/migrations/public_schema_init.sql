@@ -457,10 +457,106 @@ ALTER TABLE public.hospitals ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
 
 --
+-- Name: clinic_schedules; Type: ROW SECURITY; Schema: public; Owner: supabase_admin
+--
+
+ALTER TABLE public.clinic_schedules ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: clinics; Type: ROW SECURITY; Schema: public; Owner: supabase_admin
+--
+
+ALTER TABLE public.clinics ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: practice_schedules; Type: ROW SECURITY; Schema: public; Owner: supabase_admin
+--
+
+ALTER TABLE public.practice_schedules ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: profiles; Type: ROW SECURITY; Schema: public; Owner: supabase_admin
+--
+
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+
+--
 -- Name: days select_days_policy; Type: POLICY; Schema: public; Owner: supabase_admin
 --
 
 CREATE POLICY select_days_policy ON public.days FOR SELECT TO authenticated USING (true);
+
+--
+-- Name: blog_tags all_rls_blog_tags; Type: POLICY; Schema: public; Owner: supabase_admin
+--
+
+CREATE POLICY all_rls_blog_tags
+ON public.blog_tags
+to authenticated, service_role
+USING (true);
+
+--
+-- Name: blogs all_rls_blogs; Type: POLICY; Schema: public; Owner: supabase_admin
+--
+
+CREATE POLICY all_rls_blogs
+ON public.blogs
+to authenticated, service_role
+USING (true);
+
+--
+-- Name: clinic_schedules all_rls_clinic_schedules; Type: POLICY; Schema: public; Owner: supabase_admin
+--
+
+CREATE POLICY all_rls_clinic_schedules
+ON public.clinic_schedules
+to authenticated, service_role
+USING (true);
+
+--
+-- Name: clinics all_rls_clinics; Type: POLICY; Schema: public; Owner: supabase_admin
+--
+
+CREATE POLICY all_rls_clinics
+ON public.clinics
+to authenticated, service_role
+USING (true);
+
+--
+-- Name: hospitals all_rls_hospitals; Type: POLICY; Schema: public; Owner: supabase_admin
+--
+
+CREATE POLICY all_rls_hospitals
+ON public.hospitals
+to authenticated, service_role
+USING (true);
+
+--
+-- Name: notifications all_rls_notifications; Type: POLICY; Schema: public; Owner: supabase_admin
+--
+
+CREATE POLICY all_rls_notifications
+ON public.notifications
+to authenticated, service_role
+USING (true);
+
+--
+-- Name: practice_schedules all_rls_practice_schedules; Type: POLICY; Schema: public; Owner: supabase_admin
+--
+
+CREATE POLICY all_rls_practice_schedules
+ON public.practice_schedules
+to authenticated, service_role
+USING (true);
+
+--
+-- Name: profiles all_rls_profiles; Type: POLICY; Schema: public; Owner: supabase_admin
+--
+
+CREATE POLICY all_rls_profiles
+ON public.profiles
+to authenticated, service_role
+USING (true);
 
 
 --
@@ -675,9 +771,19 @@ DROP POLICY IF EXISTS "Enable insert for users based on user_id" ON public.calen
 DROP POLICY IF EXISTS "Enable read access for authenticated same user_id" ON public.calendars CASCADE;
 DROP POLICY IF EXISTS "Enable update for users based on user_id" ON public.calendars CASCADE;
 DROP POLICY IF EXISTS select_days_policy ON public.days CASCADE;
+DROP POLICY IF EXISTS all_rls_blog_tags ON public.blog_tags CASCADE;
+DROP POLICY IF EXISTS all_rls_blogs ON public.blogs CASCADE;
+DROP POLICY IF EXISTS all_rls_clinic_schedules ON public.clinic_schedules CASCADE;
+DROP POLICY IF EXISTS all_rls_clinics ON public.clinics CASCADE;
+DROP POLICY IF EXISTS all_rls_hospitals ON public.hospitals CASCADE;
+DROP POLICY IF EXISTS all_rls_notifications ON public.notifications CASCADE;
+DROP POLICY IF EXISTS all_rls_practice_schedules ON public.practice_schedules CASCADE;
+DROP POLICY IF EXISTS all_rls_profiles ON public.profiles CASCADE;
 ALTER TABLE public.blog_tags DISABLE ROW LEVEL SECURITY;
 ALTER TABLE public.blogs DISABLE ROW LEVEL SECURITY;
 ALTER TABLE public.calendars DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.clinic_schedules DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.clinics DISABLE ROW LEVEL SECURITY;
 ALTER TABLE public.days DISABLE ROW LEVEL SECURITY;
 ALTER TABLE public.hospitals DISABLE ROW LEVEL SECURITY;
 ALTER TABLE public.notifications DISABLE ROW LEVEL SECURITY;
