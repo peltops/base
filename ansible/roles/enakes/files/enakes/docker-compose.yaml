@@ -437,7 +437,7 @@ services:
 
   dbmate:
     image: amacneil/dbmate:latest
-    container_name: payment-dbmate
+    container_name: enakes-dbmate
     restart: always
     depends_on:
       db:
