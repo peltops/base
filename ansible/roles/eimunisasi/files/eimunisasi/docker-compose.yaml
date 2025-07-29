@@ -440,7 +440,7 @@ services:
 
   dbmate:
     image: amacneil/dbmate:latest
-    container_name: payment-dbmate
+    container_name: eimunisasi-dbmate
     restart: always
     depends_on:
       db:
