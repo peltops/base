@@ -38,7 +38,7 @@ end;$$;
 -- Name: handle_new_user_2(); Type: FUNCTION; Schema: public;
 --
 
-CREATE FUNCTION public.handle_new_user_2() RETURNS trigger
+CREATE OR REPLACE FUNCTION public.handle_new_user_2() RETURNS trigger
     LANGUAGE plpgsql SECURITY DEFINER
     AS $$BEGIN
   IF NOT EXISTS (SELECT 1 FROM public.profiles WHERE user_id = new.id) THEN
@@ -49,6 +49,101 @@ CREATE FUNCTION public.handle_new_user_2() RETURNS trigger
 END;$$;
 
 create table
+public.profiles (
+id uuid not null default gen_random_uuid (),
+updated_at timestamp with time zone null,
+avatar_url text null,
+place_of_birth character varying null,
+date_of_birth date null,
+no_induk_kependudukan character varying null,
+no_kartu_keluarga character varying null,
+address text null,
+father_name character varying null,
+mother_name character varying null,
+father_blood_type public.blood_type null,
+mother_blood_type public.blood_type null,
+father_phone_number character varying null,
+mother_phone_number character varying null,
+father_job character varying null,
+mother_job character varying null,
+user_id uuid null default uid (),
+constraint profiles_pkey primary key (id),
+constraint profiles_user_id_key unique (user_id),
+constraint profiles_user_id_fkey foreign key (user_id) references auth.users (id) on update cascade on delete set null
+) tablespace pg_default;
+
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+
+CREATE policy "Enable insert for authenticated users only"
+on "public"."profiles"
+to authenticated, service_role
+with check (
+  true
+);
+
+CREATE policy "Enable update for authenticated users only"
+on "public"."profiles"
+to authenticated, service_role
+using (
+  (( SELECT uid() AS uid) = user_id)
+);
+
+CREATE policy "Enable select for authenticated and service role users only"
+on "public"."profiles"
+to authenticated, service_role
+using (
+    true
+);
+
+create table
+  public.children (
+    id uuid not null default gen_random_uuid (),
+    created_at timestamp with time zone not null default now(),
+    parent_id uuid null default uid (),
+    nik character varying null,
+    name character varying not null,
+    blood_type public.blood_type null,
+    gender public.gender_type null,
+    avatar_url text null,
+    date_of_birth date not null,
+    place_of_birth character varying null,
+    constraint children_pkey primary key (id),
+    constraint children_nik_key unique (nik),
+    constraint children_parent_id_fkey foreign key (parent_id) references auth.users (id) on update cascade on delete set null
+  ) tablespace pg_default;
+
+ALTER TABLE public.children ENABLE ROW LEVEL SECURITY;
+
+CREATE policy "Enable delete for children based on parent_id"
+on "public"."children"
+to authenticated, service_role
+using (
+  (( SELECT uid() AS uid) = parent_id) 
+);
+
+CREATE policy "Enable insert for children based on parent_id"
+on "public"."children"
+to authenticated, service_role
+with check (
+  (( SELECT uid() AS uid) = parent_id)
+);
+
+CREATE policy "Enable update for children based on parent_id"
+on "public"."children"
+to authenticated, service_role
+using (
+  (( SELECT uid() AS uid) = parent_id)
+);
+
+CREATE policy "Enable select for children based on parent_id"
+on "public"."children"
+to authenticated, service_role
+using (
+  (( SELECT uid() AS uid) = parent_id)
+);
+
+-- 3. Now create appointments table (depends on auth.users, children, and profiles)
+create table if not exists
   public.appointments (
     id uuid not null default gen_random_uuid (),
     parent_id uuid null,
@@ -166,53 +261,6 @@ USING (
 );
 
 create table
-  public.children (
-    id uuid not null default gen_random_uuid (),
-    created_at timestamp with time zone not null default now(),
-    parent_id uuid null default uid (),
-    nik character varying null,
-    name character varying not null,
-    blood_type public.blood_type null,
-    gender public.gender_type null,
-    avatar_url text null,
-    date_of_birth date not null,
-    place_of_birth character varying null,
-    constraint children_pkey primary key (id),
-    constraint children_nik_key unique (nik),
-    constraint children_parent_id_fkey foreign key (parent_id) references auth.users (id) on update cascade on delete set null
-  ) tablespace pg_default;
-
-ALTER TABLE public.children ENABLE ROW LEVEL SECURITY;
-
-CREATE policy "Enable delete for children based on parent_id"
-on "public"."children"
-to authenticated, service_role
-using (
-  (( SELECT uid() AS uid) = parent_id) 
-);
-
-CREATE policy "Enable insert for children based on parent_id"
-on "public"."children"
-to authenticated, service_role
-with check (
-  (( SELECT uid() AS uid) = parent_id)
-);
-
-CREATE policy "Enable update for children based on parent_id"
-on "public"."children"
-to authenticated, service_role
-using (
-  (( SELECT uid() AS uid) = parent_id)
-);
-
-CREATE policy "Enable select for children based on parent_id"
-on "public"."children"
-to authenticated, service_role
-using (
-  (( SELECT uid() AS uid) = parent_id)
-);
-
-create table
 public.notifications (
 id uuid not null default gen_random_uuid (),
 user_id uuid null default uid (),
@@ -231,53 +279,6 @@ CREATE POLICY all_rls_notifications
 ON public.notifications
 to authenticated, service_role
 USING (true);
-
-create table
-public.profiles (
-id uuid not null default gen_random_uuid (),
-updated_at timestamp with time zone null,
-avatar_url text null,
-place_of_birth character varying null,
-date_of_birth date null,
-no_induk_kependudukan character varying null,
-no_kartu_keluarga character varying null,
-address text null,
-father_name character varying null,
-mother_name character varying null,
-father_blood_type public.blood_type null,
-mother_blood_type public.blood_type null,
-father_phone_number character varying null,
-mother_phone_number character varying null,
-father_job character varying null,
-mother_job character varying null,
-user_id uuid null default uid (),
-constraint profiles_pkey primary key (id),
-constraint profiles_user_id_key unique (user_id),
-constraint profiles_user_id_fkey foreign key (user_id) references auth.users (id) on update cascade on delete set null
-) tablespace pg_default;
-
-ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
-
-CREATE policy "Enable insert for authenticated users only"
-on "public"."profiles"
-to authenticated, service_role
-with check (
-  true
-);
-
-CREATE policy "Enable update for authenticated users only"
-on "public"."profiles"
-to authenticated, service_role
-using (
-  (( SELECT uid() AS uid) = user_id)
-);
-
-CREATE policy "Enable select for authenticated and service role users only"
-on "public"."profiles"
-to authenticated, service_role
-using (
-    true
-);
 
 -- migrate:down
 DROP POLICY IF EXISTS all_rls_appointments ON public.appointments CASCADE;
