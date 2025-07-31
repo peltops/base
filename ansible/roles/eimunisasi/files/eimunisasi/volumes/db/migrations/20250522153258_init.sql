@@ -1,6 +1,6 @@
 -- migrate:up
 --
--- Name: blood_type; Type: TYPE; Schema: public; Owner: supabase_admin
+-- Name: blood_type; Type: TYPE; Schema: public;
 --
 
 CREATE TYPE public.blood_type AS ENUM (
@@ -11,10 +11,8 @@ CREATE TYPE public.blood_type AS ENUM (
 );
 
 
-ALTER TYPE public.blood_type OWNER TO supabase_admin;
-
 --
--- Name: gender_type; Type: TYPE; Schema: public; Owner: supabase_admin
+-- Name: gender_type; Type: TYPE; Schema: public;
 --
 
 CREATE TYPE public.gender_type AS ENUM (
@@ -23,10 +21,8 @@ CREATE TYPE public.gender_type AS ENUM (
 );
 
 
-ALTER TYPE public.gender_type OWNER TO supabase_admin;
-
 --
--- Name: handle_new_user(); Type: FUNCTION; Schema: public; Owner: supabase_admin
+-- Name: handle_new_user(); Type: FUNCTION; Schema: public;
 --
 
 CREATE FUNCTION public.handle_new_user() RETURNS trigger
@@ -38,10 +34,8 @@ CREATE FUNCTION public.handle_new_user() RETURNS trigger
 end;$$;
 
 
-ALTER FUNCTION public.handle_new_user() OWNER TO supabase_admin;
-
 --
--- Name: handle_new_user_2(); Type: FUNCTION; Schema: public; Owner: supabase_admin
+-- Name: handle_new_user_2(); Type: FUNCTION; Schema: public;
 --
 
 CREATE FUNCTION public.handle_new_user_2() RETURNS trigger
@@ -53,8 +47,6 @@ CREATE FUNCTION public.handle_new_user_2() RETURNS trigger
   END IF;
   RETURN new;
 END;$$;
-
-ALTER FUNCTION public.handle_new_user_2() OWNER TO supabase_admin;
 
 create table
   public.appointments (
