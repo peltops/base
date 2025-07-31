@@ -63,7 +63,7 @@ create table
     end_time time without time zone not null,
     order_id uuid null,
     constraint appointments_pkey primary key (id),
-    constraint appointments_parent_id_fkey foreign key (parent_id) references users (id) on update cascade on delete set null,
+    constraint appointments_parent_id_fkey foreign key (parent_id) references auth.users (id) on update cascade on delete set null,
     constraint appointments_child_id_fkey foreign key (child_id) references children (id) on update cascade on delete set null,
     constraint appointments_parent_id_fkey1 foreign key (parent_id) references profiles (user_id)
   ) tablespace pg_default;
@@ -120,7 +120,7 @@ public.calendars (
   do_at timestamp with time zone not null,
   read_only boolean not null default false,
   constraint calendars_pkey primary key (id),
-  constraint calendars_parent_id_fkey foreign key (parent_id) references users (id) on update cascade on delete set null
+  constraint calendars_parent_id_fkey foreign key (parent_id) references auth.users (id) on update cascade on delete set null
 ) tablespace pg_default;
 
 ALTER TABLE public.calendars ENABLE ROW LEVEL SECURITY;
@@ -151,7 +151,7 @@ vaccine_type character varying null,
 month character varying null,
 constraint checkups_pkey primary key (id),
 constraint checkups_child_id_fkey foreign key (child_id) references children (id) on update cascade on delete set null,
-constraint checkups_parent_id_fkey foreign key (parent_id) references users (id) on update cascade on delete set null
+constraint checkups_parent_id_fkey foreign key (parent_id) references auth.users (id) on update cascade on delete set null
 ) tablespace pg_default;
 
 ALTER TABLE public.checkups ENABLE ROW LEVEL SECURITY;
@@ -179,7 +179,7 @@ create table
     place_of_birth character varying null,
     constraint children_pkey primary key (id),
     constraint children_nik_key unique (nik),
-    constraint children_parent_id_fkey foreign key (parent_id) references users (id) on update cascade on delete set null
+    constraint children_parent_id_fkey foreign key (parent_id) references auth.users (id) on update cascade on delete set null
   ) tablespace pg_default;
 
 ALTER TABLE public.children ENABLE ROW LEVEL SECURITY;
@@ -222,7 +222,7 @@ is_read boolean not null default false,
 created_at timestamp with time zone not null default now(),
 updated_at timestamp with time zone null,
 constraint notifications_pkey primary key (id),
-constraint notifications_user_id_fkey foreign key (user_id) references users (id) on update cascade on delete set null
+constraint notifications_user_id_fkey foreign key (user_id) references auth.users (id) on update cascade on delete set null
 ) tablespace pg_default;
 
 ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
@@ -253,7 +253,7 @@ mother_job character varying null,
 user_id uuid null default uid (),
 constraint profiles_pkey primary key (id),
 constraint profiles_user_id_key unique (user_id),
-constraint profiles_user_id_fkey foreign key (user_id) references users (id) on update cascade on delete set null
+constraint profiles_user_id_fkey foreign key (user_id) references auth.users (id) on update cascade on delete set null
 ) tablespace pg_default;
 
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
