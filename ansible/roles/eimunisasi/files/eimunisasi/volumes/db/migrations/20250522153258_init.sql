@@ -66,7 +66,7 @@ father_phone_number character varying null,
 mother_phone_number character varying null,
 father_job character varying null,
 mother_job character varying null,
-user_id uuid null default uid (),
+user_id uuid null default auth.uid (),
 constraint profiles_pkey primary key (id),
 constraint profiles_user_id_key unique (user_id),
 constraint profiles_user_id_fkey foreign key (user_id) references auth.users (id) on update cascade on delete set null
@@ -85,7 +85,7 @@ CREATE policy "Enable update for authenticated users only"
 on "public"."profiles"
 to authenticated, service_role
 using (
-  (( SELECT uid() AS uid) = user_id)
+  (( SELECT auth.uid() AS uid) = user_id)
 );
 
 CREATE policy "Enable select for authenticated and service role users only"
@@ -99,7 +99,7 @@ create table
   public.children (
     id uuid not null default gen_random_uuid (),
     created_at timestamp with time zone not null default now(),
-    parent_id uuid null default uid (),
+    parent_id uuid null default auth.uid (),
     nik character varying null,
     name character varying not null,
     blood_type public.blood_type null,
@@ -118,28 +118,28 @@ CREATE policy "Enable delete for children based on parent_id"
 on "public"."children"
 to authenticated, service_role
 using (
-  (( SELECT uid() AS uid) = parent_id) 
+  (( SELECT auth.uid() AS uid) = parent_id) 
 );
 
 CREATE policy "Enable insert for children based on parent_id"
 on "public"."children"
 to authenticated, service_role
 with check (
-  (( SELECT uid() AS uid) = parent_id)
+  (( SELECT auth.uid() AS uid) = parent_id)
 );
 
 CREATE policy "Enable update for children based on parent_id"
 on "public"."children"
 to authenticated, service_role
 using (
-  (( SELECT uid() AS uid) = parent_id)
+  (( SELECT auth.uid() AS uid) = parent_id)
 );
 
 CREATE policy "Enable select for children based on parent_id"
 on "public"."children"
 to authenticated, service_role
 using (
-  (( SELECT uid() AS uid) = parent_id)
+  (( SELECT auth.uid() AS uid) = parent_id)
 );
 
 -- 3. Now create appointments table (depends on auth.users, children, and profiles)
@@ -210,7 +210,7 @@ create table
 public.calendars (
   id uuid not null default gen_random_uuid (),
   created_at timestamp with time zone not null default now(),
-  parent_id uuid null default uid (),
+  parent_id uuid null default auth.uid (),
   activity character varying not null,
   do_at timestamp with time zone not null,
   read_only boolean not null default false,
@@ -224,14 +224,14 @@ CREATE POLICY all_rls_calendars
 ON public.calendars
 to authenticated, service_role
 USING (
-    (( SELECT uid() AS uid) = parent_id)
+    (( SELECT auth.uid() AS uid) = parent_id)
 );
 
 create table
 public.checkups (
 id uuid not null default gen_random_uuid (),
 child_id uuid null,
-parent_id uuid null default uid (),
+parent_id uuid null default auth.uid (),
 inspector_id uuid null,
 weight numeric not null,
 head_circumference numeric not null,
@@ -255,15 +255,15 @@ CREATE POLICY all_rls_checkups
 ON public.checkups
 to authenticated, service_role
 USING (
-    (( SELECT uid() AS uid) = parent_id) OR
-    (( SELECT uid() AS uid) = child_id) OR
-    (( SELECT uid() AS uid) = inspector_id)
+    (( SELECT auth.uid() AS uid) = parent_id) OR
+    (( SELECT auth.uid() AS uid) = child_id) OR
+    (( SELECT auth.uid() AS uid) = inspector_id)
 );
 
 create table
 public.notifications (
 id uuid not null default gen_random_uuid (),
-user_id uuid null default uid (),
+user_id uuid null default auth.uid (),
 title character varying not null,
 body character varying not null,
 is_read boolean not null default false,
