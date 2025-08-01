@@ -1,5 +1,6 @@
 import { SupabaseClient } from "jsr:@supabase/supabase-js@2";
 import { eImunisasiSupabaseAdmin } from "../_shared/eimunisasiSupabase.ts";
+import { validateJWT } from "../_shared/jwtAuth.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -16,13 +17,11 @@ interface GetCheckupsQuery {
   patient_id?: string;
 }
 
-async function getCheckups(supabaseClient: SupabaseClient, query?: GetCheckupsQuery) {
-  const { 
-    page = 1,
-    page_size = 10,
-    date,
-    patient_id: patientId,
-  } = query ?? {};
+async function getCheckups(
+  supabaseClient: SupabaseClient,
+  query?: GetCheckupsQuery
+) {
+  const { page = 1, page_size = 10, date, patient_id: patientId } = query ?? {};
   const start = (page - 1) * page_size;
   const end = start + page_size - 1;
 
@@ -51,7 +50,7 @@ async function getCheckups(supabaseClient: SupabaseClient, query?: GetCheckupsQu
   if (countError) {
     throw countError;
   }
-  
+
   let queryBuilder = supabaseClient
     .from(tableName)
     .select(
@@ -123,10 +122,7 @@ async function getCheckup(supabaseClient: SupabaseClient, id: string) {
   });
 }
 
-async function updateCheckup(
-  supabaseClient: SupabaseClient,
-  body: any,
-) {
+async function updateCheckup(supabaseClient: SupabaseClient, body: any) {
   const { data, error } = await supabaseClient
     .from(tableName)
     .update(body)
@@ -172,9 +168,22 @@ Deno.serve(async (req) => {
     return new Response("ok", { headers: corsHeaders });
   }
 
+  // JWT Authentication
+  const jwtValidation = await validateJWT(req);
+  if (!jwtValidation.isValid) {
+    const response = JSON.stringify({
+      is_successful: false,
+      message: jwtValidation.error || "Authentication failed",
+    });
+    return new Response(response, {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 401,
+    });
+  }
+
   try {
     const supabaseClient = eImunisasiSupabaseAdmin;
-    
+
     const taskPattern = new URLPattern({ pathname: "/checkups/:id" });
     const matchingPath = taskPattern.exec(url);
     const id = matchingPath ? matchingPath.pathname.groups.id : null;
