@@ -1,7 +1,26 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { enakesSupabaseAdmin } from "../_shared/enakesSupabase.ts";
+import { validateJWT } from "../_shared/jwtAuth.ts";
 
 Deno.serve(async (req) => {
+  // JWT Authentication
+  if (req.method !== "OPTIONS") {
+    const validation = await validateJWT(req);
+
+    if (!validation.isValid) {
+      return new Response(
+        JSON.stringify({
+          isSuccessful: false,
+          message: validation.error || "Invalid JWT",
+        }),
+        {
+          status: 401,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+  }
+
   const url = new URL(req.url);
   const page = url.searchParams.get("page") ?? 1;
   const pageSize = url.searchParams.get("pageSize") ?? 10;
