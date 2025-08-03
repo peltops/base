@@ -435,7 +435,7 @@ services:
       # Seed the database
       - ./volumes/db/seeds:/db/seeds:Z
       # Seed script
-      - ./run_seeds.sh:/run_seeds.sh:Z,755
+      - ./run_seeds.sh:/run_seeds.sh:Z
 
   dbmate:
     image: amacneil/dbmate:latest
