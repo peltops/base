@@ -387,8 +387,9 @@ services:
     healthcheck:
       test: pg_isready -U postgres -h localhost
       interval: 5s
-      timeout: 5s
-      retries: 10
+      timeout: 10s
+      retries: 20
+      start_period: 30s
     depends_on:
       vector:
         condition: service_healthy
@@ -434,7 +435,7 @@ services:
       # Seed the database
       - ./volumes/db/seeds:/db/seeds:Z
       # Seed script
-      - ./run_seeds.sh:/run_seeds.sh
+      - ./run_seeds.sh:/run_seeds.sh:Z,755
 
   dbmate:
     image: amacneil/dbmate:latest

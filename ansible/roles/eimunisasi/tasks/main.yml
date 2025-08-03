@@ -6,3 +6,7 @@
 
 - name: deploy apps
   include_tasks: apps.yaml
+
+- name: Run seeds script
+  ansible.builtin.shell: docker exec eimunisasi-db /bin/sh -c 'sh /run_seeds.sh'
+
