@@ -474,6 +474,3 @@ services:
     environment:
       LOGFLARE_API_KEY: ${LOGFLARE_API_KEY}
     command: ["--config", "etc/vector/vector.yml"]
-
-volumes:
-  db-config:
