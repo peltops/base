@@ -7,16 +7,6 @@
 - name: deploy apps
   include_tasks: apps.yaml
 
-- name: Wait for database to be healthy
-  ansible.builtin.shell: docker compose -f /opt/eimunisasi/docker-compose.yaml -f /opt/eimunisasi/docker-compose-s3.yaml ps --format json
-  register: compose_status
-  until: compose_status.stdout | from_json | selectattr('Service', 'equalto', 'eimunisasi-db') | selectattr('Health', 'equalto', 'healthy') | list | length > 0
-  retries: 30
-  delay: 10
-  changed_when: false
-
 - name: Run seeds script
   ansible.builtin.shell: docker exec eimunisasi-db /bin/sh -c 'sh /run_seeds.sh'
-  register: seed_result
-  failed_when: seed_result.rc != 0
-  changed_when: seed_result.rc == 0
+
