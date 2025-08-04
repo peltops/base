@@ -1,13 +1,26 @@
 ---
+- name: Clean up existing eimunisasi directory (except volumes persistent data)
+  ansible.builtin.shell:
+    cmd: |
+      find /opt/eimunisasi -mindepth 1 -not \( -path "/opt/eimunisasi/volumes/db/data*" -o -path "/opt/eimunisasi/volumes/storage*" \) -delete
+
+- name: Recreate eimunisasi directory
+  file:
+    path: /opt/eimunisasi
+    state: directory
+    mode: "0755"
+
 - name: copy eimunisasi files
   copy:
-    src: ../files/eimunisasi
-    dest: /opt
+    src: ../files/eimunisasi/
+    dest: /opt/eimunisasi/
+    force: yes
+    directory_mode: "0755"
 
-- name: deploy/restart eimunisasi apps 
+- name: deploy/restart eimunisasi apps
   community.docker.docker_compose_v2:
     project_src: /opt/eimunisasi
-    files: 
+    files:
       - "docker-compose.yaml"
       - "docker-compose-s3.yaml"
     state: present
