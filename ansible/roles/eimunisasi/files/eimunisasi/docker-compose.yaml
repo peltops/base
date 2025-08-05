@@ -429,7 +429,7 @@ services:
       # Changes required for Analytics support
       - ./volumes/db/logs.sql:/docker-entrypoint-initdb.d/migrations/99-logs.sql:Z
       # Use named volume to persist pgsodium decryption key between restarts
-      - ./volumes/db/db-config:/etc/postgresql-custom
+      - db-config:/etc/postgresql-custom
       # Seed the database
       - ./volumes/db/seeds:/db/seeds:Z
       # Seed script
@@ -474,3 +474,6 @@ services:
     environment:
       LOGFLARE_API_KEY: ${LOGFLARE_API_KEY}
     command: ["--config", "etc/vector/vector.yml"]
+
+volumes:
+  db-config:
