@@ -388,6 +388,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+      start_period: 30s
     depends_on:
       vector:
         condition: service_healthy
@@ -438,16 +439,18 @@ services:
   dbmate:
     image: amacneil/dbmate:latest
     container_name: enakes-dbmate
-    restart: always
+    restart: on-failure
     depends_on:
       db:
+        # Disable this if you are using an external Postgres database
         condition: service_healthy
+      analytics:
+        condition: service_healthy    
     environment:
       DATABASE_URL: "postgres://postgres:${POSTGRES_PASSWORD}@db:${POSTGRES_PORT}/${POSTGRES_DB}?sslmode=disable"
     volumes:
       - ./volumes/db/migrations:/db/migrations
-    entrypoint: [ "sh", "-c", "dbmate wait && dbmate -d /db/migrations up && tail -f /dev/null" ]
-
+    entrypoint: ["sh", "-c", "dbmate wait && dbmate -d /db/migrations up"]
 
   vector:
     container_name: enakes-vector
