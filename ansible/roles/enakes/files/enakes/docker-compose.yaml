@@ -17,7 +17,7 @@ x-logging:
 services:
   studio:
     container_name: enakes-studio
-    image: supabase/studio:20240729-ce42139
+    image: supabase/studio:20250317-6955350
     restart: unless-stopped
     healthcheck:
       test:
@@ -86,7 +86,7 @@ services:
 
   auth:
     container_name: enakes-auth
-    image: supabase/gotrue:v2.151.0
+    image: supabase/gotrue:v2.170.0
     depends_on:
       db:
         # Disable this if you are using an external Postgres database
@@ -165,7 +165,7 @@ services:
 
   rest:
     container_name: enakes-rest
-    image: postgrest/postgrest:v12.2.0
+    image: postgrest/postgrest:v12.2.8
     depends_on:
       db:
         # Disable this if you are using an external Postgres database
@@ -187,7 +187,7 @@ services:
   realtime:
     # This container name looks inconsistent but is correct because realtime constructs tenant id by parsing the subdomain
     container_name: realtime-dev.enakes-realtime
-    image: supabase/realtime:v2.29.15
+    image: supabase/realtime:v2.34.43
     depends_on:
       db:
         # Disable this if you are using an external Postgres database
@@ -232,7 +232,7 @@ services:
   # To use S3 backed storage: docker compose -f docker-compose.yml -f docker-compose.s3.yml up
   storage:
     container_name: enakes-storage
-    image: supabase/storage-api:v1.0.6
+    image: supabase/storage-api:v1.19.3
     depends_on:
       db:
         # Disable this if you are using an external Postgres database
@@ -312,7 +312,7 @@ services:
 
   functions:
     container_name: enakes-edge-functions
-    image: supabase/edge-runtime:v1.55.0
+    image: supabase/edge-runtime:v1.67.4
     restart: unless-stopped
     depends_on:
       analytics:
@@ -338,7 +338,7 @@ services:
 
   analytics:
     container_name: enakes-analytics
-    image: supabase/logflare:1.4.0
+    image: supabase/logflare:1.12.0
     healthcheck:
       test: [ "CMD", "curl", "http://localhost:4000/health" ]
       timeout: 5s
@@ -382,7 +382,7 @@ services:
   # Comment out everything below this point if you are using an external Postgres database
   db:
     container_name: enakes-db
-    image: supabase/postgres:15.1.1.78
+    image: supabase/postgres:15.8.1.060
     healthcheck:
       test: pg_isready -U postgres -h localhost
       interval: 5s
