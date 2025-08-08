@@ -5,7 +5,6 @@
 #   Destroy:        docker compose -f docker-compose.yml -f ./dev/docker-compose.dev.yml down -v --remove-orphans
 
 name: eimunisasi
-version: "3.8"
 
 x-logging: &default-logging
   driver: loki:latest
@@ -16,7 +15,7 @@ x-logging: &default-logging
 services:
   studio:
     container_name: eimunisasi-studio
-    image: supabase/studio:20250317-6955350
+    image: supabase/studio:2025.04.21-sha-173cc56
     restart: unless-stopped
     healthcheck:
       test:
@@ -24,9 +23,9 @@ services:
           "CMD",
           "node",
           "-e",
-          "require('http').get('http://studio:3000/api/profile', (r) => {if (r.statusCode !== 200) throw new Error(r.statusCode)})",
+          "fetch('http://studio:3000/api/platform/profile').then((r) => {if (r.status !== 200) throw new Error(r.status)})",
         ]
-      timeout: 5s
+      timeout: 10s
       interval: 5s
       retries: 3
     depends_on:
@@ -85,7 +84,7 @@ services:
 
   auth:
     container_name: eimunisasi-auth
-    image: supabase/gotrue:v2.170.0
+    image: supabase/gotrue:v2.171.0
     depends_on:
       db:
         # Disable this if you are using an external Postgres database
@@ -163,7 +162,7 @@ services:
 
   rest:
     container_name: eimunisasi-rest
-    image: postgrest/postgrest:v12.2.8
+    image: postgrest/postgrest:v12.2.11
     depends_on:
       db:
         # Disable this if you are using an external Postgres database
@@ -185,7 +184,7 @@ services:
   realtime:
     # This container name looks inconsistent but is correct because realtime constructs tenant id by parsing the subdomain
     container_name: realtime-dev.eimunisasi-realtime
-    image: supabase/realtime:v2.34.43
+    image: supabase/realtime:v2.34.47
     depends_on:
       db:
         # Disable this if you are using an external Postgres database
@@ -230,7 +229,7 @@ services:
   # To use S3 backed storage: docker compose -f docker-compose.yml -f docker-compose.s3.yml up
   storage:
     container_name: eimunisasi-storage
-    image: supabase/storage-api:v1.19.3
+    image: supabase/storage-api:v1.22.7
     depends_on:
       db:
         # Disable this if you are using an external Postgres database
@@ -291,7 +290,7 @@ services:
 
   meta:
     container_name: eimunisasi-meta
-    image: supabase/postgres-meta:v0.83.2
+    image: supabase/postgres-meta:v0.88.9
     depends_on:
       db:
         # Disable this if you are using an external Postgres database
