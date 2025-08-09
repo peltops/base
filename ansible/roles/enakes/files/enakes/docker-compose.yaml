@@ -407,9 +407,6 @@ services:
         "log_min_messages=fatal" # prevents Realtime polling queries from appearing in logs
       ]    
     restart: unless-stopped
-    ports:
-      # Pass down internal port because it's set dynamically by other services
-      - ${POSTGRES_PORT}
     logging: *default-logging
     environment:
       POSTGRES_HOST: /var/run/postgresql
@@ -493,8 +490,8 @@ services:
     image: supabase/supavisor:2.5.1
     restart: unless-stopped
     ports:
-      - ${POSTGRES_PORT}:5432
-      - ${POOLER_PROXY_PORT_TRANSACTION}:6543
+      - ${POSTGRES_PORT}
+      - ${POOLER_PROXY_PORT_TRANSACTION}
     volumes:
       - ./volumes/pooler/pooler.exs:/etc/pooler/pooler.exs:ro,z
     healthcheck:
