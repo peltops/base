@@ -346,7 +346,7 @@ services:
       retries: 10
     restart: unless-stopped
     ports:
-      - 4000/tcp
+      - 4000
     depends_on:
       db:
         # Disable this if you are using an external Postgres database
@@ -490,8 +490,9 @@ services:
     image: supabase/supavisor:2.5.1
     restart: unless-stopped
     ports:
-      - ${POSTGRES_PORT}:5432
-      - ${POOLER_PROXY_PORT_TRANSACTION}:6543
+      # Pass down internal port because it's set dynamically by other services
+      - ${POSTGRES_PORT}
+      - ${POOLER_PROXY_PORT_TRANSACTION}
     volumes:
       - ./volumes/pooler/pooler.exs:/etc/pooler/pooler.exs:ro,z
     healthcheck:
