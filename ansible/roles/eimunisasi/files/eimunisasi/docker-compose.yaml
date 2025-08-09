@@ -346,7 +346,7 @@ services:
       retries: 10
     restart: unless-stopped
     ports:
-      - 4000:4000
+      - 4000/tcp
     depends_on:
       db:
         # Disable this if you are using an external Postgres database
