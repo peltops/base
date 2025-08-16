@@ -1,8 +1,6 @@
 name: eimunisasi
-version: "3.8"
 
-x-logging:
-  &default-logging
+x-logging: &default-logging
   driver: loki:latest
   options:
     loki-url: "https://${GRAFANA_USER}:${GRAFANA_TOKEN}@${GRAFANA_HOST}/loki/api/v1/push"
@@ -42,7 +40,7 @@ services:
 
   storage:
     container_name: eimunisasi-storage
-    image: supabase/storage-api:v0.48.1
+    image: supabase/storage-api:v1.11.13
     depends_on:
       db:
         # Disable this if you are using an external Postgres database
