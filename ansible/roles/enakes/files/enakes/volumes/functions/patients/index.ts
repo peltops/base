@@ -1,5 +1,6 @@
 import { SupabaseClient } from "jsr:@supabase/supabase-js@2";
 import { eImunisasiSupabaseAdmin } from "../_shared/eimunisasiSupabase.ts";
+import { validateJWT } from "../_shared/jwtAuth.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -17,11 +18,7 @@ async function getAllPatients(
   supabaseClient: SupabaseClient,
   query?: GetPatientsQuery
 ) {
-  const { 
-    page = 1,
-    page_size = 10,
-    nik 
-  } = query ?? {};
+  const { page = 1, page_size = 10, nik } = query ?? {};
   const start = (page - 1) * page_size;
   const end = start + page_size - 1;
 
@@ -37,7 +34,7 @@ async function getAllPatients(
   if (countError) {
     throw countError;
   }
-  
+
   let queryBuilder = supabaseClient
     .from("children")
     .select(
@@ -128,6 +125,19 @@ Deno.serve(async (req) => {
 
   if (method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
+  }
+
+  // JWT Authentication
+  const jwtValidation = await validateJWT(req);
+  if (!jwtValidation.isValid) {
+    const response = JSON.stringify({
+      is_successful: false,
+      message: jwtValidation.error || "Authentication failed",
+    });
+    return new Response(response, {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 401,
+    });
   }
 
   try {
