@@ -4,8 +4,27 @@ import {
   getBookingProduct,
   paymentSupabaseAdmin,
 } from "../_shared/paymentSupabase.ts";
+import { validateJWT } from "../_shared/jwtAuth.ts";
 
 Deno.serve(async (req) => {
+  // JWT Authentication
+  if (req.method !== "OPTIONS") {
+    const validation = await validateJWT(req);
+
+    if (!validation.isValid) {
+      return new Response(
+        JSON.stringify({
+          isSuccessful: false,
+          message: validation.error || "Invalid JWT",
+        }),
+        {
+          status: 401,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+  }
+
   try {
     const url = new URL(req.url);
     const id = url.pathname.split("/").pop();
