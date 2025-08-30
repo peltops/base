@@ -1,0 +1,18 @@
+---
+- name: copy kuala files
+  copy:
+    src: ../files/kuala
+    dest: /opt
+
+- name: deploy/restart kuala apps 
+  community.docker.docker_compose_v2:
+    project_src: /opt/kuala
+    files: 
+      - "docker-compose.yaml"
+      - "docker-compose-s3.yaml"
+    state: present
+  register: output
+
+- name: Show results
+  ansible.builtin.debug:
+    var: output

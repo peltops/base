@@ -1,0 +1,11 @@
+---
+- name: "Create directory"
+  file:
+    path: /opt/kuala
+    state: directory
+
+- name: deploy apps
+  include_tasks: apps.yaml
+
+- name: Run seeds script
+  ansible.builtin.shell: docker exec kuala-db /bin/sh -c 'sh /run_seeds.sh'
