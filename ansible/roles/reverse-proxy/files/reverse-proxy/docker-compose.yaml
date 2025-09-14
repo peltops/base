@@ -21,6 +21,7 @@ services:
       - eimunisasi_default
       - enakes_default
       - payment_default
+      - kuala_default
     volumes:
       - ./config:/etc/nginx/config
       - ./conf.d:/etc/nginx/conf.d
@@ -49,3 +50,6 @@ networks:
   payment_default:
     name: payment_default
     external: true   
+  kuala_default:
+    name: kuala_default
+    external: true  
