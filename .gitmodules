@@ -1,0 +1,6 @@
+[submodule "submodules/kuala-api"]
+	path = submodules/kuala-api
+	url = https://github.com/seribasa/kuala-api.git
+[submodule "submodules/bayeu"]
+	path = submodules/bayeu
+	url = https://github.com/seribasa/bayeu.git
