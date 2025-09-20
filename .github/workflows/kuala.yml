@@ -21,6 +21,8 @@ jobs:
 
     - name: Copy functions kuala-api to kuala/volumes/functions
       run: |
+        mkdir -p submodules/kuala-api/supabase/functions/
+        mkdir -p ansible/roles/kuala/files/kuala/volumes/functions/
         cp -r submodules/kuala-api/supabase/functions/* ansible/roles/kuala/files/kuala/volumes/functions/
 
     - name: Run kuala playbook
