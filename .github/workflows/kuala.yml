@@ -10,8 +10,19 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
+    - name: Checkout main repo with submodules
       uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Verify submodule content
+      run: |
+        ls -R submodules/kuala-api/
+
+    - name: Copy functions kuala-api to kuala/volumes/functions
+      run: |
+        cp -r submodules/kuala-api/supabase/functions/* ansible/roles/kuala/files/kuala/volumes/functions/
+
     - name: Run kuala playbook
       uses: dawidd6/action-ansible-playbook@v2
       with:
@@ -26,4 +37,3 @@ jobs:
           --tags=kuala
       env:
         ANSIBLE_HOST_KEY_CHECKING: false
-  
