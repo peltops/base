@@ -70,7 +70,15 @@ serve(async (req: Request) => {
   const memoryLimitMb = 150
   const workerTimeoutMs = 1 * 60 * 1000
   const noModuleCache = false
-  const importMapPath = `${servicePath}/deno.json`
+
+  // Try to find deno.json in service directory, fallback to functions directory
+  let importMapPath = `${servicePath}/deno.json`;
+  try {
+    await Deno.stat(importMapPath);
+  } catch {
+    // Fallback to parent functions directory
+    importMapPath = `/home/deno/functions/deno.json`;
+  }
   const envVarsObj = Deno.env.toObject()
   const envVars = Object.keys(envVarsObj).map((k) => [k, envVarsObj[k]])
 
