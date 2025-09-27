@@ -22,9 +22,13 @@ jobs:
       - name: Ensure destination directory exists
         run: mkdir -p ansible/roles/kuala/files/kuala/volumes/functions/
 
-      - name: Copy kuala-api functions to ansible files
+      - name: Copy kuala-api functions to kuala ansible role
         run: |
           cp -r submodules/kuala-api/supabase/functions/* ansible/roles/kuala/files/kuala/volumes/functions/
+
+      - name: Copy deno.json to kuala ansible role
+        run: |
+          cp submodules/kuala-api/supabase/functions/deno.json ansible/roles/kuala/files/kuala/volumes/functions/kuala/
 
       - name: Run kuala playbook
         uses: dawidd6/action-ansible-playbook@v2
