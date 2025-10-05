@@ -13,3 +13,25 @@
 - name: Show results
   ansible.builtin.debug:
     var: output
+
+- name: Wait for loadbalancer container to be running and healthy
+  community.docker.docker_container_info:
+    name: loadbalancer
+  register: loadbalancer_info
+  until: "loadbalancer_info.container.State.Health.Status == 'healthy'"
+  retries: 10
+  delay: 3
+
+- name: Show loadbalancer container info
+  ansible.builtin.debug:
+    var: loadbalancer_info
+
+- name: Reload NGINX in loadbalancer container
+  community.docker.docker_container_exec:
+    container: loadbalancer
+    command: nginx -s reload
+  register: nginx_reload
+
+- name: Show NGINX reload results
+  ansible.builtin.debug:
+    var: nginx_reload
