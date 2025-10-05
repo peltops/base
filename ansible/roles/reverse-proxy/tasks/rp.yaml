@@ -12,3 +12,25 @@
 - name: Show results
   ansible.builtin.debug:
     var: output
+
+- name: Wait for reverse-proxy container to be running and healthy
+  community.docker.docker_container_info:
+    name: reverse-proxy
+  register: reverse_proxy_info
+  until: "reverse_proxy_info.container.State.Health.Status == 'healthy'"
+  retries: 10
+  delay: 3
+
+- name: Show reverse-proxy container info
+  ansible.builtin.debug:
+    var: reverse_proxy_info
+
+- name: Reload NGINX in reverse-proxy container
+  community.docker.docker_container_exec:
+    container: reverse-proxy
+    command: nginx -s reload
+  register: nginx_reload
+
+- name: Show NGINX reload results
+  ansible.builtin.debug:
+    var: nginx_reload
