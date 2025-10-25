@@ -1,0 +1,17 @@
+---
+- name: copy killbill files
+  copy:
+    src: ../files/killbill
+    dest: /opt
+
+- name: deploy/restart killbill apps 
+  community.docker.docker_compose_v2:
+    project_src: /opt/killbill
+    files: 
+      - "docker-compose.yaml"
+    state: present
+  register: output
+
+- name: Show results
+  ansible.builtin.debug:
+    var: output
