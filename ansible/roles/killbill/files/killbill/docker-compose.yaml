@@ -11,7 +11,7 @@ volumes:
   db:
 services:
   killbill:
-    container_name: killbill_service
+    container_name: killbill-service
     image: killbill/killbill:0.24.10
     ports:
       - "${KILLBILL_PORT}:8080"
@@ -38,7 +38,7 @@ services:
       db:
         condition: service_healthy
   kaui:
-    container_name: kaui
+    container_name: killbill-kaui
     image: killbill/kaui:3.0.9
     ports:
       - "${KAUI_PORT}:8080"
@@ -52,12 +52,10 @@ services:
       killbill:
         condition: service_healthy
   db:
-    container_name: mariadb
+    container_name: killbill-mariadb
     image: killbill/mariadb:0.24
     volumes:
-      - type: volume
-        source: db
-        target: /var/lib/mysql
+      - ${MYSQL_LOCAL_PATH}:/var/lib/mysql:Z
     expose:
       - "${MYSQL_PORT}"
     logging: *default-logging
@@ -77,7 +75,7 @@ services:
       timeout: 3s
       retries: 10
   init-tenant:
-    container_name: init_tenant
+    container_name: killbill-init-tenant
     image: curlimages/curl:8.5.0
     logging: *default-logging
     volumes:
@@ -100,7 +98,7 @@ services:
         condition: service_healthy
     restart: "no"
   init-catalog:
-    container_name: init_catalog
+    container_name: killbill-init-catalog
     image: curlimages/curl:8.5.0
     logging: *default-logging
     volumes:

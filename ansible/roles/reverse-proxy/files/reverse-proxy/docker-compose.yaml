@@ -28,6 +28,7 @@ services:
       - enakes_default
       - payment_default
       - kuala_default
+      - killbill_default
     volumes:
       - ./config:/etc/nginx/config
       - ./conf.d:/etc/nginx/conf.d
@@ -59,3 +60,6 @@ networks:
   kuala_default:
     name: kuala_default
     external: true  
+  killbill_default:
+    name: killbill_default
+    external: true
