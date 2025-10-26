@@ -317,7 +317,7 @@ services:
         condition: service_healthy
     logging: *default-logging
     networks:
-      - killbill_default    
+      - killbill_default
     environment:
       JWT_SECRET: ${JWT_SECRET}
       SUPABASE_URL: http://kong:8000
