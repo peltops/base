@@ -317,7 +317,7 @@ services:
         condition: service_healthy
     logging: *default-logging
     networks:
-      - killbill_default
+      - killbill_default    
     environment:
       JWT_SECRET: ${JWT_SECRET}
       SUPABASE_URL: http://kong:8000
@@ -330,13 +330,16 @@ services:
       AUTH_BASE_URL: ${SUPABASE_PUBLIC_URL}
       AUTH_SUPABASE_ANON_KEY: ${ANON_KEY}
       KILLBILL_BASE_URL: http://killbill:8080
-      KILLBILL_API_KEY: ${KILLBILL_API_KEY}
+      KILLBILL_API_KEY: ${KILLBILL_API_KEY} 
       KILLBILL_API_SECRET: ${KILLBILL_API_SECRET}
       KILLBILL_USERNAME: ${KILLBILL_USERNAME}
       KILLBILL_PASSWORD: ${KILLBILL_PASSWORD}
       ENTERPRISE_CONTACT_EMAIL: "kuala-contact@seribasa.digital"
       ENTERPRISE_CONTACT_PHONE: "+6281234567890"
       ENTERPRISE_CONTACT_MESSAGE: "Please reach out to us for more information about our enterprise offerings."
+      ENTERPRISE_CONTACT_EMAIL: ${ENTERPRISE_CONTACT_EMAIL}
+      ENTERPRISE_CONTACT_PHONE: ${ENTERPRISE_CONTACT_PHONE}
+      ENTERPRISE_CONTACT_MESSAGE: ${ENTERPRISE_CONTACT_MESSAGE}      
     volumes:
       - ./volumes/functions:/home/deno/functions:Z
     command:
@@ -552,4 +555,4 @@ volumes:
 networks:
   killbill_default:
     name: killbill_default
-    external: true
+    external: true  
