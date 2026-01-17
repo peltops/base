@@ -15,5 +15,5 @@ services:
       - API_BASE_URL=${API_BASE_URL}
     logging: *default-logging
     ports:
-      - "8080:80"
+      - "80"
     restart: unless-stopped
