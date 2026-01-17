@@ -8,6 +8,7 @@ x-logging: &default-logging
     
 services:
   webapp:
+    container_name: webapp
     build:
       context: https://github.com/seribasa/kuala-frontend.git#develop:webapp
       dockerfile: Dockerfile
