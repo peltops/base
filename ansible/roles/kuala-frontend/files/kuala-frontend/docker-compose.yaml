@@ -12,7 +12,7 @@ services:
       context: https://github.com/seribasa/kuala-frontend.git#develop:webapp
       dockerfile: Dockerfile
     environment:
-      - API_BASE_URL=https://kuala.seribasa.digital
+      - API_BASE_URL=${API_BASE_URL}
     logging: *default-logging
     ports:
       - "8080:80"
