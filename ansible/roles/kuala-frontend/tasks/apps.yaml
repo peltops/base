@@ -6,7 +6,7 @@
 
 - name: deploy/restart kuala-frontend apps 
   community.docker.docker_compose_v2:
-    project_src: /opt/kuala
+    project_src: /opt/kuala-frontend
     files: 
       - "docker-compose.yaml"
     state: present

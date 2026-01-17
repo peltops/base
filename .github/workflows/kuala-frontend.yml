@@ -15,22 +15,7 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Verify submodule content
-        run: |
-          ls -R submodules/kuala-frontend/
-
-      - name: Ensure webapps directory exists
-        run: mkdir -p ansible/roles/kuala-frontend/files/kuala/volumes/functions/
-
-      - name: Copy kuala-api functions to kuala ansible role
-        run: |
-          cp -r submodules/kuala-frontend/webapps/functions/* ansible/roles/kuala/files/kuala/volumes/functions/
-
-      - name: Copy deno.json to kuala ansible role
-        run: |
-          cp submodules/kuala-api/supabase/functions/deno.json ansible/roles/kuala/files/kuala/volumes/functions/kuala/
-
-      - name: Run kuala playbook
+      - name: Run kuala-frontend playbook
         uses: dawidd6/action-ansible-playbook@v2
         with:
           playbook: playbook/kuala-frontend.yaml
@@ -41,6 +26,6 @@ jobs:
           options: |
             -i inventory/base.ini
             --verbose        
-            --tags=kuala
+            --tags=kuala-frontend
         env:
           ANSIBLE_HOST_KEY_CHECKING: false
