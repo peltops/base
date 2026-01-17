@@ -1,0 +1,17 @@
+---
+- name: copy kuala-frontend files
+  copy:
+    src: ../files/kuala-frontend
+    dest: /opt
+
+- name: deploy/restart kuala-frontend apps 
+  community.docker.docker_compose_v2:
+    project_src: /opt/kuala
+    files: 
+      - "docker-compose.yaml"
+    state: present
+  register: output
+
+- name: Show results
+  ansible.builtin.debug:
+    var: output
