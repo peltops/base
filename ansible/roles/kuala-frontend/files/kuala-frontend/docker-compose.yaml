@@ -1,0 +1,20 @@
+name: kuala-frontend
+
+x-logging: &default-logging
+  driver: loki:latest
+  options:
+    loki-url: "https://${GRAFANA_USER}:${GRAFANA_TOKEN}@${GRAFANA_HOST}/loki/api/v1/push"
+    loki-batch-size: 4000
+    
+services:
+  webapp:
+    container_name: webapp
+    build:
+      context: https://github.com/seribasa/kuala-frontend.git#develop:webapp
+      dockerfile: Dockerfile
+    environment:
+      - API_BASE_URL=${API_BASE_URL}
+    logging: *default-logging
+    ports:
+      - "80"
+    restart: unless-stopped

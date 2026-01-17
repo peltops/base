@@ -29,6 +29,7 @@ services:
       - payment_default
       - kuala_default
       - killbill_default
+      - kuala-frontend_default
     volumes:
       - ./config:/etc/nginx/config
       - ./conf.d:/etc/nginx/conf.d
@@ -62,4 +63,7 @@ networks:
     external: true  
   killbill_default:
     name: killbill_default
+    external: true
+  kuala-frontend_default:
+    name: kuala-frontend_default
     external: true

@@ -10,6 +10,9 @@
     files: 
       - "docker-compose.yaml"
     state: present
+  environment:
+    DOCKER_BUILDKIT: "1"
+    COMPOSE_DOCKER_CLI_BUILD: "1"
   register: output
 
 - name: Show results
