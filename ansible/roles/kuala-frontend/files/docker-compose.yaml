@@ -1,0 +1,10 @@
+services:
+  webapp:
+    build:
+      context: https://github.com/seribasa/kuala-frontend.git#develop:webapp
+      dockerfile: Dockerfile
+    environment:
+      - API_BASE_URL=https://kuala.seribasa.digital
+    ports:
+      - "8080:80"
+    restart: unless-stopped
