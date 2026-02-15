@@ -31,7 +31,7 @@
                             
                             <#if messagesPerField.existsError('username')>
                                 <span class="input-error" aria-live="polite">
-                                    ${kcSanitize(messagesPerField.get('username'))?no_esc}
+                                    ${kcSanitize(messagesPerField.get('username'))}
                                 </span>
                             </#if>
                         </div>
@@ -48,7 +48,7 @@
                                    aria-invalid="<#if messagesPerField.existsError('password')>true</#if>" />
                             <#if messagesPerField.existsError('password')>
                                 <span class="input-error" aria-live="polite">
-                                    ${kcSanitize(messagesPerField.get('password'))?no_esc}
+                                    ${kcSanitize(messagesPerField.get('password'))}
                                 </span>
                             </#if>
                         </div>
