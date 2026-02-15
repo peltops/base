@@ -10,6 +10,7 @@
     files: 
       - "docker-compose.yaml"
     state: present
+    build: yes
   environment:
     DOCKER_BUILDKIT: "1"
     COMPOSE_DOCKER_CLI_BUILD: "1"
