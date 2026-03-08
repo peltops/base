@@ -45,7 +45,7 @@
                     <#if message.type = 'info'>
                         <span class="icon">ℹ</span>
                     </#if>
-                    <span class="message">${kcSanitize(message.summary)}</span>
+                    <span class="message">${kcSanitize(message.summary)?no_esc}</span>
                 </div>
             </#if>
             
