@@ -32,7 +32,7 @@
                        aria-invalid="<#if messagesPerField.existsError('password')>true</#if>" />
                 <#if messagesPerField.existsError('password')>
                     <span class="input-error" aria-live="polite">
-                        ${messagesPerField.get('password')?html}
+                        ${messagesPerField.get('password')}
                     </span>
                 </#if>
             </div>
@@ -48,7 +48,7 @@
                        aria-invalid="<#if messagesPerField.existsError('password-confirm')>true</#if>" />
                 <#if messagesPerField.existsError('password-confirm')>
                     <span class="input-error" aria-live="polite">
-                        ${messagesPerField.get('password-confirm')?html}
+                        ${messagesPerField.get('password-confirm')}
                     </span>
                 </#if>
             </div>

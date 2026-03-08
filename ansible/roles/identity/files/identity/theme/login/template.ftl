@@ -6,7 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="robots" content="noindex, nofollow">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>${msg("loginTitle",(realm.displayName!''))?html}</title>
+    <title>${msg("loginTitle",(realm.displayName!''))}</title>
     <link rel="icon" href="${url.resourcesPath}/img/favicon.ico" />
     
     <#if properties.styles?has_content>
@@ -25,7 +25,7 @@
 <body class="login-pf-page">
     <!-- Top Header -->
     <div id="kc-header">
-        <div id="kc-header-wrapper">${realm.displayName!''?html}</div>
+        <div id="kc-header-wrapper">${realm.displayName!''}</div>
         </div>
         
     <!-- Main Container -->
@@ -35,7 +35,7 @@
             <!-- Alert Messages -->
             <#if displayMessage && message?has_content && (message.type != 'warning' || !isAppInitiatedAction??)>
                 <div class="alert alert-${message.type}">
-                    ${message.summary?html}
+                    ${message.summary}
                 </div>
             </#if>
             

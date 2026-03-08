@@ -27,7 +27,7 @@
                 
                 <#if messagesPerField.existsError('username')>
                     <span class="input-error" aria-live="polite">
-                        ${messagesPerField.get('username')?html}
+                        ${messagesPerField.get('username')}
                     </span>
                 </#if>
             </div>

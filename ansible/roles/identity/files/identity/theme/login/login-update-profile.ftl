@@ -17,7 +17,7 @@
                            aria-invalid="<#if messagesPerField.existsError('username')>true</#if>" />
                     <#if messagesPerField.existsError('username')>
                         <span class="input-error" aria-live="polite">
-                            ${messagesPerField.get('username')?html}
+                            ${messagesPerField.get('username')}
                         </span>
                     </#if>
                 </div>
@@ -38,7 +38,7 @@
                        />
                 <#if messagesPerField.existsError('email')>
                     <span class="input-error" aria-live="polite">
-                        ${messagesPerField.get('email')?html}
+                        ${messagesPerField.get('email')}
                     </span>
                 </#if>
             </div>
@@ -53,7 +53,7 @@
                        aria-invalid="<#if messagesPerField.existsError('firstName')>true</#if>" />
                 <#if messagesPerField.existsError('firstName')>
                     <span class="input-error" aria-live="polite">
-                        ${messagesPerField.get('firstName')?html}
+                        ${messagesPerField.get('firstName')}
                     </span>
                 </#if>
             </div>
@@ -68,7 +68,7 @@
                        aria-invalid="<#if messagesPerField.existsError('lastName')>true</#if>" />
                 <#if messagesPerField.existsError('lastName')>
                     <span class="input-error" aria-live="polite">
-                        ${messagesPerField.get('lastName')?html}
+                        ${messagesPerField.get('lastName')}
                     </span>
                 </#if>
             </div>
