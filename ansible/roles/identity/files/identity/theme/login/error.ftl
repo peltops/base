@@ -8,7 +8,7 @@
             
             <#if message?has_content && message.summary?has_content>
                 <p class="info-message">
-                    ${message.summary?html}
+                    ${message.summary}
                 </p>
             <#else>
                 <p class="info-message">
@@ -18,7 +18,7 @@
 
             <#if client?? && client.baseUrl?has_content>
                 <div class="form-actions">
-                    <a href="${client.baseUrl?html}" class="btn btn-primary btn-block">
+                    <a href="${client.baseUrl}" class="btn btn-primary btn-block">
                         ${msg("backToApplication")}
                     </a>
                 </div>
@@ -35,7 +35,7 @@
                 <#if pageRedirectUri?has_content>
                     <div class="form-footer">
                         <p>
-                            <a href="${pageRedirectUri?html}">${msg("backToApplication")}</a>
+                            <a href="${pageRedirectUri}">${msg("backToApplication")}</a>
                         </p>
                     </div>
                 </#if>
