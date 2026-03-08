@@ -1,7 +1,7 @@
 <#import "template.ftl" as layout>
 <@layout.mainLayout active='login' displayMessage=!messagesPerField.existsError('username','password'); section>
     <#if section = "header">
-        <h2>${msg("loginAccountTitle")}</h2>
+        <h1 id="kc-page-title">${msg("loginAccountTitle")}</h1>
         <p class="subtitle">Sign in to your account</p>
     <#elseif section = "form">
         <div id="kc-form">

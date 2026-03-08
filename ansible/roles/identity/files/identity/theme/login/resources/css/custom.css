@@ -1,269 +1,237 @@
+/**
+ * Keycloak Custom Theme - Modern Minimalist Design
+ * Clean, contemporary authentication experience
+ */
+
+/* ========================================
+   CSS Variables
+   ======================================== */
 :root {
-    /* Lo-fi color palette - muted earth tones */
-    --primary-color: #8b7355;
-    --primary-dark: #6b5742;
-    --secondary-color: #a6937c;
-    --error-color: #c97064;
-    --success-color: #7a9b76;
-    --warning-color: #d4a574;
-    --info-color: #7c9eb2;
-    --text-color: #3d3d3d;
-    --text-muted: #6b6b6b;
-    --text-light: #8f8f8f;
-    --border-color: #d4c4b0;
-    --background: #f5f1eb;
-    --card-bg: #faf8f3;
+    /* Monochromatic palette */
+    --primary-color: #000000;
+    --secondary-color: #ffffff;
+    --error-color: #c53030;
+    --success-color: #2d7a3e;
+    --warning-color: #d69e2e;
+    --info-color: #3182ce;
+    
+    /* Text colors */
+    --text-color: #000000;
+    --text-muted: #666666;
+    --text-light: #999999;
+    
+    /* Backgrounds */
+    --background: #f5f5f5;
+    --card-bg: #e8e8e8;
     --input-bg: #ffffff;
+    --border-color: #d1d1d1;
+    
+    /* Spacing */
+    --spacing-xs: 8px;
+    --spacing-sm: 12px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+    
+    /* Typography */
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    
+    /* Border radius */
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.06);
 }
 
+/* ========================================
+   Base Styles
+   ======================================== */
 * {
     box-sizing: border-box;
 }
 
-.keycloak-body {
+body {
     margin: 0;
     padding: 0;
-    font-family: 'Georgia', 'Times New Roman', serif;
+    font-family: var(--font-sans);
     background: var(--background);
-    background-image: 
-        repeating-linear-gradient(
-            0deg,
-            transparent,
-            transparent 2px,
-            rgba(139, 115, 85, 0.02) 2px,
-            rgba(139, 115, 85, 0.02) 4px
-        );
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
+    color: var(--text-color);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* ========================================
+   Layout
+   ======================================== */
+.login-pf-page {
+    background: var(--background);
+}
+
+#kc-container {
+    width: 100%;
+    max-width: 500px;
+    margin: 40px auto;
     padding: 20px;
 }
 
-.keycloak-container {
-    width: 100%;
-    max-width: 420px;
-    margin: 0 auto;
+#kc-container-wrapper {
     background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 2px;
-    box-shadow: 
-        0 1px 3px rgba(0, 0, 0, 0.05),
-        0 8px 16px rgba(139, 115, 85, 0.08);
+    border-radius: var(--radius-md);
+    padding: 48px 40px;
+    box-shadow: var(--shadow-md);
 }
 
-.keycloak-header {
-    padding: 32px 32px 24px;
-    text-align: center;
-    background: var(--card-bg);
+/* ========================================
+   Header
+   ======================================== */
+#kc-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 20px 40px;
+    background: var(--background);
     border-bottom: 1px solid var(--border-color);
+    z-index: 1000;
 }
 
-.keycloak-header h1 {
-    margin: 0;
-    color: var(--text-color);
+#kc-header-wrapper {
     font-size: 18px;
-    font-weight: 400;
-    letter-spacing: 0.5px;
-    text-transform: lowercase;
-}
-
-.keycloak-content {
-    padding: 32px;
-}
-
-.keycloak-content h2 {
-    margin: 0 0 6px 0;
+    font-weight: 700;
     color: var(--text-color);
-    font-size: 22px;
-    font-weight: 400;
-    text-align: left;
-    letter-spacing: 0.3px;
+    letter-spacing: -0.5px;
+}
+
+/* ========================================
+   Form Header
+   ======================================== */
+#kc-form-header {
+    margin-bottom: var(--spacing-lg);
+}
+
+#kc-page-title {
+    margin: 0 0 8px 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-color);
+    letter-spacing: -0.5px;
 }
 
 .subtitle {
-    margin: 0 0 28px 0;
+    margin: 0;
+    font-size: 14px;
     color: var(--text-muted);
-    font-size: 14px;
-    text-align: left;
-    font-style: italic;
-    font-family: 'Georgia', serif;
-}
-
-/* Alert Messages */
-.alert {
-    padding: 12px 14px;
-    border-radius: 0;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    border-left: 3px solid;
-    background: var(--input-bg);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-size: 13px;
-}
-
-.alert-success {
-    border-left-color: var(--success-color);
-    background: rgba(122, 155, 118, 0.08);
-    color: #4a5d48;
-}
-
-.alert-error {
-    border-left-color: var(--error-color);
-    background: rgba(201, 112, 100, 0.08);
-    color: #6b4842;
-}
-
-.alert-warning {
-    border-left-color: var(--warning-color);
-    background: rgba(212, 165, 116, 0.08);
-    color: #6b5942;
-}
-
-.alert-info {
-    border-left-color: var(--info-color);
-    background: rgba(124, 158, 178, 0.08);
-    color: #425663;
-}
-
-.alert .icon {
-    font-size: 14px;
-    font-weight: normal;
-    font-style: normal;
-    line-height: 1.4;
-}
-
-/* Form Styles */
-.auth-form {
-    width: 100%;
-}
-
-.form-group {
-    margin-bottom: 18px;
-}
-
-.form-label {
-    display: block;
-    margin-bottom: 6px;
-    color: var(--text-color);
-    font-size: 13px;
     font-weight: 400;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    letter-spacing: 0.2px;
 }
 
-.form-input {
-    width: 100%;
-    padding: 10px 12px;
-    font-size: 14px;
-    border: 1px solid var(--border-color);
-    border-radius: 0;
-    transition: all 0.2s ease;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: var(--input-bg);
+/* ========================================
+   Form Elements
+   ======================================== */
+.form-group {
+    margin-bottom: var(--spacing-lg);
+}
+
+label {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
     color: var(--text-color);
 }
 
-.form-input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 1px var(--primary-color);
-    background: #ffffff;
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+select,
+textarea {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 14px;
+    font-family: var(--font-sans);
+    color: var(--text-color);
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
 }
 
-.form-input::placeholder {
+input::placeholder {
     color: var(--text-light);
-    font-style: italic;
-    font-size: 13px;
+    font-style: normal;
 }
 
-.form-group.has-error .form-input {
-    border-color: var(--error-color);
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--text-color);
+    box-shadow: 0 0 0 1px var(--text-color);
+}
+
+input:disabled {
+    background: #f5f5f5;
+    cursor: not-allowed;
 }
 
 .input-error {
     display: block;
-    margin-top: 5px;
-    color: var(--error-color);
+    margin-top: var(--spacing-xs);
     font-size: 12px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: var(--error-color);
 }
 
-/* Form Options */
-.form-options {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    font-size: 13px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+.has-error input {
+    border-color: var(--error-color);
 }
 
-.checkbox label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: var(--text-muted);
-    cursor: pointer;
-    font-weight: 400;
-}
-
-.checkbox input[type="checkbox"] {
-    width: 15px;
-    height: 15px;
-    cursor: pointer;
-    accent-color: var(--primary-color);
-}
-
-.forgot-password {
-    color: var(--primary-color);
-    text-decoration: none;
-    font-weight: 400;
-    transition: color 0.2s ease;
-}
-
-.forgot-password:hover {
-    color: var(--primary-dark);
-    text-decoration: underline;
-}
-
-/* Buttons */
+/* ========================================
+   Buttons
+   ======================================== */
 .btn {
-    padding: 11px 20px;
-    font-size: 14px;
-    font-weight: 400;
-    border-radius: 0;
-    border: 1px solid;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    text-decoration: none;
     display: inline-block;
+    padding: 14px 24px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
     text-align: center;
-    letter-spacing: 0.3px;
+    cursor: pointer;
+    border: none;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+    font-family: var(--font-sans);
 }
 
 .btn-primary {
     background: var(--primary-color);
-    color: var(--card-bg);
-    border-color: var(--primary-color);
+    color: var(--secondary-color);
 }
 
-.btn-primary:hover:not(:disabled) {
-    background: var(--primary-dark);
-    border-color: var(--primary-dark);
-    box-shadow: 0 2px 8px rgba(139, 115, 85, 0.15);
+.btn-primary:hover {
+    background: #333333;
 }
 
-.btn-primary:active:not(:disabled) {
+.btn-primary:active {
     transform: translateY(1px);
 }
 
-.btn-primary:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+.btn-secondary {
+    background: var(--secondary-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background: #f9f9f9;
 }
 
 .btn-block {
@@ -271,163 +239,426 @@
     display: block;
 }
 
-/* Form Footer */
-.form-footer {
-    margin-top: 24px;
-    text-align: center;
-    padding-top: 20px;
-    border-top: 1px solid var(--border-color);
+button[type="submit"] {
+    width: 100%;
 }
 
-.form-footer p {
-    margin: 0;
-    color: var(--text-muted);
+/* ========================================
+   Form Actions
+   ======================================== */
+#kc-form-buttons {
+    margin-top: var(--spacing-xl);
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+#kc-form-buttons .btn {
+    flex: 1;
+}
+
+/* Single button - full width */
+#kc-form-buttons .btn:only-child {
+    width: 100%;
+}
+
+/* ========================================
+   Checkbox
+   ======================================== */
+.checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+    margin: var(--spacing-lg) 0;
+}
+
+input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.checkbox label {
     font-size: 13px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-}
-
-.form-footer a {
-    color: var(--primary-color);
-    text-decoration: none;
     font-weight: 400;
-    transition: color 0.2s ease;
+    text-transform: none;
+    letter-spacing: 0;
+    margin: 0;
+    cursor: pointer;
 }
 
-.form-footer a:hover {
-    color: var(--primary-dark);
+/* ========================================
+   Form Options
+   ======================================== */
+#kc-form-options {
+    margin-top: var(--spacing-md);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+}
+
+#kc-form-options .checkbox {
+    margin: 0;
+}
+
+#kc-form-options a {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-decoration: none;
+}
+
+#kc-form-options a:hover {
+    color: var(--text-color);
     text-decoration: underline;
 }
 
-/* Info/Success Page */
-.info-content {
+/* ========================================
+   Registration Link
+   ======================================== */
+#kc-registration {
+    margin-top: var(--spacing-xl);
     text-align: center;
-    padding: 20px 0;
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--border-color);
 }
 
+#kc-registration span {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+#kc-registration a {
+    font-size: 13px;
+    color: var(--text-color);
+    font-weight: 600;
+    text-decoration: none;
+    margin-left: 4px;
+}
+
+#kc-registration a:hover {
+    text-decoration: underline;
+}
+
+/* ========================================
+   Alert Messages
+   ======================================== */
+.alert {
+    padding: 14px 16px;
+    margin-bottom: var(--spacing-lg);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    line-height: 1.5;
+    border-left: 3px solid;
+}
+
+.alert-success {
+    background: rgba(45, 122, 62, 0.08);
+    border-left-color: var(--success-color);
+    color: var(--success-color);
+}
+
+.alert-error {
+    background: rgba(197, 48, 48, 0.08);
+    border-left-color: var(--error-color);
+    color: var(--error-color);
+}
+
+.alert-warning {
+    background: rgba(214, 158, 46, 0.08);
+    border-left-color: var(--warning-color);
+    color: var(--warning-color);
+}
+
+.alert-info {
+    background: rgba(49, 130, 206, 0.08);
+    border-left-color: var(--info-color);
+    color: var(--info-color);
+}
+
+/* ========================================
+   Info/Success Pages
+   ======================================== */
+.info-content {
+    text-align: center;
+    padding: var(--spacing-lg) 0;
+}
+
+.info-icon,
 .success-icon,
 .error-icon,
-.warning-icon,
-.info-icon-default {
-    width: 64px;
-    height: 64px;
-    margin: 0 auto 20px;
-    color: var(--card-bg);
+.warning-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto var(--spacing-lg);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 32px;
-    font-weight: normal;
-    border: 2px solid;
+    font-size: 28px;
 }
 
 .success-icon {
-    background: var(--success-color);
-    border-color: var(--success-color);
+    background: rgba(45, 122, 62, 0.1);
+    color: var(--success-color);
 }
 
 .error-icon {
-    background: var(--error-color);
-    border-color: var(--error-color);
+    background: rgba(197, 48, 48, 0.1);
+    color: var(--error-color);
 }
 
 .warning-icon {
-    background: var(--warning-color);
-    border-color: var(--warning-color);
+    background: rgba(214, 158, 46, 0.1);
+    color: var(--warning-color);
 }
 
 .info-icon-default {
-    background: var(--info-color);
-    border-color: var(--info-color);
+    background: rgba(49, 130, 206, 0.1);
+    color: var(--info-color);
 }
 
 .info-content h3 {
-    margin: 0 0 12px 0;
-    color: var(--text-color);
+    margin: 0 0 var(--spacing-sm) 0;
     font-size: 20px;
-    font-weight: 400;
+    font-weight: 700;
+    color: var(--text-color);
 }
 
-.success-message,
 .info-message {
-    color: var(--text-muted);
+    margin: var(--spacing-md) 0;
     font-size: 14px;
-    margin-bottom: 28px;
-    line-height: 1.6;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-}
-
-.redirect-notice {
-    margin: 28px 0;
-}
-
-.redirect-notice p {
     color: var(--text-muted);
-    margin-bottom: 16px;
-    font-size: 13px;
-    font-style: italic;
-    font-family: 'Georgia', serif;
+    line-height: 1.6;
 }
 
+/* ========================================
+   Responsive
+   ======================================== */
+@media (max-width: 480px) {
+    #kc-container {
+        padding: 12px;
+        margin: 20px auto;
+    }
+    
+    #kc-container-wrapper {
+        padding: 32px 24px;
+    }
+    
+    #kc-header {
+        padding: 16px 20px;
+    }
+    
+    #kc-page-title {
+        font-size: 20px;
+    }
+    
+    #kc-form-buttons {
+        flex-direction: column;
+    }
+    
+    #kc-form-buttons .btn {
+        width: 100%;
+    }
+    
+    #kc-form-options {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+/* ========================================
+   Loading State
+   ======================================== */
 .spinner {
-    width: 32px;
-    height: 32px;
-    margin: 16px auto;
-    border: 3px solid var(--border-color);
-    border-top-color: var(--primary-color);
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-top-color: var(--text-color);
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
     to { transform: rotate(360deg); }
 }
 
-/* Footer */
-.keycloak-footer {
-    padding: 16px 32px;
-    text-align: center;
-    background: var(--background);
+/* ========================================
+   Accessibility
+   ======================================== */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+:focus-visible {
+    outline: 2px solid var(--text-color);
+    outline-offset: 2px;
+}
+
+/* ========================================
+   Terms and Conditions
+   ======================================== */
+#kc-terms-text {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: var(--spacing-md);
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--spacing-lg);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* ========================================
+   Social Providers (if needed)
+   ======================================== */
+#kc-social-providers {
+    margin-top: var(--spacing-xl);
+    padding-top: var(--spacing-xl);
     border-top: 1px solid var(--border-color);
 }
 
-.keycloak-footer p {
+#kc-social-providers ul {
+    list-style: none;
+    padding: 0;
     margin: 0;
-    color: var(--text-light);
-    font-size: 12px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
 }
 
-/* Responsive */
-@media (max-width: 480px) {
-    .keycloak-body {
-        padding: 0;
-    }
-    
-    .keycloak-container {
-        margin: 0;
-        border-radius: 0;
-        border-left: none;
-        border-right: none;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .keycloak-header,
-    .keycloak-content,
-    .keycloak-footer {
-        padding-left: 24px;
-        padding-right: 24px;
-    }
-    
-    .form-options {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
-    
-    .keycloak-content h2 {
-        font-size: 20px;
-    }
+#kc-social-providers li {
+    margin: 0;
+}
+
+#kc-social-providers a {
+    display: block;
+    padding: 12px 16px;
+    text-align: center;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+#kc-social-providers a:hover {
+    background: #f9f9f9;
+    border-color: var(--text-color);
+}
+
+/* ========================================
+   Keycloak Specific Classes
+   ======================================== */
+.login-pf body {
+    background: var(--background);
+}
+
+#kc-content {
+    width: 100%;
+}
+
+#kc-form {
+    width: 100%;
+}
+
+.pf-c-form__group {
+    margin-bottom: var(--spacing-lg);
+}
+
+.pf-c-form__label {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.pf-c-form-control {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 14px;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+}
+
+/* ========================================
+   Password Visibility Toggle
+   ======================================== */
+.pf-c-button.pf-m-control {
+    background: transparent;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    color: var(--text-muted);
+}
+
+.pf-c-button.pf-m-control:hover {
+    color: var(--text-color);
+}
+
+/* ========================================
+   Back Link
+   ======================================== */
+#kc-back {
+    margin-top: var(--spacing-lg);
+}
+
+#kc-back a {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-decoration: none;
+}
+
+#kc-back a:hover {
+    color: var(--text-color);
+    text-decoration: underline;
+}
+
+/* ========================================
+   Info Page Specific
+   ======================================== */
+#kc-info {
+    margin-top: var(--spacing-lg);
+    text-align: center;
+}
+
+#kc-info-message {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+/* ========================================
+   Locale Selector
+   ======================================== */
+#kc-locale {
+    position: absolute;
+    top: 20px;
+    right: 40px;
+}
+
+#kc-locale select {
+    padding: 8px 12px;
+    font-size: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background: var(--input-bg);
 }

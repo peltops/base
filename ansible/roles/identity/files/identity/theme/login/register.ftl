@@ -1,17 +1,16 @@
 <#import "template.ftl" as layout>
 <@layout.mainLayout active='register' displayMessage=!messagesPerField.existsError('username','email','password','password-confirm'); section>
     <#if section = "header">
-        <h2>Create Your Account</h2>
+        <h1 id="kc-page-title">Register</h1>
         <p class="subtitle">Enter your details to get started</p>
     <#elseif section = "form">
-        <form id="kc-register-form" class="auth-form" action="${url.registrationAction}" method="post">
+        <form id="kc-register-form" action="${url.registrationAction}" method="post">
             
             <#if !realm.registrationEmailAsUsername>
                 <div class="form-group ${messagesPerField.printIfExists('username','has-error')}">
-                    <label for="username" class="form-label">${msg("username")}</label>
+                    <label for="username">${msg("username")}</label>
                     <input type="text" 
-                           id="username" 
-                           class="form-input" 
+                           id="username"
                            name="username"
                            value="${(register.formData.username!'')}" 
                            autocomplete="username"
@@ -26,10 +25,9 @@
             </#if>
 
             <div class="form-group ${messagesPerField.printIfExists('email','has-error')}">
-                <label for="email" class="form-label">${msg("email")}</label>
+                <label for="email">${msg("email")}</label>
                 <input type="email" 
-                       id="email" 
-                       class="form-input" 
+                       id="email"
                        name="email"
                        value="${(register.formData.email!'')}" 
                        autocomplete="email"
@@ -43,13 +41,12 @@
             </div>
 
             <div class="form-group ${messagesPerField.printIfExists('password','has-error')}">
-                <label for="password" class="form-label">${msg("password")}</label>
+                <label for="password">${msg("password")}</label>
                 <input type="password" 
-                       id="password" 
-                       class="form-input" 
+                       id="password"
                        name="password"
                        autocomplete="new-password"
-                       placeholder="Create a password"
+                       placeholder="Enter your password"
                        aria-invalid="<#if messagesPerField.existsError('password')>true</#if>" />
                 <#if messagesPerField.existsError('password')>
                     <span class="input-error" aria-live="polite">
@@ -59,10 +56,9 @@
             </div>
 
             <div class="form-group ${messagesPerField.printIfExists('password-confirm','has-error')}">
-                <label for="password-confirm" class="form-label">${msg("passwordConfirm")}</label>
+                <label for="password-confirm">${msg("passwordConfirm")}</label>
                 <input type="password" 
-                       id="password-confirm" 
-                       class="form-input" 
+                       id="password-confirm"
                        name="password-confirm"
                        autocomplete="new-password"
                        placeholder="Confirm your password"
@@ -74,17 +70,26 @@
                 </#if>
             </div>
 
+            <!-- Terms and Conditions Checkbox -->
+            <div class="checkbox">
+                <input type="checkbox" id="terms" name="terms" required />
+                <label for="terms">I agree to Terms and Policies</label>
+            </div>
+
             <#if recaptchaRequired??>
                 <div class="form-group">
                     <div class="g-recaptcha" data-sitekey="${recaptchaSiteKey}"></div>
                 </div>
             </#if>
 
-            <div class="form-actions">
-                <input type="hidden" id="id-hidden-input" name="credentialId" <#if auth.selectedCredential?has_content>value="${auth.selectedCredential}"</#if>/>
-                <button type="submit" class="btn btn-primary btn-block">
+            <div id="kc-form-buttons">
+                <input type="hidden" name="credentialId" <#if auth.selectedCredential?has_content>value="${auth.selectedCredential}"</#if>/>
+                <button type="submit" class="btn btn-primary">
                     ${msg("doRegister")}
                 </button>
+                <a href="${url.loginUrl}" class="btn btn-secondary">
+                    Cancel
+                </a>
             </div>
         </form>
         

@@ -22,44 +22,45 @@
     </#if>
 </head>
 
-<body class="keycloak-body">
-    <div class="keycloak-container">
-        <div class="keycloak-header">
-            <div class="logo">
-                <h1>⊹ ${realm.displayName!''?html} ⊹</h1>
-            </div>
+<body class="login-pf-page">
+    <!-- Top Header -->
+    <div id="kc-header">
+        <div id="kc-header-wrapper">${realm.displayName!''?html}</div>
         </div>
         
-        <div class="keycloak-content">
+    <!-- Main Container -->
+    <div id="kc-container">
+        <div id="kc-container-wrapper">
+            
+            <!-- Alert Messages -->
             <#if displayMessage && message?has_content && (message.type != 'warning' || !isAppInitiatedAction??)>
                 <div class="alert alert-${message.type}">
-                    <#if message.type = 'success'>
-                        <span class="icon">✓</span>
-                    </#if>
-                    <#if message.type = 'error'>
-                        <span class="icon">✕</span>
-                    </#if>
-                    <#if message.type = 'warning'>
-                        <span class="icon">⚠</span>
-                    </#if>
-                    <#if message.type = 'info'>
-                        <span class="icon">ℹ</span>
-                    </#if>
-                    <span class="message">${message.summary?html}</span>
+                    ${message.summary?html}
                 </div>
             </#if>
             
+            <!-- Page Content -->
+            <div id="kc-content">
+                <div id="kc-content-wrapper">
+                    <!-- Form Header Section -->
+                    <div id="kc-form-header">
             <#nested "header">
+                    </div>
             
+                    <!-- Form Section -->
+                    <div id="kc-form">
             <#nested "form">
+                    </div>
             
+                    <!-- Info Section -->
             <#if displayInfo>
+                        <div id="kc-info">
                 <#nested "info">
+                        </div>
             </#if>
+                </div>
         </div>
         
-        <div class="keycloak-footer">
-            <p>&copy; ${.now?string('yyyy')} ${realm.displayName!''?html}. All rights reserved.</p>
         </div>
     </div>
 </body>
