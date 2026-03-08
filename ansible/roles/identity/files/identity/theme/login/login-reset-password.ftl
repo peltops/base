@@ -27,7 +27,7 @@
                 
                 <#if messagesPerField.existsError('username')>
                     <span class="input-error" aria-live="polite">
-                        ${kcSanitize(messagesPerField.get('username'))?no_esc}
+                        ${messagesPerField.get('username')?html}
                     </span>
                 </#if>
             </div>
