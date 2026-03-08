@@ -19,7 +19,7 @@
                            aria-invalid="<#if messagesPerField.existsError('username')>true</#if>" />
                     <#if messagesPerField.existsError('username')>
                         <span class="input-error" aria-live="polite">
-                            ${kcSanitize(messagesPerField.get('username'))}
+                            ${kcSanitize(messagesPerField.get('username'))?no_esc}
                         </span>
                     </#if>
                 </div>
@@ -37,7 +37,7 @@
                        aria-invalid="<#if messagesPerField.existsError('email')>true</#if>" />
                 <#if messagesPerField.existsError('email')>
                     <span class="input-error" aria-live="polite">
-                        ${kcSanitize(messagesPerField.get('email'))}
+                        ${kcSanitize(messagesPerField.get('email'))?no_esc}
                     </span>
                 </#if>
             </div>
@@ -85,7 +85,7 @@
                        aria-invalid="<#if messagesPerField.existsError('password')>true</#if>" />
                 <#if messagesPerField.existsError('password')>
                     <span class="input-error" aria-live="polite">
-                        ${kcSanitize(messagesPerField.get('password'))}
+                        ${kcSanitize(messagesPerField.get('password'))?no_esc}
                     </span>
                 </#if>
             </div>
@@ -101,7 +101,7 @@
                        aria-invalid="<#if messagesPerField.existsError('password-confirm')>true</#if>" />
                 <#if messagesPerField.existsError('password-confirm')>
                     <span class="input-error" aria-live="polite">
-                        ${kcSanitize(messagesPerField.get('password-confirm'))}
+                        ${kcSanitize(messagesPerField.get('password-confirm'))?no_esc}
                     </span>
                 </#if>
             </div>
