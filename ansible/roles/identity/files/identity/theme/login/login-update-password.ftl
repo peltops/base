@@ -32,7 +32,7 @@
                        aria-invalid="<#if messagesPerField.existsError('password')>true</#if>" />
                 <#if messagesPerField.existsError('password')>
                     <span class="input-error" aria-live="polite">
-                        ${kcSanitize(messagesPerField.get('password'))?no_esc}
+                        ${messagesPerField.get('password')?html}
                     </span>
                 </#if>
             </div>
@@ -48,7 +48,7 @@
                        aria-invalid="<#if messagesPerField.existsError('password-confirm')>true</#if>" />
                 <#if messagesPerField.existsError('password-confirm')>
                     <span class="input-error" aria-live="polite">
-                        ${kcSanitize(messagesPerField.get('password-confirm'))?no_esc}
+                        ${messagesPerField.get('password-confirm')?html}
                     </span>
                 </#if>
             </div>

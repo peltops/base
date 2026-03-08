@@ -6,7 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="robots" content="noindex, nofollow">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>${msg("loginTitle",(realm.displayName!''))}</title>
+    <title>${msg("loginTitle",(realm.displayName!''))?html}</title>
     <link rel="icon" href="${url.resourcesPath}/img/favicon.ico" />
     
     <#if properties.styles?has_content>
@@ -26,7 +26,7 @@
     <div class="keycloak-container">
         <div class="keycloak-header">
             <div class="logo">
-                <h1>⊹ ${realm.displayName!''} ⊹</h1>
+                <h1>⊹ ${realm.displayName!''?html} ⊹</h1>
             </div>
         </div>
         
@@ -45,7 +45,7 @@
                     <#if message.type = 'info'>
                         <span class="icon">ℹ</span>
                     </#if>
-                    <span class="message">${kcSanitize(message.summary)?no_esc}</span>
+                    <span class="message">${message.summary?html}</span>
                 </div>
             </#if>
             
@@ -59,7 +59,7 @@
         </div>
         
         <div class="keycloak-footer">
-            <p>&copy; ${.now?string('yyyy')} ${realm.displayName!''}. All rights reserved.</p>
+            <p>&copy; ${.now?string('yyyy')} ${realm.displayName!''?html}. All rights reserved.</p>
         </div>
     </div>
 </body>

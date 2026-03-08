@@ -4,7 +4,7 @@
         <h2>${msg("termsTitle")}</h2>
     <#elseif section = "form">
         <div id="kc-terms-text" style="margin-bottom: 24px; padding: 20px; background: var(--background); border: 1px solid var(--border-color); max-height: 400px; overflow-y: auto; font-size: 14px; line-height: 1.6;">
-            ${kcSanitize(msg("termsText"))?no_esc}
+            ${msg("termsText")?html}
         </div>
         
         <form class="auth-form" action="${url.loginAction}" method="POST">

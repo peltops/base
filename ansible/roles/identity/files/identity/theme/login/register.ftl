@@ -1,5 +1,5 @@
 <#import "template.ftl" as layout>
-<@layout.mainLayout active='register' displayMessage=!messagesPerField.existsError('username','email','firstName','lastName','password','password-confirm'); section>
+<@layout.mainLayout active='register' displayMessage=!messagesPerField.existsError('username','email','password','password-confirm'); section>
     <#if section = "header">
         <h2>Create Your Account</h2>
         <p class="subtitle">Enter your details to get started</p>
@@ -19,7 +19,7 @@
                            aria-invalid="<#if messagesPerField.existsError('username')>true</#if>" />
                     <#if messagesPerField.existsError('username')>
                         <span class="input-error" aria-live="polite">
-                            ${kcSanitize(messagesPerField.get('username'))?no_esc}
+                            ${messagesPerField.get('username')?html}
                         </span>
                     </#if>
                 </div>
@@ -37,39 +37,7 @@
                        aria-invalid="<#if messagesPerField.existsError('email')>true</#if>" />
                 <#if messagesPerField.existsError('email')>
                     <span class="input-error" aria-live="polite">
-                        ${kcSanitize(messagesPerField.get('email'))?no_esc}
-                    </span>
-                </#if>
-            </div>
-
-            <div class="form-group ${messagesPerField.printIfExists('firstName','has-error')}">
-                <label for="firstName" class="form-label">${msg("firstName")}</label>
-                <input type="text" 
-                       id="firstName" 
-                       class="form-input" 
-                       name="firstName"
-                       value="${(register.formData.firstName!'')}"
-                       placeholder="Enter your first name"
-                       aria-invalid="<#if messagesPerField.existsError('firstName')>true</#if>" />
-                <#if messagesPerField.existsError('firstName')>
-                    <span class="input-error" aria-live="polite">
-                        ${kcSanitize(messagesPerField.get('firstName'))?no_esc}
-                    </span>
-                </#if>
-            </div>
-
-            <div class="form-group ${messagesPerField.printIfExists('lastName','has-error')}">
-                <label for="lastName" class="form-label">${msg("lastName")}</label>
-                <input type="text" 
-                       id="lastName" 
-                       class="form-input" 
-                       name="lastName"
-                       value="${(register.formData.lastName!'')}"
-                       placeholder="Enter your last name"
-                       aria-invalid="<#if messagesPerField.existsError('lastName')>true</#if>" />
-                <#if messagesPerField.existsError('lastName')>
-                    <span class="input-error" aria-live="polite">
-                        ${kcSanitize(messagesPerField.get('lastName'))?no_esc}
+                        ${messagesPerField.get('email')?html}
                     </span>
                 </#if>
             </div>
@@ -85,7 +53,7 @@
                        aria-invalid="<#if messagesPerField.existsError('password')>true</#if>" />
                 <#if messagesPerField.existsError('password')>
                     <span class="input-error" aria-live="polite">
-                        ${kcSanitize(messagesPerField.get('password'))?no_esc}
+                        ${messagesPerField.get('password')?html}
                     </span>
                 </#if>
             </div>
@@ -101,7 +69,7 @@
                        aria-invalid="<#if messagesPerField.existsError('password-confirm')>true</#if>" />
                 <#if messagesPerField.existsError('password-confirm')>
                     <span class="input-error" aria-live="polite">
-                        ${kcSanitize(messagesPerField.get('password-confirm'))?no_esc}
+                        ${messagesPerField.get('password-confirm')?html}
                     </span>
                 </#if>
             </div>

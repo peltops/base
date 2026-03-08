@@ -17,7 +17,7 @@
                            aria-invalid="<#if messagesPerField.existsError('username')>true</#if>" />
                     <#if messagesPerField.existsError('username')>
                         <span class="input-error" aria-live="polite">
-                            ${kcSanitize(messagesPerField.get('username'))?no_esc}
+                            ${messagesPerField.get('username')?html}
                         </span>
                     </#if>
                 </div>
@@ -38,7 +38,7 @@
                        />
                 <#if messagesPerField.existsError('email')>
                     <span class="input-error" aria-live="polite">
-                        ${kcSanitize(messagesPerField.get('email'))?no_esc}
+                        ${messagesPerField.get('email')?html}
                     </span>
                 </#if>
             </div>
@@ -53,7 +53,7 @@
                        aria-invalid="<#if messagesPerField.existsError('firstName')>true</#if>" />
                 <#if messagesPerField.existsError('firstName')>
                     <span class="input-error" aria-live="polite">
-                        ${kcSanitize(messagesPerField.get('firstName'))?no_esc}
+                        ${messagesPerField.get('firstName')?html}
                     </span>
                 </#if>
             </div>
@@ -68,7 +68,7 @@
                        aria-invalid="<#if messagesPerField.existsError('lastName')>true</#if>" />
                 <#if messagesPerField.existsError('lastName')>
                     <span class="input-error" aria-live="polite">
-                        ${kcSanitize(messagesPerField.get('lastName'))?no_esc}
+                        ${messagesPerField.get('lastName')?html}
                     </span>
                 </#if>
             </div>

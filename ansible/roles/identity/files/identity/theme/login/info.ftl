@@ -2,9 +2,9 @@
 <@layout.mainLayout active='' displayMessage=false; section>
     <#if section = "header">
         <#if messageHeader??>
-            <h2>${messageHeader}</h2>
+            <h2>${messageHeader?html}</h2>
         <#else>
-            <h2>${message.summary}</h2>
+            <h2>${message.summary?html}</h2>
         </#if>
     <#elseif section = "form">
         <div class="info-content">
@@ -28,7 +28,7 @@
                         <div class="info-icon-default">ℹ</div>
                     </#if>
                 </div>
-                <p class="info-message">${kcSanitize(message.summary)?no_esc}</p>
+                <p class="info-message">${message.summary?html}</p>
             </#if>
 
             <#if skipLink??>
@@ -39,19 +39,19 @@
             <#else>
                 <#if pageRedirectUri?has_content>
                     <div class="form-actions">
-                        <a href="${pageRedirectUri}" class="btn btn-primary btn-block">
+                        <a href="${pageRedirectUri?html}" class="btn btn-primary btn-block">
                             ${msg("backToApplication")}
                         </a>
                     </div>
                 <#elseif actionUri?has_content>
                     <div class="form-actions">
-                        <a href="${actionUri}" class="btn btn-primary btn-block">
+                        <a href="${actionUri?html}" class="btn btn-primary btn-block">
                             ${msg("proceedWithAction")}
                         </a>
                     </div>
                 <#elseif (client.baseUrl)?has_content>
                     <div class="form-actions">
-                        <a href="${client.baseUrl}" class="btn btn-primary btn-block">
+                        <a href="${client.baseUrl?html}" class="btn btn-primary btn-block">
                             ${msg("backToApplication")}
                         </a>
                     </div>
@@ -68,7 +68,7 @@
         <#if skipLink?? && pageRedirectUri?has_content>
             <script>
                 setTimeout(function() {
-                    window.location.href = '${pageRedirectUri}';
+                    window.location.href = ${pageRedirectUri?js_string};
                 }, 3000);
             </script>
         </#if>
