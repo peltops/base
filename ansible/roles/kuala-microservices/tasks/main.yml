@@ -1,9 +1,8 @@
 ---
-- name: "Create directory"
+- name: Create kuala-microservices directory
   file:
-    path: /opt/kuala-microservices
+    path: "{{ kuala_microservices_dest_dir }}"
     state: directory
 
-- name: copy kuala-microservices apps
+- name: Copy kuala-microservices apps
   include_tasks: apps.yaml
-

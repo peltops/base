@@ -1,36 +1,36 @@
 ---
-- name: copy kuala-microservices files
+- name: Copy kuala-microservices files
   copy:
     src: ../files/kuala-microservices
     dest: /opt
 
-- name: copy account service
+- name: Copy microservice directories
   copy:
-    src: ../../../../submodules/kuala-api/services/account-service
-    dest: /opt/kuala-microservices/account-service
+    src: "{{ kuala_api_src_dir }}/services/{{ item }}"
+    dest: "{{ kuala_microservices_dest_dir }}/{{ item }}"
+  loop: "{{ microservices_list }}"
 
-- name: copy subscription service
+- name: Copy deno.json for each service
   copy:
-    src: ../../../../submodules/kuala-api/services/subscription-service
-    dest: /opt/kuala-microservices/subscription-service
+    src: "{{ kuala_api_src_dir }}/deno.json"
+    dest: "{{ kuala_microservices_dest_dir }}/{{ item }}/deno.json"
+  loop: "{{ microservices_list }}"
 
-- name: copy invoice service
+- name: Copy deno.lock for each service
   copy:
-    src: ../../../../submodules/kuala-api/services/invoice-service
-    dest: /opt/kuala-microservices/invoice-service
+    src: "{{ kuala_api_src_dir }}/deno.lock"
+    dest: "{{ kuala_microservices_dest_dir }}/{{ item }}/deno.lock"
+  loop: "{{ microservices_list }}"
 
-- name: copy deno.json for each services
+- name: Copy shared library for each service
   copy:
-    src: ../../../../submodules/kuala-api/deno.json
-    dest: /opt/kuala-microservices/{{ item }}/deno.json
-  loop:
-    - account-service
-    - subscription-service
-    - invoice-service
+    src: "{{ kuala_api_src_dir }}/supabase/functions/_shared"
+    dest: "{{ kuala_microservices_dest_dir }}/{{ item }}/supabase/functions/_shared"
+  loop: "{{ microservices_list }}"
 
-- name: deploy kuala-microservices apps 
+- name: Deploy kuala-microservices apps 
   community.docker.docker_compose_v2:
-    project_src: /opt/kuala-microservices
+    project_src: "{{ kuala_microservices_dest_dir }}"
     files: 
       - "docker-compose.yaml"
     state: present
