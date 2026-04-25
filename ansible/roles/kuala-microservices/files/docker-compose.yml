@@ -1,3 +1,12 @@
+name: kuala-microservices
+
+x-logging: &default-logging
+  driver: loki:latest
+  options:
+    loki-url: "https://${GRAFANA_USER}:${GRAFANA_TOKEN}@${GRAFANA_HOST}/loki/api/v1/push"
+    loki-batch-size: 400
+
+
 services:
     account-service:
         build:
@@ -17,6 +26,7 @@ services:
             retries: 5
             start_period: 30s
         restart: unless-stopped
+        logging: *default-logging
 
     invoice-service:
         build:
@@ -36,6 +46,7 @@ services:
             retries: 5
             start_period: 30s
         restart: unless-stopped
+        logging: *default-logging
 
     subscription-service:
         build:
@@ -55,3 +66,4 @@ services:
             retries: 5
             start_period: 30s
         restart: unless-stopped
+        logging: *default-logging
