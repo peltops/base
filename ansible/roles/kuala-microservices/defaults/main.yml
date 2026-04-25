@@ -1,0 +1,7 @@
+---
+kuala_microservices_dest_dir: /opt/kuala-microservices
+kuala_api_src_dir: "../../../../submodules/kuala-api"
+microservices_list:
+  - account-service
+  - subscription-service
+  - invoice-service
