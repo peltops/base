@@ -1,0 +1,9 @@
+---
+- name: "Create directory"
+  file:
+    path: /opt/kuala-microservices
+    state: directory
+
+- name: copy kuala-microservices apps
+  include_tasks: apps.yaml
+

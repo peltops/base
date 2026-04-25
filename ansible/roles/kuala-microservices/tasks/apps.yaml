@@ -1,0 +1,41 @@
+---
+- name: copy kuala-microservices files
+  copy:
+    src: ../files/kuala-microservices
+    dest: /opt
+
+- name: copy account service
+  copy:
+    src: ../../../../submodules/kuala-api/services/account-service
+    dest: /opt/kuala-microservices/account-service
+
+- name: copy subscription service
+  copy:
+    src: ../../../../submodules/kuala-api/services/subscription-service
+    dest: /opt/kuala-microservices/subscription-service
+
+- name: copy invoice service
+  copy:
+    src: ../../../../submodules/kuala-api/services/invoice-service
+    dest: /opt/kuala-microservices/invoice-service
+
+- name: copy deno.json for each services
+  copy:
+    src: ../../../../submodules/kuala-api/deno.json
+    dest: /opt/kuala-microservices/{{ item }}/deno.json
+  loop:
+    - account-service
+    - subscription-service
+    - invoice-service
+
+- name: deploy kuala-microservices apps 
+  community.docker.docker_compose_v2:
+    project_src: /opt/kuala-microservices
+    files: 
+      - "docker-compose.yaml"
+    state: present
+  register: output
+
+- name: Show results
+  ansible.builtin.debug:
+    var: output
