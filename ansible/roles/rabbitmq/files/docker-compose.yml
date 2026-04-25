@@ -1,4 +1,11 @@
-version: "3.8"
+name: rabbitmq
+
+x-logging: &default-logging
+  driver: loki:latest
+  options:
+    loki-url: "https://${GRAFANA_USER}:${GRAFANA_TOKEN}@${GRAFANA_HOST}/loki/api/v1/push"
+    loki-batch-size: 400
+
 services:
     rabbitmq:
         image: rabbitmq:3-management
@@ -14,6 +21,7 @@ services:
             RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
         volumes:
             - rabbitmq_data:/var/lib/rabbitmq
+        logging: *default-logging
 
 volumes:
     rabbitmq_data:
