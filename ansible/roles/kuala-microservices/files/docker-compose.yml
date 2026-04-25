@@ -11,7 +11,7 @@ services:
     account-service:
         build:
             context: ../
-            dockerfile: services/account-service/Dockerfile
+            dockerfile: account-service/Dockerfile
         container_name: account-service
         ports:
             - "9001:8001"
@@ -31,7 +31,7 @@ services:
     invoice-service:
         build:
             context: ../
-            dockerfile: services/invoice-service/Dockerfile
+            dockerfile: invoice-service/Dockerfile
         container_name: invoice-service
         ports:
             - "9002:8002"
@@ -51,7 +51,7 @@ services:
     subscription-service:
         build:
             context: ../
-            dockerfile: services/subscription-service/Dockerfile
+            dockerfile: subscription-service/Dockerfile
         container_name: subscription-service
         ports:
             - "9003:8003"

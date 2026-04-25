@@ -1,14 +1,14 @@
 ---
 - name: copy rabbitmq files
   copy:
-    src: ../files/rabbitmq
-    dest: /opt
+    src: ../files/
+    dest: /opt/rabbitmq/
 
 - name: deploy/restart rabbitmq apps 
   community.docker.docker_compose_v2:
     project_src: /opt/rabbitmq
     files: 
-      - "docker-compose.yaml"
+      - "docker-compose.yml"
     state: present
   register: output
 
