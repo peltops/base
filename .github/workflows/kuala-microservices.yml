@@ -1,0 +1,35 @@
+name: Run kuala microservices playbook
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - ansible/roles/kuala-microservices/**
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main repo with submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Verify submodule content
+        run: |
+          ls -R submodules/kuala-api/
+
+      - name: Run kuala playbook
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          playbook: playbook/kuala-microservices.yaml
+          directory: ./ansible
+          key: ${{secrets.SSH_PRIVATE_KEY}}
+          vault_password: ${{secrets.VAULT_PASSWORD}}
+          requirements: ./requirements.yml
+          options: |
+            -i inventory/base.ini
+            --verbose        
+            --tags=kuala-microservices
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: false
