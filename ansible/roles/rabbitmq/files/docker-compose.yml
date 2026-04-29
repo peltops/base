@@ -8,7 +8,7 @@ x-logging: &default-logging
 
 services:
     rabbitmq:
-        image: rabbitmq:3-management
+        image: dhi.io/rabbitmq:4.2
         container_name: rabbitmq
         hostname: rabbitmq
         ports:
@@ -16,12 +16,23 @@ services:
             - "15672:15672"
         env_file:
             - .env
-        environment:
-            RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
-            RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+        configs:
+            - source: rabbitmq-plugins
+              target: /etc/rabbitmq/enabled_plugins
         volumes:
             - rabbitmq_data:/var/lib/rabbitmq
+        healthcheck:
+            test: ["CMD", "rabbitmq-diagnostics", "ping"]
+            interval: 10s
+            timeout: 5s
+            retries: 10
+            start_period: 30s
+        restart: unless-stopped
         logging: *default-logging
+
+configs:
+    rabbitmq-plugins:
+        content: "[rabbitmq_management]."
 
 volumes:
     rabbitmq_data:
