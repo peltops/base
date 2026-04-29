@@ -2,25 +2,21 @@
 - name: Copy kuala-microservices files
   copy:
     src: ../files/
-    dest: /opt/kuala-microservices/
+    dest: "{{ kuala_microservices_dest_dir }}/"
 
 - name: Copy microservice directories
   copy:
-    src: "{{ kuala_api_src_dir }}/services/{{ item }}"
+    src: "{{ kuala_api_src_dir }}/services/{{ item }}/"
     dest: "{{ kuala_microservices_dest_dir }}/{{ item }}"
   loop: "{{ microservices_list }}"
 
-- name: Copy deno.json for each service
+- name: Copy deno configuration files for each service
   copy:
-    src: "{{ kuala_api_src_dir }}/deno.json"
-    dest: "{{ kuala_microservices_dest_dir }}/{{ item }}/deno.json"
-  loop: "{{ microservices_list }}"
-
-- name: Copy deno.lock for each service
-  copy:
-    src: "{{ kuala_api_src_dir }}/deno.lock"
-    dest: "{{ kuala_microservices_dest_dir }}/{{ item }}/deno.lock"
-  loop: "{{ microservices_list }}"
+    src: "{{ kuala_api_src_dir }}/{{ item.1 }}"
+    dest: "{{ kuala_microservices_dest_dir }}/{{ item.0 }}/{{ item.1 }}"
+  loop: "{{ microservices_list | product(['deno.json', 'deno.lock']) | list }}"
+  loop_control:
+    label: "{{ item.0 }} -> {{ item.1 }}"
 
 - name: Copy shared library for each service
   copy:
