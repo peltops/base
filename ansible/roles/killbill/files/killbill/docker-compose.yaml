@@ -79,7 +79,7 @@ services:
       retries: 10
   init-tenant:
     container_name: killbill-init-tenant
-    image: curlimages/curl:8.5.0
+    image: curlimages/curl:8.20.0
     logging: *default-logging
     volumes:
       - ./init-tenant.sh:/scripts/init-tenant.sh:ro
@@ -102,7 +102,7 @@ services:
     restart: "no"
   init-catalog:
     container_name: killbill-init-catalog
-    image: curlimages/curl:8.5.0
+    image: curlimages/curl:8.20.0
     logging: *default-logging
     volumes:
       - ./init-plans-catalog.sh:/scripts/init-plans-catalog.sh:ro
