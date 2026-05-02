@@ -1,4 +1,4 @@
-FROM quay.io/keycloak/keycloak:25.0.2 as builder
+FROM quay.io/keycloak/keycloak:26.6.1 as builder
 
 # Enable health and metrics support
 ENV KC_HEALTH_ENABLED=true
@@ -14,7 +14,7 @@ WORKDIR /opt/keycloak
 RUN /opt/keycloak/bin/kc.sh build
 RUN /opt/keycloak/bin/kc.sh show-config
 
-FROM quay.io/keycloak/keycloak:25.0.2
+FROM quay.io/keycloak/keycloak:26.6.1
 COPY --from=builder /opt/keycloak/ /opt/keycloak/
 
 # change these values to point to a running postgres instance
