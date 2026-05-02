@@ -4,6 +4,12 @@
     src: ../files/
     dest: /opt/rabbitmq/
 
+- name: Log in to dhi.io Docker registry
+  community.docker.docker_login:
+    registry_url: dhi.io
+    username: "{{ lookup('env', 'DOCKER_USERNAME') }}"
+    password: "{{ lookup('env', 'DOCKER_PASSWORD') }}"
+
 - name: deploy/restart rabbitmq apps 
   community.docker.docker_compose_v2:
     project_src: /opt/rabbitmq
