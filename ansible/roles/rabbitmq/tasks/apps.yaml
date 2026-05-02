@@ -10,9 +10,6 @@
     files: 
       - "docker-compose.yml"
     state: present
-    environment:
-      DOCKER_USERNAME: "{{ lookup('env', 'DOCKER_USERNAME') }}"
-      DOCKER_PASSWORD: "{{ lookup('env', 'DOCKER_PASSWORD') }}"
   register: output
 
 - name: Show results
