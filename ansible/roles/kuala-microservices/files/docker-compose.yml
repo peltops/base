@@ -10,7 +10,7 @@ x-logging: &default-logging
 services:
     account-service:
         build:
-            context: ../
+            context: ./
             dockerfile: account-service/Dockerfile
         container_name: account-service
         ports:
@@ -30,7 +30,7 @@ services:
 
     invoice-service:
         build:
-            context: ../
+            context: ./
             dockerfile: invoice-service/Dockerfile
         container_name: invoice-service
         ports:
@@ -50,7 +50,7 @@ services:
 
     subscription-service:
         build:
-            context: ../
+            context: ./
             dockerfile: subscription-service/Dockerfile
         container_name: subscription-service
         ports:
