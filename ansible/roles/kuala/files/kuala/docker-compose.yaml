@@ -317,7 +317,8 @@ services:
         condition: service_healthy
     logging: *default-logging
     networks:
-      - killbill_default    
+      - killbill_default
+      - rabbitmq
     environment:
       JWT_SECRET: ${JWT_SECRET}
       SUPABASE_URL: http://kong:8000
@@ -555,4 +556,7 @@ volumes:
 networks:
   killbill_default:
     name: killbill_default
+    external: true  
+  rabbitmq:
+    name: rabbitmq
     external: true  

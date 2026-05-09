@@ -29,6 +29,8 @@ services:
             start_period: 30s
         restart: unless-stopped
         logging: *default-logging
+        networks:
+          - rabbitmq
 
 configs:
     rabbitmq-plugins:
@@ -36,3 +38,8 @@ configs:
 
 volumes:
     rabbitmq_data:
+
+networks:
+  rabbitmq:
+    name: rabbitmq
+    external: true  
