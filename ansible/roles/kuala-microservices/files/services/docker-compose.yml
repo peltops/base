@@ -11,12 +11,12 @@ services:
     account-service:
         build:
             context: ./
-            dockerfile: account-service/Dockerfile
+            dockerfile: services/account-service/Dockerfile
         container_name: account-service
         ports:
             - "9001:8001"
         env_file:
-            - ./account-service/.env
+            - ./services/account-service/.env
         environment:
             - RABBITMQ_URL=${RABBITMQ_URL}
         healthcheck:
@@ -31,12 +31,12 @@ services:
     invoice-service:
         build:
             context: ./
-            dockerfile: invoice-service/Dockerfile
+            dockerfile: services/invoice-service/Dockerfile
         container_name: invoice-service
         ports:
             - "9002:8002"
         env_file:
-            - ./invoice-service/.env
+            - ./services/invoice-service/.env
         environment:
             - RABBITMQ_URL=${RABBITMQ_URL}
         healthcheck:
@@ -51,12 +51,12 @@ services:
     subscription-service:
         build:
             context: ./
-            dockerfile: subscription-service/Dockerfile
+            dockerfile: services/subscription-service/Dockerfile
         container_name: subscription-service
         ports:
             - "9003:8003"
         env_file:
-            - ./subscription-service/.env
+            - ./services/subscription-service/.env
         environment:
             - RABBITMQ_URL=${RABBITMQ_URL}
         healthcheck:
