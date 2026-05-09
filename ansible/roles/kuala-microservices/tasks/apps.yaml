@@ -21,8 +21,7 @@
 - name: Copy shared library for each service
   copy:
     src: "{{ kuala_api_src_dir }}/supabase/functions/_shared/"
-    dest: "{{ kuala_microservices_dest_dir }}/{{ item }}/supabase/functions/_shared/"
-  loop: "{{ microservices_list }}"
+    dest: "{{ kuala_microservices_dest_dir }}/supabase/functions/_shared/"
 
 - name: Deploy kuala-microservices apps 
   community.docker.docker_compose_v2:
