@@ -28,7 +28,7 @@
   community.docker.docker_compose_v2:
     project_src: "{{ kuala_microservices_dest_dir }}"
     files: 
-      - "docker-compose.yml"
+      - "services/docker-compose.yml"
     state: present
   register: output
 
