@@ -41,5 +41,4 @@ volumes:
 
 networks:
   rabbitmq:
-    name: rabbitmq
-    external: true  
+    name: rabbitmq  

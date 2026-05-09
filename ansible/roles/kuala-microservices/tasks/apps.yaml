@@ -23,6 +23,11 @@
     src: "{{ kuala_api_src_dir }}/supabase/functions/_shared/"
     dest: "{{ kuala_microservices_dest_dir }}/supabase/functions/_shared/"
 
+- name: Ensure rabbitmq network exists
+  community.docker.docker_network:
+    name: rabbitmq
+    state: present
+
 - name: Deploy kuala-microservices apps 
   community.docker.docker_compose_v2:
     project_src: "{{ kuala_microservices_dest_dir }}"

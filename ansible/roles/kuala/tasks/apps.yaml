@@ -4,6 +4,11 @@
     src: ../files/kuala
     dest: /opt
 
+- name: Ensure rabbitmq network exists
+  community.docker.docker_network:
+    name: rabbitmq
+    state: present
+
 - name: deploy/restart kuala apps 
   community.docker.docker_compose_v2:
     project_src: /opt/kuala

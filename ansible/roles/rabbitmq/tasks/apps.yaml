@@ -10,6 +10,11 @@
     username: "{{ lookup('env', 'DOCKER_USERNAME') }}"
     password: "{{ lookup('env', 'DOCKER_PASSWORD') }}"
 
+- name: Ensure rabbitmq network exists
+  community.docker.docker_network:
+    name: rabbitmq
+    state: present
+
 - name: deploy/restart rabbitmq apps 
   community.docker.docker_compose_v2:
     project_src: /opt/rabbitmq
