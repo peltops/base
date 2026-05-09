@@ -25,6 +25,8 @@ services:
             start_period: 30s
         restart: unless-stopped
         logging: *default-logging
+        networks:
+          - rabbitmq
 
     invoice-service:
         build:
@@ -43,6 +45,8 @@ services:
             start_period: 30s
         restart: unless-stopped
         logging: *default-logging
+        networks:
+          - rabbitmq
 
     subscription-service:
         build:
@@ -61,3 +65,10 @@ services:
             start_period: 30s
         restart: unless-stopped
         logging: *default-logging
+        networks:
+          - rabbitmq
+
+networks:
+  rabbitmq:
+    name: rabbitmq
+    external: true  
