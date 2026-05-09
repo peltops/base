@@ -6,7 +6,7 @@
 
 - name: Copy microservice directories
   copy:
-    src: "{{ kuala_api_src_dir }}/services/{{ item }}/"
+    src: "{{ kuala_api_src_dir }}/{{ item }}/"
     dest: "{{ kuala_microservices_dest_dir }}/{{ item }}"
   loop: "{{ microservices_list }}"
 
