@@ -30,9 +30,9 @@
 
 - name: Deploy kuala-microservices apps 
   community.docker.docker_compose_v2:
-    project_src: "{{ kuala_microservices_dest_dir }}"
+    project_src: "{{ kuala_microservices_dest_dir }}/services"
     files: 
-      - "services/docker-compose.yml"
+      - "docker-compose.yml"
     state: present
   register: output
 
