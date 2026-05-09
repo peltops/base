@@ -17,8 +17,6 @@ services:
             - "9001:8001"
         env_file:
             - ./services/account-service/.env
-        environment:
-            - RABBITMQ_URL=${RABBITMQ_URL}
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:8001"]
             interval: 15s
@@ -37,8 +35,6 @@ services:
             - "9002:8002"
         env_file:
             - ./services/invoice-service/.env
-        environment:
-            - RABBITMQ_URL=${RABBITMQ_URL}
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:8002"]
             interval: 15s
@@ -57,8 +53,6 @@ services:
             - "9003:8003"
         env_file:
             - ./services/subscription-service/.env
-        environment:
-            - RABBITMQ_URL=${RABBITMQ_URL}
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:8003"]
             interval: 15s
