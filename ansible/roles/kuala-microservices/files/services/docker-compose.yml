@@ -11,7 +11,12 @@ services:
         env_file:
             - ./account-service/.env
         healthcheck:
-            test: ["CMD", "curl", "-f", "http://localhost:8001"]
+            test: [
+                "CMD",
+                "deno",
+                "eval",
+                "const r = await fetch('http://localhost:8001'); if(!r.ok) Deno.exit(1);",
+            ]
             interval: 15s
             timeout: 5s
             retries: 5
@@ -30,7 +35,12 @@ services:
         env_file:
             - ./invoice-service/.env
         healthcheck:
-            test: ["CMD", "curl", "-f", "http://localhost:8002"]
+            test: [
+                "CMD",
+                "deno",
+                "eval",
+                "const r = await fetch('http://localhost:8002'); if(!r.ok) Deno.exit(1);",
+            ]
             interval: 15s
             timeout: 5s
             retries: 5
@@ -49,7 +59,12 @@ services:
         env_file:
             - ./subscription-service/.env
         healthcheck:
-            test: ["CMD", "curl", "-f", "http://localhost:8003"]
+            test: [
+                "CMD",
+                "deno",
+                "eval",
+                "const r = await fetch('http://localhost:8003'); if(!r.ok) Deno.exit(1);",
+            ]
             interval: 15s
             timeout: 5s
             retries: 5
