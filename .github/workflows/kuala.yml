@@ -29,6 +29,7 @@ jobs:
       - name: Copy deno.json to kuala ansible role
         run: |
           cp submodules/kuala-api/deno.json ansible/roles/kuala/files/kuala/volumes/functions/kuala/
+          sed -i 's|\./supabase/functions/_shared/|../_shared/|g' ansible/roles/kuala/files/kuala/volumes/functions/kuala/deno.json
 
       - name: Run kuala playbook
         uses: dawidd6/action-ansible-playbook@v2
