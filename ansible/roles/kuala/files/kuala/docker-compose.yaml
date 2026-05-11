@@ -341,6 +341,7 @@ services:
       ENTERPRISE_CONTACT_MESSAGE: ${ENTERPRISE_CONTACT_MESSAGE}     
       CORS_ENABLED: ${CORS_ENABLED}
       CORS_ORIGIN: ${CORS_ORIGIN} 
+      RABBITMQ_URL: ${RABBITMQ_URL}
     volumes:
       - ./volumes/functions:/home/deno/functions:Z
     command:
