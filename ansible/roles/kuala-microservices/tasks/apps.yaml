@@ -1,4 +1,9 @@
 ---
+- name: Copy env from kuala to microservices
+  copy:
+    src: "../../kuala/files/kuala/.env"
+    dest: "{{ kuala_microservices_dest_dir }}/services/.env"
+
 - name: Copy kuala-microservices files
   copy:
     src: ../files/
