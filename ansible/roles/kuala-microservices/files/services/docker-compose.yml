@@ -8,8 +8,19 @@ services:
         container_name: account-service
         ports:
             - "9001:8001"
-        env_file:
-            - ./account-service/.env
+        environment:
+            SUPABASE_URL: http://kong:8000
+            SUPABASE_ANON_KEY: ${ANON_KEY}
+            SUPABASE_SERVICE_ROLE_KEY: ${SERVICE_ROLE_KEY}
+            AUTH_BASE_URL: ${SUPABASE_PUBLIC_URL}
+            AUTH_SUPABASE_ANON_KEY: ${ANON_KEY}
+            KILLBILL_BASE_URL: http://killbill:8080
+            KILLBILL_API_KEY: ${KILLBILL_API_KEY} 
+            KILLBILL_API_SECRET: ${KILLBILL_API_SECRET}
+            KILLBILL_USERNAME: ${KILLBILL_USERNAME}
+            KILLBILL_PASSWORD: ${KILLBILL_PASSWORD}
+            KILLBILL_DEFAULT_CURRENCY: ${KILLBILL_DEFAULT_CURRENCY}
+            RABBITMQ_URL: ${RABBITMQ_URL}
         healthcheck:
             test: [
                 "CMD",
@@ -24,6 +35,7 @@ services:
         restart: unless-stopped
         networks:
           - rabbitmq
+          - killbill_default
 
     invoice-service:
         build:
@@ -32,8 +44,19 @@ services:
         container_name: invoice-service
         ports:
             - "9002:8002"
-        env_file:
-            - ./invoice-service/.env
+        environment:
+            SUPABASE_URL: http://kong:8000
+            SUPABASE_ANON_KEY: ${ANON_KEY}
+            SUPABASE_SERVICE_ROLE_KEY: ${SERVICE_ROLE_KEY}
+            AUTH_BASE_URL: ${SUPABASE_PUBLIC_URL}
+            AUTH_SUPABASE_ANON_KEY: ${ANON_KEY}
+            KILLBILL_BASE_URL: http://killbill:8080
+            KILLBILL_API_KEY: ${KILLBILL_API_KEY} 
+            KILLBILL_API_SECRET: ${KILLBILL_API_SECRET}
+            KILLBILL_USERNAME: ${KILLBILL_USERNAME}
+            KILLBILL_PASSWORD: ${KILLBILL_PASSWORD}
+            KILLBILL_DEFAULT_CURRENCY: ${KILLBILL_DEFAULT_CURRENCY}
+            RABBITMQ_URL: ${RABBITMQ_URL}
         healthcheck:
             test: [
                 "CMD",
@@ -48,6 +71,7 @@ services:
         restart: unless-stopped
         networks:
           - rabbitmq
+          - killbill_default
 
     subscription-service:
         build:
@@ -56,8 +80,19 @@ services:
         container_name: subscription-service
         ports:
             - "9003:8003"
-        env_file:
-            - ./subscription-service/.env
+        environment:
+            SUPABASE_URL: http://kong:8000
+            SUPABASE_ANON_KEY: ${ANON_KEY}
+            SUPABASE_SERVICE_ROLE_KEY: ${SERVICE_ROLE_KEY}
+            AUTH_BASE_URL: ${SUPABASE_PUBLIC_URL}
+            AUTH_SUPABASE_ANON_KEY: ${ANON_KEY}
+            KILLBILL_BASE_URL: http://killbill:8080
+            KILLBILL_API_KEY: ${KILLBILL_API_KEY} 
+            KILLBILL_API_SECRET: ${KILLBILL_API_SECRET}
+            KILLBILL_USERNAME: ${KILLBILL_USERNAME}
+            KILLBILL_PASSWORD: ${KILLBILL_PASSWORD}
+            KILLBILL_DEFAULT_CURRENCY: ${KILLBILL_DEFAULT_CURRENCY}
+            RABBITMQ_URL: ${RABBITMQ_URL}
         healthcheck:
             test: [
                 "CMD",
@@ -72,8 +107,12 @@ services:
         restart: unless-stopped
         networks:
           - rabbitmq
+          - killbill_default
 
 networks:
   rabbitmq:
     name: rabbitmq
-    external: true  
+    external: true
+  killbill_default:
+    name: killbill_default
+    external: true
