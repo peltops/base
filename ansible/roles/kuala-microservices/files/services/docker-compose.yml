@@ -36,6 +36,7 @@ services:
         networks:
           - rabbitmq
           - killbill_default
+          - kuala_default
 
     invoice-service:
         build:
@@ -72,6 +73,7 @@ services:
         networks:
           - rabbitmq
           - killbill_default
+          - kuala_default
 
     subscription-service:
         build:
@@ -108,6 +110,7 @@ services:
         networks:
           - rabbitmq
           - killbill_default
+          - kuala_default
 
 networks:
   rabbitmq:
@@ -115,4 +118,7 @@ networks:
     external: true
   killbill_default:
     name: killbill_default
+    external: true
+  kuala_default:
+    name: kuala_default
     external: true
