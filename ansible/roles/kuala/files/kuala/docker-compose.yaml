@@ -317,6 +317,7 @@ services:
         condition: service_healthy
     logging: *default-logging
     networks:
+      - default
       - killbill_default
       - rabbitmq
     environment:
