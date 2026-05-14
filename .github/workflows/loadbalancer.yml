@@ -1,6 +1,11 @@
 name: Run loadbalancer playbook
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - ansible/roles/loadbalancer/**       
 jobs:
   deploy:
     runs-on: ubuntu-latest
