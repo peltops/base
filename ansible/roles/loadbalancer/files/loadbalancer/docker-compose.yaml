@@ -4,7 +4,7 @@ services:
   loadbalancer:
     container_name: loadbalancer
     hostname: loadbalancer
-    image: nginx:stable
+    image: nginx:stable-alpine3.23-slim
     restart: always
     depends_on:
       certbot:

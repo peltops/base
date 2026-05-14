@@ -9,7 +9,7 @@ services:
   reverse-proxy:
     container_name: reverse-proxy
     hostname: reverse-proxy
-    image: nginx:stable
+    image: nginx:stable-alpine3.23-slim
     restart: always
     ports:
       - 10080
