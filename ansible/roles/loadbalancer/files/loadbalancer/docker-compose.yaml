@@ -16,7 +16,7 @@ services:
       - 80:80
       - 443:443
     healthcheck:
-      test: pidof -s nginx || exit 1
+      test: ["CMD", "pidof", "-s", "nginx"]
       interval: 60s
       retries: 5
       start_period: 20s
