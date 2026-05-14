@@ -2,7 +2,7 @@ services:
   static:
     container_name: static
     hostname: static
-    image: nginx:stable
+    image: nginx:stable-alpine3.23-slim
     restart: always
     ports:
      - 19080
