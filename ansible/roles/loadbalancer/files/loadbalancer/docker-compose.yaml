@@ -4,7 +4,7 @@ services:
   loadbalancer:
     container_name: loadbalancer
     hostname: loadbalancer
-    image: nginx:stable-alpine3.23-slim
+    image: dhi.io/nginx:1-debian12
     restart: always
     depends_on:
       certbot:
@@ -16,7 +16,7 @@ services:
       - 80:80
       - 443:443
     healthcheck:
-      test: wget -q -O - http://127.0.0.1/health || exit 1
+      test: pidof -s nginx || exit 1
       interval: 60s
       retries: 5
       start_period: 20s
