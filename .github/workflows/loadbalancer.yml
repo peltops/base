@@ -1,6 +1,11 @@
 name: Run loadbalancer playbook
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - ansible/roles/loadbalancer/**       
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -20,4 +25,5 @@ jobs:
           --tags=loadbalancer
       env:
         ANSIBLE_HOST_KEY_CHECKING: false
-  
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PAT }}

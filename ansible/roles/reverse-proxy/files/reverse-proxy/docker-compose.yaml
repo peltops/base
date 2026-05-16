@@ -9,13 +9,13 @@ services:
   reverse-proxy:
     container_name: reverse-proxy
     hostname: reverse-proxy
-    image: nginx:stable
+    image: dhi.io/nginx:1-debian12
     restart: always
     ports:
       - 10080
       - 10443
     healthcheck:
-      test: curl --fail http://localhost:10080 || exit 1
+      test: ["CMD", "pidof", "-s", "nginx"]
       interval: 60s
       retries: 5
       start_period: 20s

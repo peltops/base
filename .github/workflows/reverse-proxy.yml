@@ -26,4 +26,5 @@ jobs:
           --tags=reverse-proxy
       env:
         ANSIBLE_HOST_KEY_CHECKING: false
-  
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PAT }}  

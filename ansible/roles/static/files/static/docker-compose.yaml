@@ -2,11 +2,17 @@ services:
   static:
     container_name: static
     hostname: static
-    image: nginx:stable
+    image: dhi.io/nginx:1-debian12
     restart: always
     ports:
      - 19080
      - 19443
+    healthcheck:
+      test: ["CMD", "pidof", "-s", "nginx"]
+      interval: 60s
+      retries: 5
+      start_period: 20s
+      timeout: 10s        
     networks:
       - backend
     volumes:
