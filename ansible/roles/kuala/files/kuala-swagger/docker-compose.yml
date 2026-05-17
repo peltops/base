@@ -1,0 +1,29 @@
+name: kuala-swagger
+services:
+    openapi_mock:
+        container_name: kuala-openapi-mock
+        image: muonsoft/openapi-mock
+        restart: unless-stopped
+        environment:
+            OPENAPI_MOCK_SPECIFICATION_URL: "/app/openapi.yml"
+        volumes:
+            - ./openapi.yml:/app/openapi.yml
+        networks:
+            - kuala_default
+    swagger-ui:
+        image: swaggerapi/swagger-ui
+        container_name: kuala-swagger-ui
+        restart: unless-stopped
+        environment:
+            SWAGGER_JSON: "/app/openapi.yml"
+        volumes:
+            - ./openapi.yml:/app/openapi.yml
+        ports:
+            - "8081:8080"
+        networks:
+            - kuala_default
+
+networks:
+    kuala_default:
+        name: kuala_default
+        external: true

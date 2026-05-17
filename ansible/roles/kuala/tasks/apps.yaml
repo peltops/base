@@ -4,20 +4,37 @@
     src: ../files/kuala
     dest: /opt
 
+- name: copy kuala swagger files
+  copy:
+    src: ../files/kuala-swagger
+    dest: /opt
+
 - name: Ensure rabbitmq network exists
   community.docker.docker_network:
     name: rabbitmq
     state: present
 
-- name: deploy/restart kuala apps 
+- name: deploy/restart kuala apps
   community.docker.docker_compose_v2:
     project_src: /opt/kuala
-    files: 
+    files:
       - "docker-compose.yaml"
       - "docker-compose-s3.yaml"
     state: present
   register: output
 
+- name: deploy/restart kuala swagger apps
+  community.docker.docker_compose_v2:
+    project_src: /opt/kuala-swagger
+    files:
+      - "docker-compose.yml"
+    state: present
+  register: swagger_output
+
 - name: Show results
   ansible.builtin.debug:
     var: output
+
+- name: Show kuala swagger results
+  ansible.builtin.debug:
+    var: swagger_output
