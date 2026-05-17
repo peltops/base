@@ -29,7 +29,11 @@ jobs:
 
       - name: Copy kuala-api spec
         run: |
-          cp -r submodules/kuala-api/spec/openapi.yml ansible/roles/kuala/files/kuala-swagger/
+          if [ -f "submodules/kuala-api/spec/openapi.yml" ]; then
+            cp submodules/kuala-api/spec/openapi.yml ansible/roles/kuala/files/kuala-swagger/
+          else
+            echo "Error: openapi.yml not found in submodule" && exit 1
+          fi
 
       - name: Copy deno.json to kuala ansible role
         run: |
