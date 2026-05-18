@@ -4,7 +4,7 @@ services:
   loadbalancer:
     container_name: loadbalancer
     hostname: loadbalancer
-    image: dhi.io/nginx:1-debian12
+    image: dhi.io/nginx:1-debian13
     restart: always
     depends_on:
       certbot:

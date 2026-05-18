@@ -1,5 +1,11 @@
 name: kuala-microservices
 
+x-logging: &default-logging
+  driver: loki:latest
+  options:
+    loki-url: "https://${GRAFANA_USER}:${GRAFANA_TOKEN}@${GRAFANA_HOST}/loki/api/v1/push"
+    loki-batch-size: 400
+
 services:
     account-service:
         build:
@@ -8,6 +14,7 @@ services:
         container_name: account-service
         ports:
             - "9001:8001"
+        logging: *default-logging
         environment:
             SUPABASE_URL: http://kong:8000
             SUPABASE_ANON_KEY: ${ANON_KEY}
@@ -45,6 +52,7 @@ services:
         container_name: invoice-service
         ports:
             - "9002:8002"
+        logging: *default-logging
         environment:
             SUPABASE_URL: http://kong:8000
             SUPABASE_ANON_KEY: ${ANON_KEY}
@@ -82,6 +90,7 @@ services:
         container_name: subscription-service
         ports:
             - "9003:8003"
+        logging: *default-logging
         environment:
             SUPABASE_URL: http://kong:8000
             SUPABASE_ANON_KEY: ${ANON_KEY}
