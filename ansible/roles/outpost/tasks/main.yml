@@ -1,0 +1,22 @@
+---
+- name: "Create directory"
+  file:
+    path: /opt/outpost
+    state: directory
+
+- name: copy outpost files
+  copy:
+    src: ../files/outpost
+    dest: /opt
+
+- name: deploy/restart outpost apps 
+  community.docker.docker_compose_v2:
+    project_src: /opt/outpost
+    files: 
+      - "docker-compose.yaml"
+    state: present
+  register: output
+
+- name: Show results
+  ansible.builtin.debug:
+    var: output

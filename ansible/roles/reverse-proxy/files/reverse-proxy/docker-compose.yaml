@@ -30,6 +30,7 @@ services:
       - kuala_default
       - killbill_default
       - kuala-frontend_default
+      - outpost_default
     volumes:
       - ./config:/etc/nginx/config
       - ./conf.d:/etc/nginx/conf.d
@@ -66,4 +67,7 @@ networks:
     external: true
   kuala-frontend_default:
     name: kuala-frontend_default
+    external: true
+  outpost_default:
+    name: outpost_default
     external: true
