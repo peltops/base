@@ -343,6 +343,10 @@ services:
       CORS_ENABLED: ${CORS_ENABLED}
       CORS_ORIGIN: ${CORS_ORIGIN} 
       RABBITMQ_URL: ${RABBITMQ_URL}
+      BAYEU_API_URL: ${BAYEU_API_URL}
+      KUALA_WEBHOOK_URL: ${KUALA_WEBHOOK_URL}
+      PAYMENT_GATEWAY: ${PAYMENT_GATEWAY}
+      OUTPOST_WEBHOOK_SECRET: ${OUTPOST_WEBHOOK_SECRET}
     volumes:
       - ./volumes/functions:/home/deno/functions:Z
     command:

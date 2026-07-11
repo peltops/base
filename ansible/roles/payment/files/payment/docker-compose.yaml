@@ -346,6 +346,12 @@ services:
       STRIPE_SANDBOX_SECRET_KEY: ${STRIPE_SANDBOX_SECRET_KEY}
       STRIPE_PRODUCTION_SECRET_KEY: ${STRIPE_PRODUCTION_SECRET_KEY}
 
+      # CORS
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS}
+      # PAYMENT
+      OUTPOST_API_URL: ${OUTPOST_API_URL}
+      OUTPOST_API_KEY: ${OUTPOST_API_KEY}
+
       # TODO: Allow configuring VERIFY_JWT per function. This PR might help: https://github.com/supabase/cli/pull/786
       VERIFY_JWT: "${FUNCTIONS_VERIFY_JWT}"
     volumes:
