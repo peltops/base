@@ -5,4 +5,4 @@
   - role: roles/payment
     tags: payment
   - role: roles/outpost
-    tags: outpost
+    tags: payment
