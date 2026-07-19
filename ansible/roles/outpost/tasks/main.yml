@@ -17,6 +17,16 @@
     state: present
   register: output
 
+- name: Run outpost database migrations
+  ansible.builtin.shell: docker compose run --rm outpost outpost migrate apply
+  args:
+    chdir: /opt/outpost
+
+- name: Restart outpost after migrations
+  ansible.builtin.shell: docker compose restart outpost
+  args:
+    chdir: /opt/outpost
+
 - name: Show results
   ansible.builtin.debug:
     var: output
