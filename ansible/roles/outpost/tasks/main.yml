@@ -18,7 +18,7 @@
   register: output
 
 - name: Run outpost database migrations
-  ansible.builtin.shell: docker compose run --rm outpost migrate apply
+  ansible.builtin.shell: docker compose run -T --rm outpost migrate apply --yes
   args:
     chdir: /opt/outpost
 
