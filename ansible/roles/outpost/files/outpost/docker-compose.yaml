@@ -1,17 +1,20 @@
 services:
   redis:
     image: redis:alpine
+    restart: always
     ports:
       - "6379"
 
   rabbitmq:
     image: rabbitmq:3-management-alpine
+    restart: always
     ports:
       - "5672"
       - "15672"
 
   postgres:
     image: postgres:15-alpine
+    restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -21,6 +24,7 @@ services:
 
   outpost:
     image: hookdeck/outpost:latest
+    restart: always
     ports:
       - "3000:3000"
       - "3333:3333"
