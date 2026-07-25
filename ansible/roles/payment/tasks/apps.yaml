@@ -10,6 +10,7 @@
     files: 
       - "docker-compose.yaml"
       - "docker-compose-s3.yaml"
+    recreate: always
     state: present
   register: output
 
