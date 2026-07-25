@@ -9,8 +9,8 @@ x-logging: &default-logging
 services:
     account-service:
         build:
-            context: ./
-            dockerfile: account-service/Dockerfile
+            context: ../
+            dockerfile: services/account-service/Dockerfile
         container_name: account-service
         ports:
             - "9001:8001"
@@ -47,8 +47,8 @@ services:
 
     invoice-service:
         build:
-            context: ./
-            dockerfile: invoice-service/Dockerfile
+            context: ../
+            dockerfile: services/invoice-service/Dockerfile
         container_name: invoice-service
         ports:
             - "9002:8002"
@@ -85,8 +85,8 @@ services:
 
     subscription-service:
         build:
-            context: ./
-            dockerfile: subscription-service/Dockerfile
+            context: ../
+            dockerfile: services/subscription-service/Dockerfile
         container_name: subscription-service
         ports:
             - "9003:8003"
