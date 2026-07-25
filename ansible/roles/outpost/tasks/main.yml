@@ -22,6 +22,10 @@
   ansible.builtin.shell: docker compose run -T --rm outpost migrate apply --yes
   args:
     chdir: /opt/outpost
+  register: migration_result
+  until: migration_result.rc == 0
+  retries: 10
+  delay: 3
 
 - name: Restart outpost after migrations
   ansible.builtin.shell: docker compose restart outpost
