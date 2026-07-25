@@ -38,6 +38,8 @@
     project_src: "{{ kuala_microservices_dest_dir }}/services"
     files: 
       - "docker-compose.yml"
+    build: always
+    recreate: always
     state: present
   register: output
 
