@@ -4,11 +4,6 @@
     src: ../files/payment
     dest: /opt
 
-- name: copy bayeu functions from submodule
-  copy:
-    src: "../../../../submodules/bayeu/supabase/functions/"
-    dest: "/opt/payment/volumes/functions/"
-
 - name: deploy/restart payment apps 
   community.docker.docker_compose_v2:
     project_src: /opt/payment
