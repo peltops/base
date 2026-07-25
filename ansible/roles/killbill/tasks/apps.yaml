@@ -9,6 +9,7 @@
     project_src: /opt/killbill
     files: 
       - "docker-compose.yaml"
+    recreate: always
     state: present
   register: output
 
