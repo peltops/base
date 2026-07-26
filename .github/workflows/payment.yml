@@ -23,6 +23,8 @@ jobs:
 
       - name: Copy bayeu functions and migrations to payment ansible role
         run: |
+          rm -rf ansible/roles/payment/files/payment/volumes/functions/*
+          rm -rf ansible/roles/payment/files/payment/volumes/db/migrations/*
           cp -r submodules/bayeu/supabase/functions/* ansible/roles/payment/files/payment/volumes/functions/
           cp -r submodules/bayeu/supabase/migrations/* ansible/roles/payment/files/payment/volumes/db/migrations/
 
