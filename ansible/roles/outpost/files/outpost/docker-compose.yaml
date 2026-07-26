@@ -27,6 +27,27 @@ services:
     ports:
       - "5432"
 
+  migrate:
+    image: hookdeck/outpost:latest
+    command: migrate apply --yes
+    restart: "no"
+    environment:
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - RABBITMQ_SERVER_URL=${RABBITMQ_SERVER_URL}
+      - RABBITMQ_EXCHANGE=${RABBITMQ_EXCHANGE}
+      - AES_ENCRYPTION_SECRET=${AES_ENCRYPTION_SECRET}
+      - POSTGRES_URL=${POSTGRES_URL}
+      - API_KEY=${API_KEY}
+      - WEBHOOK_SECRET=${WEBHOOK_SECRET}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
+
   outpost:
     image: hookdeck/outpost:latest
     restart: always
@@ -43,6 +64,11 @@ services:
       - API_KEY=${API_KEY}
       - WEBHOOK_SECRET=${WEBHOOK_SECRET}
     depends_on:
-      - redis
-      - rabbitmq
-      - postgres
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
+      postgres:
+        condition: service_healthy
