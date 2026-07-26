@@ -24,6 +24,9 @@
     state: present
   register: output
 
+- name: Run dbmate migrations
+  ansible.builtin.shell: docker start -a kuala-dbmate
+
 - name: deploy/restart kuala swagger apps
   community.docker.docker_compose_v2:
     project_src: /opt/kuala-swagger
