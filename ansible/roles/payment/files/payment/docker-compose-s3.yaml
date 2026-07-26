@@ -1,5 +1,4 @@
 name: payment
-version: "3.8"
 
 x-logging:
   &default-logging

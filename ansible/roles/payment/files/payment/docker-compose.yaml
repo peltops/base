@@ -5,7 +5,6 @@
 #   Destroy:        docker compose -f docker-compose.yml -f ./dev/docker-compose.dev.yml down -v --remove-orphans
 
 name: payment
-version: "3.8"
 
 x-logging:
   &default-logging
@@ -479,17 +478,17 @@ services:
     healthcheck:
       test:
         [
-
           "CMD",
           "wget",
           "--no-verbose",
           "--tries=1",
           "--spider",
-          "http://vector:9001/health"
+          "http://127.0.0.1:9001/health"
         ]
       timeout: 5s
       interval: 5s
-      retries: 3
+      retries: 10
+      start_period: 10s
     volumes:
       - ./volumes/logs/vector.yml:/etc/vector/vector.yml:ro
       - ${DOCKER_SOCKET_LOCATION}:/var/run/docker.sock:ro
