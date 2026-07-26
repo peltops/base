@@ -14,6 +14,9 @@
     state: present
   register: output
 
+- name: Run dbmate migrations
+  ansible.builtin.shell: docker start -a payment-dbmate
+
 - name: Show results
   ansible.builtin.debug:
     var: output
