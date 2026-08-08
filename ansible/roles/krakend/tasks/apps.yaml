@@ -1,0 +1,28 @@
+---
+- name: Copy KrakenD configuration
+  ansible.builtin.copy:
+    src: ../files/krakend
+    dest: /opt
+
+- name: Deploy/restart KrakenD
+  community.docker.docker_compose_v2:
+    project_src: /opt/krakend
+    state: present
+  register: output
+
+- name: Show results
+  ansible.builtin.debug:
+    var: output
+
+- name: Wait for KrakenD container to be running and healthy
+  community.docker.docker_container_info:
+    name: krakend
+  register: krakend_info
+  until: >-
+    krakend_info.container.State.Health.Status == 'healthy'
+  retries: 10
+  delay: 3
+
+- name: Show KrakenD container info
+  ansible.builtin.debug:
+    var: krakend_info
