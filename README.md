@@ -15,7 +15,7 @@ Seribase supports the following services
 
 Seribase use the following open source software
 
-- KrankenD
+- KrakenD
 - Supabase
 - Keycloak
 - PostgreSQL
