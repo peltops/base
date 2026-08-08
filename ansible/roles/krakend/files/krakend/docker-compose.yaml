@@ -2,7 +2,7 @@ services:
   krakend:
     container_name: krakend
     hostname: krakend
-    image: krakend:2.9.26
+    image: krakend:2.13.8
     restart: unless-stopped
     ports:
       - "8080:8080"
