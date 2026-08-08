@@ -5,7 +5,7 @@ services:
     image: krakend:2.13.8
     restart: unless-stopped
     ports:
-      - "8080:8080"
+      - "8080"
     volumes:
       - ./krakend.json:/etc/krakend/krakend.json:ro
     command: run -c /etc/krakend/krakend.json
