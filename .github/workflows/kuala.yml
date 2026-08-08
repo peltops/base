@@ -6,12 +6,13 @@ on:
       - main
     paths:
       - ansible/roles/kuala/**
+      - ansible/roles/kuala/files/kuala-swagger/**
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout main repo with submodules
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: recursive
 
@@ -26,9 +27,18 @@ jobs:
         run: |
           cp -r submodules/kuala-api/supabase/functions/* ansible/roles/kuala/files/kuala/volumes/functions/
 
+      - name: Copy kuala-api spec
+        run: |
+          if [ -f "submodules/kuala-api/spec/openapi.yml" ]; then
+            cp submodules/kuala-api/spec/openapi.yml ansible/roles/kuala/files/kuala-swagger/
+          else
+            echo "Error: openapi.yml not found in submodule" && exit 1
+          fi
+
       - name: Copy deno.json to kuala ansible role
         run: |
-          cp submodules/kuala-api/supabase/functions/deno.json ansible/roles/kuala/files/kuala/volumes/functions/kuala/
+          cp submodules/kuala-api/deno.json ansible/roles/kuala/files/kuala/volumes/functions/kuala/
+          sed -i 's|\./supabase/functions/_shared/|../_shared/|g' ansible/roles/kuala/files/kuala/volumes/functions/kuala/deno.json
 
       - name: Run kuala playbook
         uses: dawidd6/action-ansible-playbook@v2

@@ -6,24 +6,40 @@ on:
       - main 
     paths:
       - ansible/roles/payment/**          
+      - submodules/bayeu/**
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-    - name: Run payment playbook
-      uses: dawidd6/action-ansible-playbook@v2
-      with:
-        playbook: playbook/payment.yaml
-        directory: ./ansible
-        key: ${{secrets.SSH_PRIVATE_KEY}}
-        vault_password: ${{secrets.VAULT_PASSWORD}}
-        requirements: ./requirements.yml
-        options: |
-          -i inventory/base.ini
-          --verbose        
-          --tags=payment
-      env:
-        ANSIBLE_HOST_KEY_CHECKING: false
+      - name: Checkout main repo with submodules
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Ensure destination directories exist
+        run: |
+          mkdir -p ansible/roles/payment/files/payment/volumes/functions/
+          mkdir -p ansible/roles/payment/files/payment/volumes/db/migrations/
+
+      - name: Copy bayeu functions and migrations to payment ansible role
+        run: |
+          rm -rf ansible/roles/payment/files/payment/volumes/functions/*
+          rm -rf ansible/roles/payment/files/payment/volumes/db/migrations/*
+          cp -r submodules/bayeu/supabase/functions/* ansible/roles/payment/files/payment/volumes/functions/
+          cp -r submodules/bayeu/supabase/migrations/* ansible/roles/payment/files/payment/volumes/db/migrations/
+
+      - name: Run payment playbook
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          playbook: playbook/payment.yaml
+          directory: ./ansible
+          key: ${{secrets.SSH_PRIVATE_KEY}}
+          vault_password: ${{secrets.VAULT_PASSWORD}}
+          requirements: ./requirements.yml
+          options: |
+            -i inventory/base.ini
+            --verbose        
+            --tags=payment
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: false
   

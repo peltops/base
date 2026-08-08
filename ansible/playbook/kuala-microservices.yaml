@@ -1,0 +1,8 @@
+---
+- hosts: all
+  roles:
+  - 'roles/common'
+  - role: roles/kuala-microservices
+    tags: kuala-microservices
+  vars_files:
+    - '../roles/kuala-microservices/defaults/main.yml'

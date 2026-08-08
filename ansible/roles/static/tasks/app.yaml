@@ -4,6 +4,12 @@
     src: ../files/static
     dest: /opt
 
+- name: Log in to dhi.io Docker registry
+  community.docker.docker_login:
+    registry_url: dhi.io
+    username: "{{ lookup('env', 'DOCKER_USERNAME') }}"
+    password: "{{ lookup('env', 'DOCKER_PASSWORD') }}"
+
 - name: deploy/restart static webserver
   community.docker.docker_compose_v2:
     project_src: /opt/static
@@ -12,3 +18,25 @@
 - name: Show results
   ansible.builtin.debug:
     var: output
+
+- name: Wait for static container to be running and healthy
+  community.docker.docker_container_info:
+    name: static
+  register: static_info
+  until: "static_info.container.State.Health.Status == 'healthy'"
+  retries: 10
+  delay: 3
+
+- name: Show static container info
+  ansible.builtin.debug:
+    var: static_info
+
+- name: Reload NGINX in static container
+  community.docker.docker_container_exec:
+    container: static
+    command: nginx -s reload
+  register: nginx_reload
+
+- name: Show NGINX reload results
+  ansible.builtin.debug:
+    var: nginx_reload

@@ -1,0 +1,7 @@
+---
+kuala_microservices_dest_dir: /opt/kuala-microservices
+kuala_api_src_dir: "{{ playbook_dir }}/../../submodules/kuala-api"
+microservices_list:
+  - services/account-service
+  - services/subscription-service
+  - services/invoice-service

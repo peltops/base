@@ -1,0 +1,9 @@
+---
+- name: "Create directory"
+  file:
+    path: /opt/rabbitmq
+    state: directory
+
+- name: deploy apps
+  include_tasks: apps.yaml
+

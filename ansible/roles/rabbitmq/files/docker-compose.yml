@@ -1,0 +1,45 @@
+name: rabbitmq
+
+x-logging: &default-logging
+  driver: loki:latest
+  options:
+    loki-url: "https://${GRAFANA_USER}:${GRAFANA_TOKEN}@${GRAFANA_HOST}/loki/api/v1/push"
+    loki-batch-size: 400
+
+services:
+    rabbitmq:
+        image: dhi.io/rabbitmq:4.2
+        container_name: rabbitmq
+        hostname: rabbitmq
+        ports:
+            - "5672:5672"
+            - "15672:15672"
+        env_file:
+            - .env
+        configs:
+            - source: rabbitmq-plugins
+              target: /etc/rabbitmq/enabled_plugins
+        volumes:
+            - rabbitmq_data:/var/lib/rabbitmq
+        healthcheck:
+            test: ["CMD", "rabbitmq-diagnostics", "ping"]
+            interval: 10s
+            timeout: 5s
+            retries: 10
+            start_period: 30s
+        restart: unless-stopped
+        logging: *default-logging
+        networks:
+          - rabbitmq
+
+configs:
+    rabbitmq-plugins:
+        content: "[rabbitmq_management]."
+
+volumes:
+    rabbitmq_data:
+
+networks:
+  rabbitmq:
+    name: rabbitmq
+    external: true

@@ -67,10 +67,21 @@ serve(async (req: Request) => {
   const servicePath = `/home/deno/functions/${service_name}`
   console.error(`serving the request with ${servicePath}`)
 
+  let importMapPath: string | null = `${servicePath}/deno.json`
+  try {
+    await Deno.stat(importMapPath)
+  } catch (_e) {
+    importMapPath = `/home/deno/functions/deno.json`
+    try {
+      await Deno.stat(importMapPath)
+    } catch (_e2) {
+      importMapPath = null
+    }
+  }
+
   const memoryLimitMb = 150
   const workerTimeoutMs = 1 * 60 * 1000
   const noModuleCache = false
-  const importMapPath = null
   const envVarsObj = Deno.env.toObject()
   const envVars = Object.keys(envVarsObj).map((k) => [k, envVarsObj[k]])
 

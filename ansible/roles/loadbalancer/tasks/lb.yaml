@@ -4,6 +4,12 @@
     src: ../files/loadbalancer
     dest: /opt
 
+- name: Log in to dhi.io Docker registry
+  community.docker.docker_login:
+    registry_url: dhi.io
+    username: "{{ lookup('env', 'DOCKER_USERNAME') }}"
+    password: "{{ lookup('env', 'DOCKER_PASSWORD') }}"
+    
 - name: deploy/restart loadbalancer 
   community.docker.docker_compose_v2:
     project_src: /opt/loadbalancer

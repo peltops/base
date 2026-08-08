@@ -1,0 +1,48 @@
+---
+- name: Copy env from kuala to microservices
+  copy:
+    src: "../../kuala/files/kuala/.env"
+    dest: "{{ kuala_microservices_dest_dir }}/services/.env"
+
+- name: Copy kuala-microservices files
+  copy:
+    src: ../files/
+    dest: "{{ kuala_microservices_dest_dir }}/"
+
+- name: Copy microservice directories
+  copy:
+    src: "{{ kuala_api_src_dir }}/{{ item }}/"
+    dest: "{{ kuala_microservices_dest_dir }}/{{ item }}"
+  loop: "{{ microservices_list }}"
+
+- name: Copy deno configuration files
+  copy:
+    src: "{{ kuala_api_src_dir }}/{{ item }}"
+    dest: "{{ kuala_microservices_dest_dir }}/{{ item }}"
+  loop:
+    - deno.json
+    - deno.lock
+
+- name: Copy shared library for each service
+  copy:
+    src: "{{ kuala_api_src_dir }}/supabase/functions/_shared/"
+    dest: "{{ kuala_microservices_dest_dir }}/supabase/functions/_shared/"
+
+- name: Ensure rabbitmq network exists
+  community.docker.docker_network:
+    name: rabbitmq
+    state: present
+
+- name: Deploy kuala-microservices apps 
+  community.docker.docker_compose_v2:
+    project_src: "{{ kuala_microservices_dest_dir }}/services"
+    files: 
+      - "docker-compose.yml"
+    build: always
+    recreate: always
+    state: present
+  register: output
+
+- name: Show results
+  ansible.builtin.debug:
+    var: output

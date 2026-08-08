@@ -317,10 +317,12 @@ services:
         condition: service_healthy
     logging: *default-logging
     networks:
-      - killbill_default    
+      - default
+      - killbill_default
+      - rabbitmq
     environment:
       JWT_SECRET: ${JWT_SECRET}
-      SUPABASE_URL: http://kong:8000
+      SUPABASE_URL: ${SUPABASE_PUBLIC_URL}
       SUPABASE_ANON_KEY: ${ANON_KEY}
       SUPABASE_SERVICE_ROLE_KEY: ${SERVICE_ROLE_KEY}
       SUPABASE_DB_URL: postgresql://postgres:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
@@ -340,6 +342,12 @@ services:
       ENTERPRISE_CONTACT_MESSAGE: ${ENTERPRISE_CONTACT_MESSAGE}     
       CORS_ENABLED: ${CORS_ENABLED}
       CORS_ORIGIN: ${CORS_ORIGIN} 
+      RABBITMQ_URL: ${RABBITMQ_URL}
+      BAYEU_API_URL: ${BAYEU_API_URL}
+      BAYEU_ANON_KEY: ${BAYEU_ANON_KEY}
+      KUALA_WEBHOOK_URL: ${KUALA_WEBHOOK_URL}
+      PAYMENT_GATEWAY: ${PAYMENT_GATEWAY}
+      OUTPOST_WEBHOOK_SECRET: ${OUTPOST_WEBHOOK_SECRET}
     volumes:
       - ./volumes/functions:/home/deno/functions:Z
     command:
@@ -555,4 +563,7 @@ volumes:
 networks:
   killbill_default:
     name: killbill_default
+    external: true  
+  rabbitmq:
+    name: rabbitmq
     external: true  

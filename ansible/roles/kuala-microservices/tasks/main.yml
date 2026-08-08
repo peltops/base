@@ -1,0 +1,13 @@
+---
+- name: Create kuala-microservices directory
+  file:
+    path: "{{ kuala_microservices_dest_dir }}"
+    state: directory
+
+- name: Create kuala-microservices services directory
+  file:
+    path: "{{ kuala_microservices_dest_dir }}/services"
+    state: directory
+
+- name: Copy kuala-microservices apps
+  include_tasks: apps.yaml

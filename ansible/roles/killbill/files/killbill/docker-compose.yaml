@@ -1,4 +1,3 @@
-
 name: killbill
 
 x-logging: &default-logging
@@ -12,7 +11,7 @@ volumes:
 services:
   killbill:
     container_name: killbill-service
-    image: killbill/killbill:0.24.10
+    image: killbill/killbill:0.24.17
     restart: unless-stopped
     ports:
       - "${KILLBILL_PORT}:8080"
@@ -40,7 +39,7 @@ services:
         condition: service_healthy
   kaui:
     container_name: killbill-kaui
-    image: killbill/kaui:3.0.9
+    image: killbill/kaui:3.0.23
     restart: unless-stopped
     ports:
       - "${KAUI_PORT}:8080"
@@ -79,7 +78,7 @@ services:
       retries: 10
   init-tenant:
     container_name: killbill-init-tenant
-    image: curlimages/curl:8.5.0
+    image: curlimages/curl:8.20.0
     logging: *default-logging
     volumes:
       - ./init-tenant.sh:/scripts/init-tenant.sh:ro
@@ -102,7 +101,7 @@ services:
     restart: "no"
   init-catalog:
     container_name: killbill-init-catalog
-    image: curlimages/curl:8.5.0
+    image: curlimages/curl:8.20.0
     logging: *default-logging
     volumes:
       - ./init-plans-catalog.sh:/scripts/init-plans-catalog.sh:ro
@@ -118,6 +117,57 @@ services:
       - /scripts/init-plans-catalog.sh
       - --catalog-file
       - /scripts/plans.xml
+      - --api-key
+      - ${KILLBILL_API_KEY}
+      - --api-secret
+      - ${KILLBILL_API_SECRET}
+      - --killbill-url
+      - ${KILLBILL_URL}
+    depends_on:
+      init-tenant:
+        condition: service_completed_successfully
+    restart: "no"
+  init-translations:
+    container_name: init_translations
+    image: curlimages/curl:8.20.0
+    volumes:
+      - ./init-invoice-translations.sh:/scripts/init-invoice-translations.sh:ro
+      - ./invoice-translation-en_US.properties:/scripts/invoice-translation-en_US.properties:ro
+      - ./invoice-translation-id_ID.properties:/scripts/invoice-translation-id_ID.properties:ro
+    environment:
+      - KILLBILL_URL=${KILLBILL_URL}
+      - ADMIN_USER=${ADMIN_USER}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - KILLBILL_API_KEY=${KILLBILL_API_KEY}
+      - KILLBILL_API_SECRET=${KILLBILL_API_SECRET}
+    command:
+      - sh
+      - /scripts/init-invoice-translations.sh
+      - --api-key
+      - ${KILLBILL_API_KEY}
+      - --api-secret
+      - ${KILLBILL_API_SECRET}
+      - --killbill-url
+      - ${KILLBILL_URL}
+    depends_on:
+      init-tenant:
+        condition: service_completed_successfully
+    restart: "no"
+  init-template:
+    container_name: init_template
+    image: curlimages/curl:8.20.0
+    volumes:
+      - ./init-invoice-templates.sh:/scripts/init-invoice-templates.sh:ro
+      - ./HtmlInvoiceTemplate.mustache:/scripts/HtmlInvoiceTemplate.mustache:ro
+    environment:
+      - KILLBILL_URL=${KILLBILL_URL}
+      - ADMIN_USER=${ADMIN_USER}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - KILLBILL_API_KEY=${KILLBILL_API_KEY}
+      - KILLBILL_API_SECRET=${KILLBILL_API_SECRET}
+    command:
+      - sh
+      - /scripts/init-invoice-templates.sh
       - --api-key
       - ${KILLBILL_API_KEY}
       - --api-secret

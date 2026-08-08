@@ -1,0 +1,133 @@
+name: kuala-microservices
+
+x-logging: &default-logging
+  driver: loki:latest
+  options:
+    loki-url: "https://${GRAFANA_USER}:${GRAFANA_TOKEN}@${GRAFANA_HOST}/loki/api/v1/push"
+    loki-batch-size: 400
+
+services:
+    account-service:
+        build:
+            context: ../
+            dockerfile: services/account-service/Dockerfile
+        container_name: account-service
+        ports:
+            - "9001:8001"
+        logging: *default-logging
+        environment:
+            SUPABASE_URL: http://kong:8000
+            SUPABASE_ANON_KEY: ${ANON_KEY}
+            SUPABASE_SERVICE_ROLE_KEY: ${SERVICE_ROLE_KEY}
+            AUTH_BASE_URL: ${SUPABASE_PUBLIC_URL}
+            AUTH_SUPABASE_ANON_KEY: ${ANON_KEY}
+            KILLBILL_BASE_URL: http://killbill:8080
+            KILLBILL_API_KEY: ${KILLBILL_API_KEY} 
+            KILLBILL_API_SECRET: ${KILLBILL_API_SECRET}
+            KILLBILL_USERNAME: ${KILLBILL_USERNAME}
+            KILLBILL_PASSWORD: ${KILLBILL_PASSWORD}
+            KILLBILL_DEFAULT_CURRENCY: ${KILLBILL_DEFAULT_CURRENCY}
+            RABBITMQ_URL: ${RABBITMQ_URL}
+        healthcheck:
+            test: [
+                "CMD",
+                "deno",
+                "eval",
+                "const r = await fetch('http://localhost:8001'); if(!r.ok) Deno.exit(1);",
+            ]
+            interval: 15s
+            timeout: 5s
+            retries: 5
+            start_period: 30s
+        restart: unless-stopped
+        networks:
+          - rabbitmq
+          - killbill_default
+          - kuala_default
+
+    invoice-service:
+        build:
+            context: ../
+            dockerfile: services/invoice-service/Dockerfile
+        container_name: invoice-service
+        ports:
+            - "9002:8002"
+        logging: *default-logging
+        environment:
+            SUPABASE_URL: http://kong:8000
+            SUPABASE_ANON_KEY: ${ANON_KEY}
+            SUPABASE_SERVICE_ROLE_KEY: ${SERVICE_ROLE_KEY}
+            AUTH_BASE_URL: ${SUPABASE_PUBLIC_URL}
+            AUTH_SUPABASE_ANON_KEY: ${ANON_KEY}
+            KILLBILL_BASE_URL: http://killbill:8080
+            KILLBILL_API_KEY: ${KILLBILL_API_KEY} 
+            KILLBILL_API_SECRET: ${KILLBILL_API_SECRET}
+            KILLBILL_USERNAME: ${KILLBILL_USERNAME}
+            KILLBILL_PASSWORD: ${KILLBILL_PASSWORD}
+            KILLBILL_DEFAULT_CURRENCY: ${KILLBILL_DEFAULT_CURRENCY}
+            RABBITMQ_URL: ${RABBITMQ_URL}
+        healthcheck:
+            test: [
+                "CMD",
+                "deno",
+                "eval",
+                "const r = await fetch('http://localhost:8002'); if(!r.ok) Deno.exit(1);",
+            ]
+            interval: 15s
+            timeout: 5s
+            retries: 5
+            start_period: 30s
+        restart: unless-stopped
+        networks:
+          - rabbitmq
+          - killbill_default
+          - kuala_default
+
+    subscription-service:
+        build:
+            context: ../
+            dockerfile: services/subscription-service/Dockerfile
+        container_name: subscription-service
+        ports:
+            - "9003:8003"
+        logging: *default-logging
+        environment:
+            SUPABASE_URL: http://kong:8000
+            SUPABASE_ANON_KEY: ${ANON_KEY}
+            SUPABASE_SERVICE_ROLE_KEY: ${SERVICE_ROLE_KEY}
+            AUTH_BASE_URL: ${SUPABASE_PUBLIC_URL}
+            AUTH_SUPABASE_ANON_KEY: ${ANON_KEY}
+            KILLBILL_BASE_URL: http://killbill:8080
+            KILLBILL_API_KEY: ${KILLBILL_API_KEY} 
+            KILLBILL_API_SECRET: ${KILLBILL_API_SECRET}
+            KILLBILL_USERNAME: ${KILLBILL_USERNAME}
+            KILLBILL_PASSWORD: ${KILLBILL_PASSWORD}
+            KILLBILL_DEFAULT_CURRENCY: ${KILLBILL_DEFAULT_CURRENCY}
+            RABBITMQ_URL: ${RABBITMQ_URL}
+        healthcheck:
+            test: [
+                "CMD",
+                "deno",
+                "eval",
+                "const r = await fetch('http://localhost:8003'); if(!r.ok) Deno.exit(1);",
+            ]
+            interval: 15s
+            timeout: 5s
+            retries: 5
+            start_period: 30s
+        restart: unless-stopped
+        networks:
+          - rabbitmq
+          - killbill_default
+          - kuala_default
+
+networks:
+  rabbitmq:
+    name: rabbitmq
+    external: true
+  killbill_default:
+    name: killbill_default
+    external: true
+  kuala_default:
+    name: kuala_default
+    external: true

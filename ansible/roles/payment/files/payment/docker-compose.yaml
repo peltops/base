@@ -5,7 +5,6 @@
 #   Destroy:        docker compose -f docker-compose.yml -f ./dev/docker-compose.dev.yml down -v --remove-orphans
 
 name: payment
-version: "3.8"
 
 x-logging:
   &default-logging
@@ -321,6 +320,7 @@ services:
     environment:  
       JWT_SECRET: ${JWT_SECRET}
       SUPABASE_URL: http://kong:8000
+      SUPABASE_PUBLIC_URL: ${SUPABASE_PUBLIC_URL}/functions/v1/payments
       SUPABASE_ANON_KEY: ${ANON_KEY}
       SUPABASE_SERVICE_ROLE_KEY: ${SERVICE_ROLE_KEY}
       SUPABASE_DB_URL: postgresql://postgres:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
@@ -345,6 +345,12 @@ services:
       STRIPE_WEBHOOK_SECRET_KEY: ${STRIPE_WEBHOOK_SECRET_KEY}
       STRIPE_SANDBOX_SECRET_KEY: ${STRIPE_SANDBOX_SECRET_KEY}
       STRIPE_PRODUCTION_SECRET_KEY: ${STRIPE_PRODUCTION_SECRET_KEY}
+
+      # CORS
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS}
+      # PAYMENT
+      OUTPOST_API_URL: ${OUTPOST_API_URL}
+      OUTPOST_API_KEY: ${OUTPOST_API_KEY}
 
       # TODO: Allow configuring VERIFY_JWT per function. This PR might help: https://github.com/supabase/cli/pull/786
       VERIFY_JWT: "${FUNCTIONS_VERIFY_JWT}"
@@ -457,7 +463,7 @@ services:
   dbmate:
     image: amacneil/dbmate:latest
     container_name: payment-dbmate
-    restart: always
+    restart: "no"
     depends_on:
       db:
         condition: service_healthy
@@ -465,7 +471,7 @@ services:
       DATABASE_URL: "postgres://postgres:${POSTGRES_PASSWORD}@db:${POSTGRES_PORT}/${POSTGRES_DB}?sslmode=disable"
     volumes:
       - ./volumes/db/migrations:/db/migrations
-    entrypoint: [ "sh", "-c", "dbmate wait && dbmate -d /db/migrations up && tail -f /dev/null" ]
+    entrypoint: [ "sh", "-c", "dbmate wait && dbmate -d /db/migrations up" ]
 
   vector:
     container_name: payment-vector
@@ -473,17 +479,17 @@ services:
     healthcheck:
       test:
         [
-
           "CMD",
           "wget",
           "--no-verbose",
           "--tries=1",
           "--spider",
-          "http://vector:9001/health"
+          "http://127.0.0.1:9001/health"
         ]
       timeout: 5s
       interval: 5s
-      retries: 3
+      retries: 10
+      start_period: 10s
     volumes:
       - ./volumes/logs/vector.yml:/etc/vector/vector.yml:ro
       - ${DOCKER_SOCKET_LOCATION}:/var/run/docker.sock:ro

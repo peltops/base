@@ -1,14 +1,22 @@
 ---
+- name: remove docker-created directories that should be files
+  ansible.builtin.file:
+    path: "/opt/killbill/{{ item | basename }}"
+    state: absent
+  with_fileglob:
+    - "../files/killbill/invoice-translation-*.properties"
+
 - name: copy killbill files
   copy:
-    src: ../files/killbill
-    dest: /opt
+    src: ../files/killbill/
+    dest: /opt/killbill/
 
 - name: deploy/restart killbill apps 
   community.docker.docker_compose_v2:
     project_src: /opt/killbill
     files: 
       - "docker-compose.yaml"
+    recreate: always
     state: present
   register: output
 
