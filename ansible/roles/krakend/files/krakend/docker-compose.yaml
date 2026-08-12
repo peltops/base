@@ -1,0 +1,24 @@
+services:
+  krakend:
+    container_name: krakend
+    hostname: krakend
+    image: krakend:2.13.8
+    restart: unless-stopped
+    ports:
+      - "8080"
+    volumes:
+      - ./krakend.json:/etc/krakend/krakend.json:ro
+    command: run -c /etc/krakend/krakend.json
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider --quiet http://127.0.0.1:8080/__health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - backend
+
+networks:
+  backend:
+    name: backend
+    external: true

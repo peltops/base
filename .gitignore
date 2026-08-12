@@ -1,0 +1,54 @@
+# Environment files and local secrets
+.env
+.env.*
+*.env
+*.env.*
+!.env.example
+!*.env.example
+!**/.env.example
+
+# Ansible local and decrypted files
+*.retry
+.vault-password-file
+vault-password-file
+
+# Private keys, certificates, and credential exports
+*.pem
+*.key
+*.crt
+*.cer
+*.der
+*.p12
+*.pfx
+*.jks
+*.keystore
+credentials.json
+credentials*.json
+secrets.json
+secrets*.json
+
+# Local infrastructure state and overrides
+.terraform/
+*.tfstate
+*.tfstate.*
+.ansible/
+*.local.yml
+*.local.yaml
+
+# Logs, caches, and generated output
+*.log
+*.tmp
+.cache/
+coverage/
+dist/
+build/
+
+# Local shell history and SSH material
+.bash_history
+.bash_history*
+.ssh/
+
+# Editor and operating-system files
+.DS_Store
+.vscode/
+.idea/
