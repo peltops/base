@@ -4,5 +4,90 @@
   "port": 8080,
   "timeout": "3s",
   "cache_ttl": "300s",
-  "endpoints": []
+  "endpoints": [
+    {
+      "endpoint": "/payments/initiate",
+      "method": "POST",
+      "backend": [
+        {
+          "url_pattern": "/functions/v1/payments/initiate",
+          "host": [
+            "http://payment-kong:8000"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/payments/initiate-payment",
+      "method": "POST",
+      "backend": [
+        {
+          "url_pattern": "/functions/v1/payments/initiate-payment",
+          "host": [
+            "http://payment-kong:8000"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/payments/initiate-payment",
+      "method": "OPTIONS",
+      "backend": [
+        {
+          "url_pattern": "/functions/v1/payments/initiate-payment",
+          "host": [
+            "http://payment-kong:8000"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/payments/redirect",
+      "method": "GET",
+      "backend": [
+        {
+          "url_pattern": "/functions/v1/payments/redirect",
+          "host": [
+            "http://payment-kong:8000"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/payments/order/{order_id}",
+      "method": "GET",
+      "backend": [
+        {
+          "url_pattern": "/functions/v1/payments/order/{order_id}",
+          "host": [
+            "http://payment-kong:8000"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/payments/transaction/{transaction_id}",
+      "method": "GET",
+      "backend": [
+        {
+          "url_pattern": "/functions/v1/payments/transaction/{transaction_id}",
+          "host": [
+            "http://payment-kong:8000"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/payments/webhook/{payment_gateway}",
+      "method": "POST",
+      "backend": [
+        {
+          "url_pattern": "/functions/v1/payments/webhook/{payment_gateway}",
+          "host": [
+            "http://payment-kong:8000"
+          ]
+        }
+      ]
+    }
+  ]
 }
