@@ -8,7 +8,7 @@
 
 - name: copy killbill files
   copy:
-    src: ../files/killbill/
+    src: killbill/
     dest: /opt/killbill/
 
 - name: deploy/restart killbill apps 
