@@ -28,6 +28,17 @@
     src: "{{ kuala_api_src_dir }}/supabase/functions/_shared/"
     dest: "{{ kuala_microservices_dest_dir }}/supabase/functions/_shared/"
 
+- name: Copy kuala edge function to Supabase
+  copy:
+    src: "{{ kuala_api_src_dir }}/supabase/functions/kuala/"
+    dest: "/opt/kuala/volumes/functions/kuala/"
+
+- name: Restart kuala edge functions container to clear cache
+  community.docker.docker_container:
+    name: kuala-edge-functions
+    state: started
+    restart: true
+
 - name: Ensure rabbitmq network exists
   community.docker.docker_network:
     name: rabbitmq
