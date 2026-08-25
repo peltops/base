@@ -43,6 +43,7 @@ services:
       - ldap:/bitnami/openldap
 
   identity-keycloak:
+    build: .
     image: peltops/pkeycloak:v0.2
     command: start --optimized
     container_name: identity-keycloak
