@@ -274,7 +274,7 @@ services:
 
   imgproxy:
     container_name: enakes-imgproxy
-    image: darthsim/imgproxy:v3.8.0
+    image: darthsim/imgproxy:v3.31.3
     healthcheck:
       test: ["CMD", "imgproxy", "health"]
       timeout: 5s
