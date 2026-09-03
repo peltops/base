@@ -32,6 +32,7 @@
     project_src: /opt/kuala-swagger
     files:
       - "docker-compose.yml"
+    recreate: always
     state: present
   register: swagger_output
 
