@@ -31,6 +31,7 @@ services:
       - killbill_default
       - kuala-frontend_default
       - outpost_default
+      - e-patient_default
     volumes:
       - ./config:/etc/nginx/config
       - ./conf.d:/etc/nginx/conf.d
@@ -70,4 +71,7 @@ networks:
     external: true
   outpost_default:
     name: outpost_default
+    external: true
+  e-patient_default:
+    name: e-patient_default
     external: true
