@@ -19,11 +19,13 @@ create policy "Users can view own profile"
 
 create policy "Users can update own profile"
   on public.profiles for update
-  using (auth.uid() = user_id);
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
 
 create or replace function public.handle_new_user()
 returns trigger
 language plpgsql security definer
+set search_path = ''
 as $$
 begin
   if not exists (select 1 from public.profiles where user_id = new.id) then
