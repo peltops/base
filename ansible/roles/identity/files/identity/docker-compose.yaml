@@ -10,7 +10,7 @@ x-logging:
 services:
 
   identity-db:
-    image: postgres:15.17
+    image: postgres:15.19
     container_name: identity-db
     restart: unless-stopped
     logging: *default-logging
