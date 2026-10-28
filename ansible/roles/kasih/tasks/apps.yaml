@@ -1,12 +1,12 @@
 ---
-- name: copy e-patient files
+- name: copy kasih files
   copy:
-    src: ../files/e-patient
+    src: ../files/kasih
     dest: /opt
 
-- name: deploy/restart e-patient apps 
+- name: deploy/restart kasih apps 
   community.docker.docker_compose_v2:
-    project_src: /opt/e-patient
+    project_src: /opt/kasih
     files: 
       - "docker-compose.yaml"
       - "docker-compose-s3.yaml"

@@ -20,7 +20,7 @@ jobs:
           --tags=eimunisasi
       env:
         ANSIBLE_HOST_KEY_CHECKING: false
-  e-patient:
+  kasih:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -28,14 +28,14 @@ jobs:
     - name: Run playbook
       uses: dawidd6/action-ansible-playbook@v2
       with:
-        playbook: playbook/e-patient.yaml
+        playbook: playbook/kasih.yaml
         directory: ./ansible
         key: ${{secrets.SSH_PRIVATE_KEY}}
         requirements: ./requirements.yml
         options: |
           -i inventory/base.ini
           --verbose        
-          --tags=e-patient
+          --tags=kasih
       env:
         ANSIBLE_HOST_KEY_CHECKING: false
   loadbalancer:

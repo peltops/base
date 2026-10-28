@@ -1,21 +1,21 @@
-name: Run e-patient playbook
+name: Run kasih playbook
 on:
   workflow_dispatch:
   push:
     branches:
       - main  
     paths:
-      - ansible/roles/e-patient/**      
+      - ansible/roles/kasih/**      
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
       uses: actions/checkout@v6
-    - name: Run e-patient playbook
+    - name: Run kasih playbook
       uses: dawidd6/action-ansible-playbook@v2
       with:
-        playbook: playbook/e-patient.yaml
+        playbook: playbook/kasih.yaml
         directory: ./ansible
         key: ${{secrets.SSH_PRIVATE_KEY}}
         vault_password: ${{secrets.VAULT_PASSWORD}}
@@ -23,6 +23,6 @@ jobs:
         options: |
           -i inventory/base.ini
           --verbose        
-          --tags=e-patient
+          --tags=kasih
       env:
         ANSIBLE_HOST_KEY_CHECKING: false
