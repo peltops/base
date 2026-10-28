@@ -11,7 +11,7 @@ volumes:
 services:
   killbill:
     container_name: killbill-service
-    image: killbill/killbill:0.24.17
+    image: killbill/killbill:0.24.22
     restart: unless-stopped
     ports:
       - "${KILLBILL_PORT}:8080"
