@@ -1,12 +1,11 @@
 ---
 - name: "Create directory"
   file:
-    path: /opt/e-patient
+    path: /opt/kasih
     state: directory
 
 - name: deploy apps
   include_tasks: apps.yaml
 
 - name: Run seeds script
-  ansible.builtin.shell: docker exec e-patient-db /bin/sh -c 'sh /run_seeds.sh'
-
+  ansible.builtin.shell: docker exec kasih-db /bin/sh -c 'sh /run_seeds.sh'

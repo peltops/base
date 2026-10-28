@@ -1,4 +1,4 @@
-name: e-patient
+name: kasih
 
 x-logging: &default-logging
   driver: loki:latest
@@ -39,7 +39,7 @@ services:
       "
 
   storage:
-    container_name: e-patient-storage
+    container_name: kasih-storage
     image: supabase/storage-api:v1.11.13
     depends_on:
       db:
@@ -91,7 +91,7 @@ services:
       - ./volumes/storage:/var/lib/storage:z
 
   imgproxy:
-    container_name: e-patient-imgproxy
+    container_name: kasih-imgproxy
     image: darthsim/imgproxy:v3.8.0
     healthcheck:
       test: [ "CMD", "imgproxy", "health" ]

@@ -4,7 +4,7 @@
 #   Stop:           docker compose down
 #   Destroy:        docker compose -f docker-compose.yml -f ./dev/docker-compose.dev.yml down -v --remove-orphans
 
-name: e-patient
+name: kasih
 
 x-logging: &default-logging
   driver: loki:latest
@@ -14,7 +14,7 @@ x-logging: &default-logging
 
 services:
   studio:
-    container_name: e-patient-studio
+    container_name: kasih-studio
     image: supabase/studio:2025.04.21-sha-173cc56
     restart: unless-stopped
     healthcheck:
@@ -54,7 +54,7 @@ services:
       # NEXT_ANALYTICS_BACKEND_PROVIDER: bigquery
 
   kong:
-    container_name: e-patient-kong
+    container_name: kasih-kong
     image: kong:2.8.1
     restart: unless-stopped
     # https://unix.stackexchange.com/a/294837
@@ -83,7 +83,7 @@ services:
       - ./volumes/api/kong.yml:/home/kong/temp.yml:ro
 
   auth:
-    container_name: e-patient-auth
+    container_name: kasih-auth
     image: supabase/gotrue:v2.171.0
     depends_on:
       db:
@@ -161,7 +161,7 @@ services:
       # GOTRUE_HOOK_PASSWORD_VERIFICATION_ATTEMPT_URI="pg-functions://postgres/public/password_verification_attempt"
 
   rest:
-    container_name: e-patient-rest
+    container_name: kasih-rest
     image: postgrest/postgrest:v12.2.11
     depends_on:
       db:
@@ -183,7 +183,7 @@ services:
 
   realtime:
     # This container name looks inconsistent but is correct because realtime constructs tenant id by parsing the subdomain
-    container_name: realtime-dev.e-patient-realtime
+    container_name: realtime-dev.kasih-realtime
     image: supabase/realtime:v2.34.47
     depends_on:
       db:
@@ -228,7 +228,7 @@ services:
 
   # To use S3 backed storage: docker compose -f docker-compose.yml -f docker-compose.s3.yml up
   storage:
-    container_name: e-patient-storage
+    container_name: kasih-storage
     image: supabase/storage-api:v1.22.7
     depends_on:
       db:
@@ -272,7 +272,7 @@ services:
       - ./volumes/storage:/var/lib/storage:z
 
   imgproxy:
-    container_name: e-patient-imgproxy
+    container_name: kasih-imgproxy
     image: darthsim/imgproxy:v3.8.0
     healthcheck:
       test: ["CMD", "imgproxy", "health"]
@@ -289,7 +289,7 @@ services:
       - ./volumes/storage:/var/lib/storage:z
 
   meta:
-    container_name: e-patient-meta
+    container_name: kasih-meta
     image: supabase/postgres-meta:v0.88.9
     depends_on:
       db:
@@ -308,7 +308,7 @@ services:
       PG_META_DB_PASSWORD: ${POSTGRES_PASSWORD}
 
   functions:
-    container_name: e-patient-edge-functions
+    container_name: kasih-edge-functions
     image: supabase/edge-runtime:v1.67.4
     restart: unless-stopped
     depends_on:
@@ -340,7 +340,7 @@ services:
       - /home/deno/functions/main
 
   analytics:
-    container_name: e-patient-analytics
+    container_name: kasih-analytics
     image: supabase/logflare:1.12.0
     healthcheck:
       test: ["CMD", "curl", "http://localhost:4000/health"]
@@ -384,7 +384,7 @@ services:
 
   # Comment out everything below this point if you are using an external Postgres database
   db:
-    container_name: e-patient-db
+    container_name: kasih-db
     image: supabase/postgres:15.8.1.060
     restart: unless-stopped
     logging: *default-logging
@@ -447,7 +447,7 @@ services:
 
   dbmate:
     image: amacneil/dbmate:latest
-    container_name: e-patient-dbmate
+    container_name: kasih-dbmate
     restart: on-failure
     depends_on:
       db:
@@ -462,7 +462,7 @@ services:
     entrypoint: ["sh", "-c", "dbmate wait && dbmate -d /db/migrations up"]
 
   vector:
-    container_name: e-patient-vector
+    container_name: kasih-vector
     image: timberio/vector:0.28.1-alpine
     healthcheck:
       test:
@@ -489,7 +489,7 @@ services:
 
   # Update the DATABASE_URL if you are using an external Postgres database
   supavisor:
-    container_name: e-patient-pooler
+    container_name: kasih-pooler
     image: supabase/supavisor:2.5.1
     restart: unless-stopped
     ports:
