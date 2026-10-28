@@ -1,6 +1,0 @@
----
-- hosts: all
-  roles:
-  - 'roles/common'
-  - role: roles/e-patient
-    tags: e-patient
