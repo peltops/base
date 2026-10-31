@@ -4,6 +4,13 @@
     src: ../files/kasih
     dest: /opt
 
+- name: pull kasih images
+  community.docker.docker_compose_v2_pull:
+    project_src: /opt/kasih
+    files:
+      - "docker-compose.yaml"
+      - "docker-compose-s3.yaml"
+
 - name: deploy/restart kasih apps 
   community.docker.docker_compose_v2:
     project_src: /opt/kasih

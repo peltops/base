@@ -20,17 +20,16 @@ services:
     healthcheck:
       test:
         [
-          "CMD",
-          "node",
-          "-e",
-          "fetch('http://studio:3000/api/platform/profile').then((r) => {if (r.status !== 200) throw new Error(r.status)})",
+          "CMD-SHELL",
+          "node -e \"fetch('http://localhost:3000/api/platform/profile').then((r) => {if (r.status !== 200) throw new Error(r.status)})\"",
         ]
       timeout: 10s
       interval: 5s
       retries: 3
+      start_period: 20s
     depends_on:
       analytics:
-        condition: service_healthy
+        condition: service_started
     logging: *default-logging
     environment:
       HOSTNAME: "0.0.0.0"
@@ -55,7 +54,7 @@ services:
       LOGFLARE_PUBLIC_ACCESS_TOKEN: ${LOGFLARE_API_KEY}
       LOGFLARE_PRIVATE_ACCESS_TOKEN: ${LOGFLARE_API_KEY}
       LOGFLARE_URL: http://analytics:4000
-      NEXT_PUBLIC_ENABLE_LOGS: true
+      NEXT_PUBLIC_ENABLE_LOGS: "true"
       ENABLED_FEATURES_LOGS_ALL: "true"
       # Comment to use Big Query backend for analytics
       NEXT_ANALYTICS_BACKEND_PROVIDER: postgres
@@ -73,7 +72,7 @@ services:
       - 8443/tcp
     depends_on:
       analytics:
-        condition: service_healthy
+        condition: service_started
     logging: *default-logging
     environment:
       KONG_DATABASE: "off"
@@ -98,8 +97,6 @@ services:
       db:
         # Disable this if you are using an external Postgres database
         condition: service_healthy
-      analytics:
-        condition: service_healthy
     healthcheck:
       test:
         [
@@ -113,6 +110,7 @@ services:
       timeout: 5s
       interval: 5s
       retries: 3
+      start_period: 10s
     restart: unless-stopped
     logging: *default-logging
     environment:
@@ -176,8 +174,6 @@ services:
       db:
         # Disable this if you are using an external Postgres database
         condition: service_healthy
-      analytics:
-        condition: service_healthy
     restart: unless-stopped
     logging: *default-logging
     environment:
@@ -198,24 +194,16 @@ services:
       db:
         # Disable this if you are using an external Postgres database
         condition: service_healthy
-      analytics:
-        condition: service_healthy
     healthcheck:
       test:
         [
-          "CMD",
-          "curl",
-          "-sSfL",
-          "--head",
-          "-o",
-          "/dev/null",
-          "-H",
-          "Authorization: Bearer ${ANON_KEY}",
-          "http://localhost:4000/api/tenants/realtime-dev/health",
+          "CMD-SHELL",
+          "curl -sSfL --head -o /dev/null -H \"Authorization: Bearer ${ANON_KEY}\" http://localhost:4000/api/tenants/realtime-dev/health",
         ]
       timeout: 5s
       interval: 5s
       retries: 3
+      start_period: 10s
     restart: unless-stopped
     logging: *default-logging
     environment:
@@ -264,6 +252,7 @@ services:
       timeout: 5s
       interval: 5s
       retries: 3
+      start_period: 10s
     restart: unless-stopped
     logging: *default-logging
     environment:
@@ -290,6 +279,7 @@ services:
   imgproxy:
     container_name: kasih-imgproxy
     image: darthsim/imgproxy:v3.31.4
+    restart: unless-stopped
     healthcheck:
       test: ["CMD", "imgproxy", "health"]
       timeout: 5s
@@ -312,8 +302,6 @@ services:
       db:
         # Disable this if you are using an external Postgres database
         condition: service_healthy
-      analytics:
-        condition: service_healthy
     restart: unless-stopped
     logging: *default-logging
     environment:
@@ -331,7 +319,7 @@ services:
     restart: unless-stopped
     depends_on:
       analytics:
-        condition: service_healthy
+        condition: service_started
     logging: *default-logging
     environment:
       ENAKES_SUPABASE_URL: ${ENAKES_SUPABASE_URL:-}
@@ -358,10 +346,15 @@ services:
     container_name: kasih-analytics
     image: supabase/logflare:1.50.15
     healthcheck:
-      test: ["CMD", "curl", "http://localhost:4000/health"]
+      test:
+        [
+          "CMD-SHELL",
+          "curl -sSfL -o /dev/null http://localhost:4000/health",
+        ]
       timeout: 5s
       interval: 5s
       retries: 10
+      start_period: 30s
     restart: unless-stopped
     ports:
       - 4000
@@ -442,6 +435,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+      start_period: 30s
     depends_on:
       vector:
         condition: service_healthy
@@ -472,8 +466,6 @@ services:
       db:
         # Disable this if you are using an external Postgres database
         condition: service_healthy
-      analytics:
-        condition: service_healthy
     environment:
       DATABASE_URL: "postgres://postgres:${POSTGRES_PASSWORD}@db:${POSTGRES_PORT}/${POSTGRES_DB}?sslmode=disable"
     volumes:
@@ -483,6 +475,7 @@ services:
   vector:
     container_name: kasih-vector
     image: timberio/vector:0.53.0-alpine
+    restart: unless-stopped
     healthcheck:
       test:
         [
@@ -496,6 +489,7 @@ services:
       timeout: 5s
       interval: 5s
       retries: 3
+      start_period: 10s
     volumes:
       - ./volumes/logs/vector.yml:/etc/vector/vector.yml:ro
       - ${DOCKER_SOCKET_LOCATION}:/var/run/docker.sock:ro
@@ -531,11 +525,10 @@ services:
         ]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 30s
     depends_on:
       db:
-        condition: service_healthy
-      analytics:
         condition: service_healthy
     environment:
       PORT: 4000
@@ -543,7 +536,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       DATABASE_URL: ecto://supabase_admin:${POSTGRES_PASSWORD}@db:${POSTGRES_PORT}/_supabase
-      CLUSTER_POSTGRES: true
+      CLUSTER_POSTGRES: "true"
       SECRET_KEY_BASE: ${SECRET_KEY_BASE}
       VAULT_ENC_KEY: ${VAULT_ENC_KEY}
       API_JWT_SECRET: ${JWT_SECRET}
