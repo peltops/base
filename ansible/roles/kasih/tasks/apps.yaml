@@ -1,8 +1,36 @@
 ---
+- name: remove obsolete placeholder migration
+  ansible.builtin.file:
+    path: /opt/kasih/volumes/db/migrations/20261021150000_init.sql
+    state: absent
+
 - name: copy kasih files
   copy:
     src: ../files/kasih
     dest: /opt
+
+- name: pull kasih images
+  community.docker.docker_compose_v2_pull:
+    project_src: /opt/kasih
+    files:
+      - "docker-compose.yaml"
+      - "docker-compose-s3.yaml"
+    policy: missing
+    services:
+      - studio
+      - kong
+      - auth
+      - rest
+      - realtime
+      - storage
+      - imgproxy
+      - meta
+      - functions
+      - analytics
+      - db
+      - vector
+      - supavisor
+      - dbmate
 
 - name: deploy/restart kasih apps 
   community.docker.docker_compose_v2:
