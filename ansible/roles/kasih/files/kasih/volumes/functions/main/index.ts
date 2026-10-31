@@ -1,4 +1,4 @@
-import { serve } from "https://deno.land/std@0.131.0/http/server.ts";
+import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { validateJWT } from "../_shared/jwtAuth.ts";
 
 console.log("main function started");

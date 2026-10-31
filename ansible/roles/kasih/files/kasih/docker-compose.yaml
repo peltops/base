@@ -15,7 +15,7 @@ x-logging: &default-logging
 services:
   studio:
     container_name: kasih-studio
-    image: supabase/studio:2025.04.21-sha-173cc56
+    image: supabase/studio:2026.10.12-sha-3699278
     restart: unless-stopped
     healthcheck:
       test:
@@ -33,8 +33,14 @@ services:
         condition: service_healthy
     logging: *default-logging
     environment:
+      HOSTNAME: "0.0.0.0"
       STUDIO_PG_META_URL: http://meta:8080
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PG_META_CRYPTO_KEY: ${PG_META_CRYPTO_KEY:-${VAULT_ENC_KEY}}
+      PGRST_DB_SCHEMAS: ${PGRST_DB_SCHEMAS}
 
       DEFAULT_ORGANIZATION_NAME: ${STUDIO_DEFAULT_ORGANIZATION}
       DEFAULT_PROJECT_NAME: ${STUDIO_DEFAULT_PROJECT}
@@ -46,8 +52,11 @@ services:
       AUTH_JWT_SECRET: ${JWT_SECRET}
 
       LOGFLARE_API_KEY: ${LOGFLARE_API_KEY}
+      LOGFLARE_PUBLIC_ACCESS_TOKEN: ${LOGFLARE_API_KEY}
+      LOGFLARE_PRIVATE_ACCESS_TOKEN: ${LOGFLARE_API_KEY}
       LOGFLARE_URL: http://analytics:4000
       NEXT_PUBLIC_ENABLE_LOGS: true
+      ENABLED_FEATURES_LOGS_ALL: "true"
       # Comment to use Big Query backend for analytics
       NEXT_ANALYTICS_BACKEND_PROVIDER: postgres
       # Uncomment to use Big Query backend for analytics
@@ -55,7 +64,7 @@ services:
 
   kong:
     container_name: kasih-kong
-    image: kong:2.8.1
+    image: kong:2.8.5
     restart: unless-stopped
     # https://unix.stackexchange.com/a/294837
     entrypoint: bash -c 'eval "echo \"$$(cat ~/temp.yml)\"" > ~/kong.yml && /docker-entrypoint.sh kong docker-start'
@@ -84,7 +93,7 @@ services:
 
   auth:
     container_name: kasih-auth
-    image: supabase/gotrue:v2.171.0
+    image: supabase/gotrue:v2.197.0
     depends_on:
       db:
         # Disable this if you are using an external Postgres database
@@ -162,7 +171,7 @@ services:
 
   rest:
     container_name: kasih-rest
-    image: postgrest/postgrest:v12.2.11
+    image: postgrest/postgrest:v14.18
     depends_on:
       db:
         # Disable this if you are using an external Postgres database
@@ -184,7 +193,7 @@ services:
   realtime:
     # This container name looks inconsistent but is correct because realtime constructs tenant id by parsing the subdomain
     container_name: realtime-dev.kasih-realtime
-    image: supabase/realtime:v2.34.47
+    image: supabase/realtime:v2.143.3
     depends_on:
       db:
         # Disable this if you are using an external Postgres database
@@ -220,16 +229,20 @@ services:
       DB_ENC_KEY: supabaserealtime
       API_JWT_SECRET: ${JWT_SECRET}
       SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+      METRICS_JWT_SECRET: ${JWT_SECRET}
+      REGION: us-east-1
       ERL_AFLAGS: -proto_dist inet_tcp
       DNS_NODES: "''"
       RLIMIT_NOFILE: "10000"
       APP_NAME: realtime
-      SEED_SELF_HOST: true
+      SEED_SELF_HOST: "true"
+      RUN_JANITOR: "true"
+      DISABLE_HEALTHCHECK_LOGGING: "true"
 
   # To use S3 backed storage: docker compose -f docker-compose.yml -f docker-compose.s3.yml up
   storage:
     container_name: kasih-storage
-    image: supabase/storage-api:v1.22.7
+    image: supabase/storage-api:v1.81.0
     depends_on:
       db:
         # Disable this if you are using an external Postgres database
@@ -258,7 +271,10 @@ services:
       SERVICE_KEY: ${SERVICE_ROLE_KEY}
       POSTGREST_URL: http://rest:3000
       PGRST_JWT_SECRET: ${JWT_SECRET}
+      AUTH_JWT_SECRET: ${JWT_SECRET}
       DATABASE_URL: postgres://supabase_storage_admin:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+      STORAGE_PUBLIC_URL: ${SUPABASE_PUBLIC_URL}
+      REQUEST_ALLOW_X_FORWARDED_PATH: "true"
       FILE_SIZE_LIMIT: 52428800
       STORAGE_BACKEND: file
       FILE_STORAGE_BACKEND_PATH: /var/lib/storage
@@ -273,7 +289,7 @@ services:
 
   imgproxy:
     container_name: kasih-imgproxy
-    image: darthsim/imgproxy:v3.8.0
+    image: darthsim/imgproxy:v3.31.4
     healthcheck:
       test: ["CMD", "imgproxy", "health"]
       timeout: 5s
@@ -285,12 +301,13 @@ services:
       IMGPROXY_LOCAL_FILESYSTEM_ROOT: /
       IMGPROXY_USE_ETAG: "true"
       IMGPROXY_ENABLE_WEBP_DETECTION: ${IMGPROXY_ENABLE_WEBP_DETECTION}
+      IMGPROXY_AUTO_WEBP: ${IMGPROXY_ENABLE_WEBP_DETECTION}
     volumes:
       - ./volumes/storage:/var/lib/storage:z
 
   meta:
     container_name: kasih-meta
-    image: supabase/postgres-meta:v0.88.9
+    image: supabase/postgres-meta:v0.100.0
     depends_on:
       db:
         # Disable this if you are using an external Postgres database
@@ -306,10 +323,11 @@ services:
       PG_META_DB_NAME: ${POSTGRES_DB}
       PG_META_DB_USER: supabase_admin
       PG_META_DB_PASSWORD: ${POSTGRES_PASSWORD}
+      CRYPTO_KEY: ${PG_META_CRYPTO_KEY:-${VAULT_ENC_KEY}}
 
   functions:
     container_name: kasih-edge-functions
-    image: supabase/edge-runtime:v1.67.4
+    image: supabase/edge-runtime:v1.77.4
     restart: unless-stopped
     depends_on:
       analytics:
@@ -338,7 +356,7 @@ services:
 
   analytics:
     container_name: kasih-analytics
-    image: supabase/logflare:1.12.0
+    image: supabase/logflare:1.50.15
     healthcheck:
       test: ["CMD", "curl", "http://localhost:4000/health"]
       timeout: 5s
@@ -367,8 +385,10 @@ services:
       DB_PASSWORD: ${POSTGRES_PASSWORD}
       DB_SCHEMA: _analytics
       LOGFLARE_API_KEY: ${LOGFLARE_API_KEY}
-      LOGFLARE_SINGLE_TENANT: true
-      LOGFLARE_SUPABASE_MODE: true
+      LOGFLARE_PUBLIC_ACCESS_TOKEN: ${LOGFLARE_API_KEY}
+      LOGFLARE_PRIVATE_ACCESS_TOKEN: ${LOGFLARE_API_KEY}
+      LOGFLARE_SINGLE_TENANT: "true"
+      LOGFLARE_SUPABASE_MODE: "true"
       LOGFLARE_MIN_CLUSTER_SIZE: 1
 
       # Comment variables to use Big Query backend for analytics
@@ -382,7 +402,7 @@ services:
   # Comment out everything below this point if you are using an external Postgres database
   db:
     container_name: kasih-db
-    image: supabase/postgres:15.8.1.060
+    image: supabase/postgres:15.8.1.085
     restart: unless-stopped
     logging: *default-logging
     volumes:
@@ -462,7 +482,7 @@ services:
 
   vector:
     container_name: kasih-vector
-    image: timberio/vector:0.28.1-alpine
+    image: timberio/vector:0.53.0-alpine
     healthcheck:
       test:
         [
@@ -482,14 +502,15 @@ services:
     logging: *default-logging
     environment:
       LOGFLARE_API_KEY: ${LOGFLARE_API_KEY}
-    command: ["--config", "etc/vector/vector.yml"]
+      LOGFLARE_PUBLIC_ACCESS_TOKEN: ${LOGFLARE_API_KEY}
+    command: ["--config", "/etc/vector/vector.yml"]
     security_opt:
       - "label=disable"
 
   # Update the DATABASE_URL if you are using an external Postgres database
   supavisor:
     container_name: kasih-pooler
-    image: supabase/supavisor:2.5.1
+    image: supabase/supavisor:2.9.13
     restart: unless-stopped
     ports:
       # Pass down internal port because it's set dynamically by other services
@@ -533,6 +554,7 @@ services:
       POOLER_DEFAULT_POOL_SIZE: ${POOLER_DEFAULT_POOL_SIZE}
       POOLER_MAX_CLIENT_CONN: ${POOLER_MAX_CLIENT_CONN}
       POOLER_POOL_MODE: transaction
+      DB_POOL_SIZE: ${POOLER_DB_POOL_SIZE:-5}
     command:
       [
         "/bin/sh",
