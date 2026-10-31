@@ -1,4 +1,9 @@
 ---
+- name: remove obsolete placeholder migration
+  ansible.builtin.file:
+    path: /opt/kasih/volumes/db/migrations/20261021150000_init.sql
+    state: absent
+
 - name: copy kasih files
   copy:
     src: ../files/kasih
