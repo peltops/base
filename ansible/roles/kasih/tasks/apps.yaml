@@ -10,6 +10,7 @@
     files:
       - "docker-compose.yaml"
       - "docker-compose-s3.yaml"
+    policy: missing
 
 - name: deploy/restart kasih apps 
   community.docker.docker_compose_v2:
