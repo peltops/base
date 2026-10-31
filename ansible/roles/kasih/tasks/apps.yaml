@@ -11,6 +11,21 @@
       - "docker-compose.yaml"
       - "docker-compose-s3.yaml"
     policy: missing
+    services:
+      - studio
+      - kong
+      - auth
+      - rest
+      - realtime
+      - storage
+      - imgproxy
+      - meta
+      - functions
+      - analytics
+      - db
+      - vector
+      - supavisor
+      - dbmate
 
 - name: deploy/restart kasih apps 
   community.docker.docker_compose_v2:
