@@ -1,4 +1,4 @@
-import * as jose from "https://deno.land/x/jose@v4.14.4/index.ts";
+import * as jose from "https://deno.land/x/jose@v6.2.3/index.ts";
 
 const JWT_SECRET = Deno.env.get("JWT_SECRET");
 
