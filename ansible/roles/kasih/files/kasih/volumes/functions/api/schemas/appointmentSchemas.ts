@@ -7,7 +7,7 @@ export const createAppointmentSchema = z.object({
   inspector_id: z.string().uuid(),
   date: z.string().date(),
   note: z.string().optional(),
-  purpose: z.string().optional(),
+  purpose: z.string().optional().default("Imunisasi"),
   start_time: z.string().time(),
   end_time: z.string().time(),
   gateway: z.enum(PAYMENT_GATEWAY).optional().default("midtrans"),

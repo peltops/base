@@ -11,11 +11,8 @@ export const handleCreateAppointment = async (c: Context) => {
   }
   const { gateway, currency, ...rest } = body;
 
-  let orderId: string | null = null;
-  let orderData: any = null;
-
-  // Attempt payment initiation gracefully; if payment service is down or fails,
-  // do not block patient appointment creation.
+  // 1. Inisiasi Pembayaran (Wajib & Strict: tidak boleh ada janji tanpa order_id)
+  let initiatePaymentResult: any = null;
   try {
     const { data: initiatePayment, error: errorInitiatePayment } =
       await paymentSupabaseAdmin.functions.invoke("payments/initiate", {
@@ -35,17 +32,50 @@ export const handleCreateAppointment = async (c: Context) => {
       });
 
     if (errorInitiatePayment) {
-      console.warn("Payment initiation warning:", errorInitiatePayment);
-    } else if (initiatePayment?.data?.order_id) {
-      orderId = initiatePayment.data.order_id;
+      console.error("Payment initiation error:", errorInitiatePayment);
+      return c.json(
+        {
+          is_successful: false,
+          message: "Failed to initiate payment for appointment",
+          error: errorInitiatePayment,
+        },
+        400
+      );
     }
+    initiatePaymentResult = initiatePayment;
   } catch (paymentErr) {
-    console.warn("Error invoking payment service:", paymentErr);
+    console.error("Error invoking payment service:", paymentErr);
+    return c.json(
+      {
+        is_successful: false,
+        message: "Payment service is currently unavailable",
+        error:
+          paymentErr instanceof Error ? paymentErr.message : String(paymentErr),
+      },
+      400
+    );
   }
 
-  const model: Record<string, any> = {
+  const orderId = initiatePaymentResult?.data?.order_id;
+  if (!orderId) {
+    console.error(
+      "Payment service did not return an order_id:",
+      initiatePaymentResult
+    );
+    return c.json(
+      {
+        is_successful: false,
+        message: "Payment initiation did not produce a valid order ID",
+        error: initiatePaymentResult,
+      },
+      400
+    );
+  }
+
+  // 2. Buat Appointment di Database HANYA jika order_id sudah valid
+  const model = {
     ...rest,
-    ...(orderId ? { order_id: orderId } : {}),
+    order_id: orderId,
   };
 
   const { data: createAppointment, error: errorCreateAppointment } =
@@ -67,13 +97,14 @@ export const handleCreateAppointment = async (c: Context) => {
     return c.json(
       {
         is_successful: false,
-        message: "Failed to create appointment",
+        message: "Failed to create appointment in database",
         error: errorCreateAppointment,
       },
       500
     );
   }
 
+  // 3. Ambil data health worker
   let healthWorkerData: any = null;
   if (model.inspector_id) {
     try {
@@ -96,25 +127,25 @@ export const handleCreateAppointment = async (c: Context) => {
     }
   }
 
-  if (orderId) {
-    try {
-      const { data: orderById, error: errorOrderById } =
-        await paymentSupabaseAdmin.functions.invoke(
-          "payments/order/" + orderId,
-          {
-            headers: headers,
-            method: "GET",
-          }
-        );
+  // 4. Ambil data order
+  let orderData: any = null;
+  try {
+    const { data: orderById, error: errorOrderById } =
+      await paymentSupabaseAdmin.functions.invoke(
+        "payments/order/" + orderId,
+        {
+          headers: headers,
+          method: "GET",
+        }
+      );
 
-      if (errorOrderById) {
-        console.warn("Warning fetching order by ID:", errorOrderById);
-      } else if (orderById?.data) {
-        orderData = orderById.data;
-      }
-    } catch (orderErr) {
-      console.warn("Error invoking payments/order:", orderErr);
+    if (errorOrderById) {
+      console.warn("Warning fetching order by ID:", errorOrderById);
+    } else if (orderById?.data) {
+      orderData = orderById.data;
     }
+  } catch (orderErr) {
+    console.warn("Error invoking payments/order:", orderErr);
   }
 
   const response = {
