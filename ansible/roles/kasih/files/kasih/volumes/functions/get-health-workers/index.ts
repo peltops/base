@@ -7,11 +7,18 @@ import {
 import { validateJWT } from "../_shared/jwtAuth.ts";
 
 Deno.serve(async (req) => {
+  const url = new URL(req.url);
+  const page = url.searchParams.get("page") ?? 1;
+  const pageSize = url.searchParams.get("pageSize") ?? 10;
+  const search = url.searchParams.get("search") ?? "";
+  console.log(`[get-health-workers] [${req.method}] ${url.pathname} (page: ${page}, pageSize: ${pageSize}, search: "${search}")`);
+
   // JWT Authentication
   if (req.method !== "OPTIONS") {
     const validation = await validateJWT(req);
 
     if (!validation.isValid) {
+      console.warn(`[get-health-workers] [${req.method}] Invalid JWT: ${validation.error}`);
       return new Response(
         JSON.stringify({
           isSuccessful: false,
@@ -24,11 +31,6 @@ Deno.serve(async (req) => {
       );
     }
   }
-
-  const url = new URL(req.url);
-  const page = url.searchParams.get("page") ?? 1;
-  const pageSize = url.searchParams.get("pageSize") ?? 10;
-  const search = url.searchParams.get("search") ?? "";
 
   try {
     const client = enakesSupabaseAdmin;
@@ -84,11 +86,13 @@ Deno.serve(async (req) => {
       },
       isSuccessful: true,
     });
+    console.log(`[get-health-workers] Successfully retrieved ${result.length} health workers (total: ${count})`);
     return new Response(response, {
       headers: { "Content-Type": "application/json" },
       status: 200,
     });
   } catch (err) {
+    console.error(`[get-health-workers] Error fetching health workers:`, err);
     const response = JSON.stringify({
       isSuccessful: false,
       message: err?.message ?? err,

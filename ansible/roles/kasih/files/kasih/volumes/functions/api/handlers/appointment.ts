@@ -157,6 +157,7 @@ export const handleCreateAppointment = async (c: Context) => {
       order: orderData,
     },
   };
+  console.log(`[appointment] Successfully created appointment: ${createAppointment.id}`);
   return c.json(response, 200);
 };
 
@@ -239,6 +240,7 @@ export const handleGetAppointment = async (c: Context) => {
     }
   }
 
+  console.log(`[appointment] Successfully fetched appointment: ${appointment.id}`);
   return c.json(
     {
       is_successful: true,
