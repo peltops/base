@@ -11,39 +11,43 @@ export const handleCreateAppointment = async (c: Context) => {
   }
   const { gateway, currency, ...rest } = body;
 
-  const { data: initiatePayment, error: errorInitiatePayment } =
-    await paymentSupabaseAdmin.functions.invoke("payments/initiate", {
-      headers: headers,
-      method: "POST",
-      body: {
-        gateway: gateway,
-        currency: currency,
-        items: [
-          {
-            // HARD CODED BOOKING FEE PRODUCT ID
-            id: "4cf70de1-35d6-4794-a249-9b79c328f086",
-            quantity: 1,
-          },
-        ],
-      },
-    });
+  let orderId: string | null = null;
+  let orderData: any = null;
 
-  if (errorInitiatePayment) {
-    console.error("Error initiating payment:", errorInitiatePayment);
-    return c.json(
-      {
-        is_successful: false,
-        message: "Failed to create appointment",
-        error: errorInitiatePayment,
-      },
-      400
-    );
+  // Attempt payment initiation gracefully; if payment service is down or fails,
+  // do not block patient appointment creation.
+  try {
+    const { data: initiatePayment, error: errorInitiatePayment } =
+      await paymentSupabaseAdmin.functions.invoke("payments/initiate", {
+        headers: headers,
+        method: "POST",
+        body: {
+          gateway: gateway || "midtrans",
+          currency: currency || "IDR",
+          items: [
+            {
+              // HARD CODED BOOKING FEE PRODUCT ID
+              id: "4cf70de1-35d6-4794-a249-9b79c328f086",
+              quantity: 1,
+            },
+          ],
+        },
+      });
+
+    if (errorInitiatePayment) {
+      console.warn("Payment initiation warning:", errorInitiatePayment);
+    } else if (initiatePayment?.data?.order_id) {
+      orderId = initiatePayment.data.order_id;
+    }
+  } catch (paymentErr) {
+    console.warn("Error invoking payment service:", paymentErr);
   }
 
-  const model = {
+  const model: Record<string, any> = {
     ...rest,
-    order_id: initiatePayment.data?.order_id,
+    ...(orderId ? { order_id: orderId } : {}),
   };
+
   const { data: createAppointment, error: errorCreateAppointment } =
     await kasihSupabaseAdmin
       .from("appointments")
@@ -69,66 +73,57 @@ export const handleCreateAppointment = async (c: Context) => {
       500
     );
   }
-  const { data: healthWorker, error: errorHealthWorker } =
-    await kasihSupabaseAdmin.functions.invoke(
-      "get-health-worker/" + model.inspector_id,
-      {
-        headers: headers,
-        method: "GET",
+
+  let healthWorkerData: any = null;
+  if (model.inspector_id) {
+    try {
+      const { data: healthWorker, error: errorHealthWorker } =
+        await kasihSupabaseAdmin.functions.invoke(
+          "get-health-worker/" + model.inspector_id,
+          {
+            headers: headers,
+            method: "GET",
+          }
+        );
+
+      if (errorHealthWorker) {
+        console.warn("Warning fetching health worker:", errorHealthWorker);
+      } else if (healthWorker?.data) {
+        healthWorkerData = healthWorker.data;
       }
-    );
-
-  if (errorHealthWorker) {
-    console.error("Error fetching health worker:", errorHealthWorker);
-    return c.json(
-      {
-        is_successful: false,
-        message: "Failed to fetch health worker",
-        error: errorHealthWorker,
-      },
-      500
-    );
+    } catch (hwErr) {
+      console.warn("Error invoking get-health-worker:", hwErr);
+    }
   }
 
-  const { data: orderById, error: errorOrderById } =
-    await paymentSupabaseAdmin.functions.invoke(
-      "payments/order/" + model.order_id,
-      {
-        headers: headers,
-        method: "GET",
+  if (orderId) {
+    try {
+      const { data: orderById, error: errorOrderById } =
+        await paymentSupabaseAdmin.functions.invoke(
+          "payments/order/" + orderId,
+          {
+            headers: headers,
+            method: "GET",
+          }
+        );
+
+      if (errorOrderById) {
+        console.warn("Warning fetching order by ID:", errorOrderById);
+      } else if (orderById?.data) {
+        orderData = orderById.data;
       }
-    );
-
-  if (errorOrderById) {
-    console.error("Error fetching order by ID:", errorOrderById);
-    return c.json(
-      {
-        is_successful: false,
-        message: "Failed to fetch order by ID",
-        error: errorOrderById,
-      },
-      500
-    );
+    } catch (orderErr) {
+      console.warn("Error invoking payments/order:", orderErr);
+    }
   }
 
-  const order = orderById.data;
-
-  if (!order) {
-    return c.json(
-      {
-        is_successful: false,
-        message: "Order not found",
-      },
-      404
-    );
-  }
   const response = {
     is_successful: true,
     message: "Appointment created successfully",
     data: {
       ...createAppointment,
-      health_worker: healthWorker.data,
-      order,
+      health_worker: healthWorkerData,
+      order: orderData,
     },
   };
   return c.json(response, 200);
@@ -150,15 +145,16 @@ export const handleGetAppointment = async (c: Context) => {
       .limit(1)
       .single();
 
-  if (errorAppointment) {
+  if (errorAppointment || !appointment) {
     console.error("Error fetching appointment:", errorAppointment);
+    const status = errorAppointment?.code === "PGRST116" ? 404 : 500;
     return c.json(
       {
         is_successful: false,
         message: "Failed to fetch appointment",
         error: errorAppointment,
       },
-      500
+      status
     );
   }
 
@@ -168,54 +164,48 @@ export const handleGetAppointment = async (c: Context) => {
     headers["Authorization"] = authHeader;
   }
 
-  const { data: healthWorker, error: errorHealthWorker } =
-    await kasihSupabaseAdmin.functions.invoke(
-      "get-health-worker/" + appointment.inspector_id,
-      {
-        headers: headers,
-        method: "GET",
-      }
-    );
+  let healthWorkerData: any = null;
+  if (appointment.inspector_id) {
+    try {
+      const { data: healthWorker, error: errorHealthWorker } =
+        await kasihSupabaseAdmin.functions.invoke(
+          "get-health-worker/" + appointment.inspector_id,
+          {
+            headers: headers,
+            method: "GET",
+          }
+        );
 
-  if (errorHealthWorker) {
-    console.error("Error fetching health worker:", errorHealthWorker);
-    const status = errorHealthWorker?.context?.status || 500;
-    const message =
-      status === 401
-        ? "Unauthorized access to health worker"
-        : "Failed to fetch health worker";
-    return c.json(
-      {
-        is_successful: false,
-        message: message,
-        error: errorHealthWorker,
-      },
-      status
-    );
+      if (errorHealthWorker) {
+        console.warn("Warning fetching health worker:", errorHealthWorker);
+      } else if (healthWorker?.data) {
+        healthWorkerData = healthWorker.data;
+      }
+    } catch (hwErr) {
+      console.warn("Error invoking get-health-worker:", hwErr);
+    }
   }
 
-  const { data: orderData, error: errorOrder } =
-    await paymentSupabaseAdmin.functions.invoke(
-      "payments/order/" + appointment.order_id,
-      {
-        headers: headers,
-        method: "GET",
-      }
-    );
+  let orderData: any = null;
+  if (appointment.order_id) {
+    try {
+      const { data: orderRes, error: errorOrder } =
+        await paymentSupabaseAdmin.functions.invoke(
+          "payments/order/" + appointment.order_id,
+          {
+            headers: headers,
+            method: "GET",
+          }
+        );
 
-  if (errorOrder) {
-    console.error("Error fetching order:", errorOrder);
-    const status = errorOrder?.context?.status || 500;
-    const message =
-      status === 401 ? "Unauthorized access to order" : "Failed to fetch order";
-    return c.json(
-      {
-        is_successful: false,
-        message: message,
-        error: errorOrder,
-      },
-      status
-    );
+      if (errorOrder) {
+        console.warn("Warning fetching order:", errorOrder);
+      } else if (orderRes?.data) {
+        orderData = orderRes.data;
+      }
+    } catch (orderErr) {
+      console.warn("Error invoking payments/order:", orderErr);
+    }
   }
 
   return c.json(
@@ -224,8 +214,8 @@ export const handleGetAppointment = async (c: Context) => {
       message: "Appointment fetched successfully",
       data: {
         ...appointment,
-        health_worker: healthWorker.data,
-        order: orderData.data,
+        health_worker: healthWorkerData,
+        order: orderData,
       },
     },
     200

@@ -10,8 +10,8 @@ export const createAppointmentSchema = z.object({
   purpose: z.string().optional(),
   start_time: z.string().time(),
   end_time: z.string().time(),
-  gateway: z.enum(PAYMENT_GATEWAY),
-  currency: z.string(),
+  gateway: z.enum(PAYMENT_GATEWAY).optional().default("midtrans"),
+  currency: z.string().optional().default("IDR"),
 });
 
 export const getAppointmentSchema = z.object({
