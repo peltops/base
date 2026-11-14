@@ -37,9 +37,8 @@ export const handleCreateAppointment = async (c: Context) => {
         {
           is_successful: false,
           message: "Failed to initiate payment for appointment",
-          error: errorInitiatePayment,
         },
-        400
+        502
       );
     }
     initiatePaymentResult = initiatePayment;
@@ -49,10 +48,8 @@ export const handleCreateAppointment = async (c: Context) => {
       {
         is_successful: false,
         message: "Payment service is currently unavailable",
-        error:
-          paymentErr instanceof Error ? paymentErr.message : String(paymentErr),
       },
-      400
+      502
     );
   }
 
@@ -65,10 +62,9 @@ export const handleCreateAppointment = async (c: Context) => {
     return c.json(
       {
         is_successful: false,
-        message: "Payment initiation did not produce a valid order ID",
-        error: initiatePaymentResult,
+        message: "Payment service response missing valid order ID",
       },
-      400
+      502
     );
   }
 
@@ -98,7 +94,6 @@ export const handleCreateAppointment = async (c: Context) => {
       {
         is_successful: false,
         message: "Failed to create appointment in database",
-        error: errorCreateAppointment,
       },
       500
     );
@@ -179,12 +174,11 @@ export const handleGetAppointment = async (c: Context) => {
 
   if (errorAppointment || !appointment) {
     console.error("Error fetching appointment:", errorAppointment);
-    const status = errorAppointment?.code === "PGRST116" ? 404 : 500;
+    const status = errorAppointment?.code === "PGRST116" || !appointment ? 404 : 500;
     return c.json(
       {
         is_successful: false,
-        message: "Failed to fetch appointment",
-        error: errorAppointment,
+        message: status === 404 ? "Appointment not found" : "Failed to fetch appointment",
       },
       status
     );
