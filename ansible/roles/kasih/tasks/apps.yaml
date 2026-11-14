@@ -41,6 +41,12 @@
     state: present
   register: output
 
+- name: Run dbmate migrations
+  ansible.builtin.shell: docker start -a kasih-dbmate
+  register: dbmate_result
+  failed_when: dbmate_result.rc != 0 and "already running" not in dbmate_result.stderr
+  changed_when: "'Applying' in dbmate_result.stdout or 'Applying' in dbmate_result.stderr"
+
 - name: Show results
   ansible.builtin.debug:
     var: output

@@ -3,11 +3,18 @@ import { enakesSupabaseAdmin } from "../_shared/enakesSupabase.ts";
 import { validateJWT } from "../_shared/jwtAuth.ts";
 
 Deno.serve(async (req) => {
+  const url = new URL(req.url);
+  const page = Math.max(1, parseInt(url.searchParams.get("page") || "1", 10) || 1);
+  const pageSize = Math.max(1, parseInt(url.searchParams.get("pageSize") || "10", 10) || 10);
+  const search = url.searchParams.get("search") ?? "";
+  console.log(`[get-clinics] [${req.method}] ${url.pathname} (page: ${page}, pageSize: ${pageSize}, search: "${search}")`);
+
   // JWT Authentication
   if (req.method !== "OPTIONS") {
     const validation = await validateJWT(req);
 
     if (!validation.isValid) {
+      console.warn(`[get-clinics] [${req.method}] Invalid JWT: ${validation.error}`);
       return new Response(
         JSON.stringify({
           isSuccessful: false,
@@ -20,11 +27,6 @@ Deno.serve(async (req) => {
       );
     }
   }
-
-  const url = new URL(req.url);
-  const page = url.searchParams.get("page") ?? 1;
-  const pageSize = url.searchParams.get("pageSize") ?? 10;
-  const search = url.searchParams.get("search") ?? "";
 
   try {
     const client = enakesSupabaseAdmin;
@@ -74,11 +76,13 @@ Deno.serve(async (req) => {
       },
       isSuccessful: true,
     });
+    console.log(`[get-clinics] Successfully retrieved ${data?.length ?? 0} clinics (total: ${count})`);
     return new Response(response, {
       headers: { "Content-Type": "application/json" },
       status: 200,
     });
   } catch (err) {
+    console.error(`[get-clinics] Error fetching clinics:`, err);
     const response = JSON.stringify({
       isSuccessful: false,
       message: err?.message ?? err,

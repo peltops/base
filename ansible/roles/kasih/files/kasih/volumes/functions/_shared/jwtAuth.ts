@@ -43,6 +43,9 @@ export async function validateJWT(
 
     return { isValid: true };
   } catch (error) {
-    return { isValid: false, error: error.message };
+    return {
+      isValid: false,
+      error: error instanceof Error ? error.message : String(error),
+    };
   }
 }
