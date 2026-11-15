@@ -1,6 +1,6 @@
 <#macro mainLayout active displayMessage=true displayInfo=false displayRequiredFields=false displayWide=false showAnotherWayIfPresent=true>
 <!DOCTYPE html>
-<html lang="${(locale.currentLanguageTag!'en')}">
+<html lang="${(locale.currentLanguageTag)!'en'}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
