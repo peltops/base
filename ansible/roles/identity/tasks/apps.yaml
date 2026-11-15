@@ -4,10 +4,28 @@
     src: ../files/identity
     dest: /opt
 
+- name: restrict identity environment file permissions
+  ansible.builtin.file:
+    path: /opt/identity/.env
+    mode: '0600'
+
+- name: validate identity compose configuration
+  ansible.builtin.command:
+    argv:
+      - docker
+      - compose
+      - --env-file
+      - .env
+      - -f
+      - docker-compose.yaml
+      - config
+      - --quiet
+    chdir: /opt/identity
+  changed_when: false
+
 - name: deploy/restart identity apps 
   community.docker.docker_compose_v2:
     project_src: /opt/identity
-    build: always
     recreate: always
   register: output
 

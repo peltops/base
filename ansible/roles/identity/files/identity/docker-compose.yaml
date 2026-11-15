@@ -1,5 +1,3 @@
-version: '3.9'
-
 x-logging:
   &default-logging
   driver: loki:latest
@@ -17,7 +15,7 @@ services:
     environment:
       POSTGRES_USER: ${POSTGRES_USER}  
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}  
-      POSTGRES_DATABASE: ${POSTGRES_DATABASE}  
+      POSTGRES_DB: ${POSTGRES_DATABASE}
       PGDATA: /var/lib/postgresql/data
     volumes:
       - db:/var/lib/postgresql/data
@@ -43,21 +41,19 @@ services:
       - ldap:/bitnami/openldap
 
   identity-keycloak:
-    build: .
-    image: peltops/pkeycloak:v0.2
+    image: peltops/pkeycloak:v0.4
     command: start --optimized
     container_name: identity-keycloak
     logging: *default-logging
     environment:
-      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}  
-      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}  
-      KC_DB_URL: jdbc:postgresql://identity-db/${POSTGRES_DATABASE}
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_DB: postgres
       KC_DB_URL_HOST: identity-db
       KC_DB_URL_PORT: 5432
       KC_DB_URL_DATABASE: ${POSTGRES_DATABASE}
       KC_HOSTNAME: ${KC_HOSTNAME}
-      KC_HOSTNAME_STRICT_HTTPS: "false"
-      KC_PROXY: edge
+      KC_PROXY_HEADERS: xforwarded
       KC_HTTP_ENABLED: "true"
       KC_DB_USERNAME: ${POSTGRES_USER}  
       KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
