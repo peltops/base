@@ -4,132 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${msg("emailVerificationSubject")}</title>
-    <style>
-        body {
-            font-family: Georgia, 'Times New Roman', serif;
-            line-height: 1.6;
-            color: #3d3d3d;
-            margin: 0;
-            padding: 0;
-            background-color: #f5f1eb;
-        }
-        .email-container {
-            max-width: 560px;
-            margin: 40px auto;
-            background: #faf8f3;
-            border: 1px solid #d4c4b0;
-            overflow: hidden;
-        }
-        .email-header {
-            background: #8b7355;
-            padding: 32px 30px;
-            text-align: center;
-            color: #faf8f3;
-            border-bottom: 2px solid #6b5742;
-        }
-        .email-header h1 {
-            margin: 0;
-            font-size: 22px;
-            font-weight: 400;
-            letter-spacing: 0.5px;
-        }
-        .email-body {
-            padding: 36px 30px;
-        }
-        .email-body h2 {
-            color: #3d3d3d;
-            margin-top: 0;
-            font-weight: 400;
-            font-size: 18px;
-        }
-        .email-body p {
-            margin: 14px 0;
-            color: #6b6b6b;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-        .verify-button {
-            display: inline-block;
-            padding: 12px 32px;
-            margin: 24px 0;
-            background: #8b7355;
-            color: #faf8f3 !important;
-            text-decoration: none;
-            border: 1px solid #6b5742;
-            font-weight: 400;
-            text-align: center;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            font-size: 14px;
-            letter-spacing: 0.3px;
-        }
-        .verify-button:hover {
-            background: #6b5742;
-        }
-        .alternative-link {
-            margin-top: 24px;
-            padding: 16px;
-            background: #f5f1eb;
-            border: 1px solid #d4c4b0;
-            word-break: break-all;
-        }
-        .alternative-link p {
-            margin: 0 0 8px 0;
-            font-weight: 400;
-            color: #6b6b6b;
-            font-size: 13px;
-        }
-        .alternative-link a {
-            color: #8b7355;
-            word-break: break-all;
-            font-size: 12px;
-        }
-        .email-footer {
-            padding: 24px 30px;
-            text-align: center;
-            background: #f5f1eb;
-            color: #8f8f8f;
-            font-size: 12px;
-            border-top: 1px solid #d4c4b0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        }
-        .disclaimer {
-            margin-top: 24px;
-            color: #8f8f8f;
-            font-size: 12px;
-            font-style: italic;
-            font-family: Georgia, serif;
-        }
-    </style>
 </head>
-<body>
-    <div class="email-container">
-        <div class="email-header">
-            <h1>${msg("emailVerificationSubject")}</h1>
-        </div>
-        
-        <div class="email-body">
-            <h2>${msg("emailVerificationBodyHtml",user.firstName!'')}</h2>
-            
-            <p>${msg("emailVerificationBody1")}</p>
-            
-            <div style="text-align: center;">
-                <a href="${link}" class="verify-button">${msg("emailVerificationButton")}</a>
-            </div>
-            
-            <p>${msg("emailVerificationBody2",linkExpiration)}</p>
-            
-            <div class="alternative-link">
-                <p>${msg("emailVerificationAlternative")}</p>
-                <a href="${link}">${link}</a>
-            </div>
-            
-            <p class="disclaimer">${msg("emailVerificationDisclaimer")}</p>
-        </div>
-        
-        <div class="email-footer">
-            <p>&copy; ${.now?string('yyyy')} ${realmName}. All rights reserved.</p>
-        </div>
-    </div>
+<body style="margin:0;padding:24px 12px;background-color:#f3f4f6;color:#151c2b;font-family:Arial,Helvetica,sans-serif;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;margin:0 auto;background:#ffffff;border:1px solid #dfe2e6;border-radius:14px;overflow:hidden;">
+        <tr>
+            <td style="padding:24px 30px;border-bottom:1px solid #dfe2e6;">
+                <div style="font-size:20px;font-weight:800;letter-spacing:1px;color:#151c2b;">KUALA</div>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding:34px 30px 28px;">
+                <p style="margin:0 0 12px;color:#667085;font-size:12px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;">Email verification</p>
+                <h1 style="margin:0 0 16px;color:#151c2b;font-size:28px;line-height:1.2;letter-spacing:-.7px;">${msg("emailVerificationSubject")}</h1>
+                <p style="margin:0 0 12px;color:#475467;font-size:15px;line-height:1.7;">${msg("emailVerificationBodyHtml",user.firstName!'')}</p>
+                <p style="margin:0 0 18px;color:#475467;font-size:15px;line-height:1.7;">${msg("emailVerificationBody1")}</p>
+                <p style="margin:24px 0;text-align:center;">
+                    <a href="${link}" style="display:inline-block;padding:14px 26px;border:1px solid #182232;border-radius:999px;background:#182232;color:#ffffff;text-decoration:none;font-size:14px;font-weight:bold;">${msg("emailVerificationButton")}</a>
+                </p>
+                <p style="margin:0 0 16px;color:#667085;font-size:13px;line-height:1.7;">${msg("emailVerificationBody2",linkExpiration)}</p>
+                <div style="margin-top:22px;padding:14px;border:1px solid #dfe2e6;border-radius:9px;background:#f9fafb;word-break:break-all;">
+                    <p style="margin:0 0 8px;color:#667085;font-size:12px;">${msg("emailVerificationAlternative")}</p>
+                    <a href="${link}" style="color:#182232;font-size:12px;line-height:1.6;word-break:break-all;">${link}</a>
+                </div>
+                <p style="margin:22px 0 0;color:#667085;font-size:12px;line-height:1.7;">${msg("emailVerificationDisclaimer")}</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding:17px 30px;border-top:1px solid #dfe2e6;background:#f9fafb;color:#667085;font-size:11px;letter-spacing:1px;text-align:center;text-transform:uppercase;">
+                SERI BASA DIGITAL · ${.now?string('yyyy')}
+            </td>
+        </tr>
+    </table>
 </body>
 </html>
