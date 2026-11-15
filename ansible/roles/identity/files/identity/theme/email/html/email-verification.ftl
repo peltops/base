@@ -16,17 +16,25 @@
             <td style="padding:34px 30px 28px;">
                 <p style="margin:0 0 12px;color:#667085;font-size:12px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;">Email verification</p>
                 <h1 style="margin:0 0 16px;color:#151c2b;font-size:28px;line-height:1.2;letter-spacing:-.7px;">${msg("emailVerificationSubject")}</h1>
-                <p style="margin:0 0 12px;color:#475467;font-size:15px;line-height:1.7;">${msg("emailVerificationBodyHtml",user.firstName!'')}</p>
-                <p style="margin:0 0 18px;color:#475467;font-size:15px;line-height:1.7;">${msg("emailVerificationBody1")}</p>
+                <p style="margin:0 0 12px;color:#475467;font-size:15px;line-height:1.7;">
+                    Hello${(user.firstName!'')?matches('^\\s*$')?string('', ' ' + user.firstName!'') }!
+                </p>
+                <p style="margin:0 0 18px;color:#475467;font-size:15px;line-height:1.7;">
+                    Someone created a KUALA account with this email address. If that was you, please verify your email address to complete your registration.
+                </p>
                 <p style="margin:24px 0;text-align:center;">
                     <a href="${link}" style="display:inline-block;padding:14px 26px;border:1px solid #182232;border-radius:999px;background:#182232;color:#ffffff;text-decoration:none;font-size:14px;font-weight:bold;">${msg("emailVerificationButton")}</a>
                 </p>
-                <p style="margin:0 0 16px;color:#667085;font-size:13px;line-height:1.7;">${msg("emailVerificationBody2",linkExpiration)}</p>
+                <p style="margin:0 0 16px;color:#667085;font-size:13px;line-height:1.7;">
+                    This verification link will expire in ${linkExpiration} minutes.
+                </p>
                 <div style="margin-top:22px;padding:14px;border:1px solid #dfe2e6;border-radius:9px;background:#f9fafb;word-break:break-all;">
-                    <p style="margin:0 0 8px;color:#667085;font-size:12px;">${msg("emailVerificationAlternative")}</p>
+                    <p style="margin:0 0 8px;color:#667085;font-size:12px;">Or copy and paste this link into your browser:</p>
                     <a href="${link}" style="color:#182232;font-size:12px;line-height:1.6;word-break:break-all;">${link}</a>
                 </div>
-                <p style="margin:22px 0 0;color:#667085;font-size:12px;line-height:1.7;">${msg("emailVerificationDisclaimer")}</p>
+                <p style="margin:22px 0 0;color:#667085;font-size:12px;line-height:1.7;">
+                    If you did not create an account, you can safely ignore this email.
+                </p>
             </td>
         </tr>
         <tr>
