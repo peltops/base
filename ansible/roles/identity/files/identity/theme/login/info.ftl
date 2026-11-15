@@ -2,7 +2,7 @@
 <@layout.mainLayout active='' displayMessage=false; section>
     <#if section = "header">
         <#if messageHeader??>
-            <h2>${messageHeader}</h2>
+            <h2>${kcSanitize(messageHeader)?no_esc}</h2>
         <#elseif message?has_content && message.summary?has_content>
             <h2>${kcSanitize(message.summary)?no_esc}</h2>
         <#else>
