@@ -92,7 +92,7 @@ services:
 
   auth:
     container_name: kasih-auth
-    image: supabase/gotrue:v2.197.0
+    image: supabase/gotrue:v2.198.0
     depends_on:
       db:
         # Disable this if you are using an external Postgres database
