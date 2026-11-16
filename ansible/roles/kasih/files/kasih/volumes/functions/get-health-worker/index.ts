@@ -7,11 +7,16 @@ import {
 import { validateJWT } from "../_shared/jwtAuth.ts";
 
 Deno.serve(async (req) => {
+  const url = new URL(req.url);
+  const id = url.pathname.split("/").pop();
+  console.log(`[get-health-worker] [${req.method}] ${url.pathname} (id: ${id})`);
+
   // JWT Authentication
   if (req.method !== "OPTIONS") {
     const validation = await validateJWT(req);
 
     if (!validation.isValid) {
+      console.warn(`[get-health-worker] [${req.method}] Invalid JWT: ${validation.error}`);
       return new Response(
         JSON.stringify({
           isSuccessful: false,
@@ -26,8 +31,6 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const url = new URL(req.url);
-    const id = url.pathname.split("/").pop();
     if (!id) {
       throw new Error("id is required");
     }
@@ -57,6 +60,7 @@ Deno.serve(async (req) => {
 
     if (error) {
       if (error.code === "PGRST116") {
+        console.warn(`[get-health-worker] Health worker not found for id: ${id}`);
         const response = JSON.stringify({
           isSuccessful: false,
           message: "health worker not found",
@@ -76,11 +80,13 @@ Deno.serve(async (req) => {
       data: result,
       isSuccessful: true,
     });
+    console.log(`[get-health-worker] Successfully retrieved health worker for id: ${id}`);
     return new Response(response, {
       headers: { "Content-Type": "application/json" },
       status: 200,
     });
   } catch (err) {
+    console.error(`[get-health-worker] Error fetching health worker (id: ${id}):`, err);
     const response = JSON.stringify({
       isSuccessful: false,
       message: err?.message ?? err,
