@@ -309,7 +309,7 @@ services:
 
   functions:
     container_name: eimunisasi-edge-functions
-    image: supabase/edge-runtime:v1.67.4
+    image: supabase/edge-runtime:v1.79.3
     restart: unless-stopped
     depends_on:
       analytics:
