@@ -310,7 +310,7 @@ services:
 
   functions:
     container_name: enakes-edge-functions
-    image: supabase/edge-runtime:v1.67.4
+    image: supabase/edge-runtime:v1.80.0
     restart: unless-stopped
     depends_on:
       analytics:
